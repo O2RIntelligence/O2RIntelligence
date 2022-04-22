@@ -1,0 +1,140 @@
+.table-header {
+    border-bottom: 2px solid #ebebeb;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.clear {
+    clear: both;
+}
+
+.custom-daterange {
+    display: none;
+    margin-top: 10px;
+}
+
+.income-report .select2-selection {
+    border: none !important;
+    /* border-left: 1px solid #d2d6de !important; */
+}
+
+.income-report .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    float: right !important;
+}
+
+div.table-responsive>div.dataTables_wrapper>div.row:first-child {
+    display: none;
+}
+
+.main-report div.table-responsive>div.dataTables_wrapper>div.row:first-child {
+    display: block !important;
+}
+
+.report-fields label {
+    margin: 3px;
+}
+
+.main-report .filters-form .row {
+    display: flex;
+    align-items: center;
+}
+
+.main_report #report_filter {
+    display: none;
+}
+
+.lds-hourglass {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-top: 40vh;
+}
+
+.lds-hourglass:after {
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    width: 0;
+    height: 0;
+    margin: 8px;
+    box-sizing: border-box;
+    border: 32px solid #3c8dbc;
+    border-color: #3c8dbc transparent #3c8dbc transparent;
+    animation: lds-hourglass 2s infinite;
+}
+
+@keyframes lds-hourglass {
+    0% {
+        transform: rotate(0);
+        animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    }
+    50% {
+        transform: rotate(900deg);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    100% {
+        transform: rotate(1800deg);
+    }
+}
+
+.loader {
+    width: calc(100% - 275px);
+    height: 100%;
+    position: absolute;
+    z-index: 100;
+    background-color: #ecf0f4ba;
+    text-align: center;
+    display: none;
+}
+
+#reporting-area {
+    display: none;
+}
+
+#vertical-container-table_info {
+    display: none;
+}
+
+.chart-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.isResizable {
+    overflow: hidden;
+}
+
+.hiddenChart {
+    position: fixed;
+    left: -10000px;
+}
+
+.btn-secondary.btn.active,
+.btn-black {
+    color: #fff;
+    background: #000;
+    border-color: #000;
+}
+
+.btn-secondary.btn.active:hover,
+.btn-black:hover {
+    color: #fff !important;
+    background: #333;
+    border-color: #333
+}
+
+canvas {
+    margin: auto;
+}
+
+@media only screen and (max-width: 750px) {
+    .loader {
+        width: 100% !important;
+    }
+    .lds-hourglass {
+        margin-top: 25vh !important;
+    }
+}
