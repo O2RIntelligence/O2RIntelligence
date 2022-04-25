@@ -2,11 +2,13 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Models\AdminConfig;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Controllers\Dashboard;
 use Encore\Admin\Layout\Column;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
@@ -40,12 +42,18 @@ class ReportController extends Controller
         $seats = [];
         if($user->isRole('administrator') || ($user->isRole('reporter') && !$report))
             $seats = Administrator::where('api_token', '!=' , '')->select(['id', 'name', 'excluded_channels', 'api_token', 'partner_fee'])->get()->keyBy("id")->toArray();
-        
+
         $content->view('dashboard/' . $view, compact('user', 'seats'));
 
         return $content;
     }
 
+    /** Returns Ms Channel IDs
+     * @return JsonResponse
+     */
+    public function getMsChannelIds(): JsonResponse
+    {
+        return response()->json(AdminConfig::select('name','value')->where('name','ms_channel_id')->first());
+    }
 
-    
 }

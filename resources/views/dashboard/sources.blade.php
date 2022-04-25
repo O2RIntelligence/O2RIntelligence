@@ -293,10 +293,38 @@
         <div class="col-md-12">
             <div class="box grid-box with-border">
                 <div class="box-body">
-                    <h5 class="pull-left">{{__('MT and MS Combined Daily Graph by Hour')}}:</h5>
+                    <h5 class="pull-left">{{__('MT Daily Total Fill Rate(%) Graph by Hour')}}:</h5>
                     <div class="isResizable">
                         <div class="chart-container">
-                            <canvas id="impression_chart" style="max-width:100%;min-height:200px;"></canvas>
+                            <canvas id="mt_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box grid-box with-border">
+                <div class="box-body">
+                    <h5 class="pull-left">{{__('MS Daily Graph by Hour')}}:</h5>
+                    <div class="isResizable">
+                        <div class="chart-container">
+                            <canvas id="ms_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box grid-box with-border">
+                <div class="box-body">
+                    <h5 class="pull-left">{{__('Combined Daily Graph by Hour')}}:</h5>
+                    <div class="isResizable">
+                        <div class="chart-container">
+                            <canvas id="combined_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>
                         </div>
                     </div>
                 </div>
