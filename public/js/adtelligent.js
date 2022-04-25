@@ -4,12 +4,12 @@ class adtelligent {
     }
 
     async request(params, route = '', base = '') {
-        var url = (base.length > 0 ? base : window["ADTELLIGENT_BASE_URL"]);
-        route = route.length > 0 ? "https://ssp.adtelligent.com/api/statistics/ssp2/" + route : "https://ssp.adtelligent.com/api/statistics/ssp2";
+        route = route.length > 0 ? "/" + route : "";
+        var url = this.isLocalNetwork()?"https://ssp.adtelligent.com/api/statistics/ssp2":base;
         return new Promise((resolve, reject) => {
             $.ajax({
                 type: 'GET',
-                url: route,
+                url: url + route,
                 headers: {
                     "x-authentication-session-id": this.seat.api_token
                 },
@@ -23,6 +23,15 @@ class adtelligent {
                 }
             });
         });
+    }
+
+    isLocalNetwork(hostname = window.location.hostname) {
+        return (
+            (['localhost', '127.0.0.1', '', '::1'].includes(hostname))
+            || (hostname.startsWith('192.168.'))
+            || (hostname.startsWith('10.0.'))
+            || (hostname.endsWith('.local'))
+        )
     }
 
 
