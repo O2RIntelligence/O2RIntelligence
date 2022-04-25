@@ -1316,6 +1316,12 @@
         });
 
         function appendComparePerformanceTable() {
+            let totalImpressionsMt=0
+            let totalRevenueMt=0
+            let totalAdRequestsMt = 0
+            let totalImpressionsMs=0
+            let totalRevenueMs=0
+            let totalAdRequestsMs = 0
             for (const key of Object.keys(window["compare_performance_records"])) {
                 const record = window["compare_performance_records"][key];
                 let ms, mt;
@@ -1349,6 +1355,12 @@
                     revenue_total: 0,
                     ad_requests: 0
                 };
+                totalImpressionsMt += mt.impressions_good;
+                totalRevenueMt += mt.revenue_total;
+                totalAdRequestsMt += mt.ad_requests;
+                totalImpressionsMs += ms.impressions_good;
+                totalRevenueMs += ms.revenue_total;
+                totalAdRequestsMs += ms.ad_requests;
 
                 $("#compare-performance-container-table").find('tbody')
                     .append($('<tr>')
@@ -1389,9 +1401,48 @@
                             .attr('class', '')
                             .text(window["formatMoney"]((ms.impressions_good /ms.ad_requests)*100) + "%")
                         )
-
                     );
+
             }
+            $("#compare-performance-container-table").find('tbody')
+                .append($('<tr>')
+                    .append($('<th>')
+                        .attr('class', 'info')
+                        .text("Total")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalAdRequestsMt))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalImpressionsMt))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMt))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMt / (totalAdRequestsMt / 1000000), 2) + "$")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"]((totalImpressionsMt /totalAdRequestsMt)*100) + "%")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalAdRequestsMs))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalImpressionsMs))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMs))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMs / (totalAdRequestsMs / 1000000), 2) + "$")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"]((totalImpressionsMs /totalAdRequestsMs)*100) + "%")
+                    )
+
+                );
+
         }
 
         function appendOverallPerformanceTable(records) {

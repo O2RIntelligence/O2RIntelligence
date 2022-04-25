@@ -277,6 +277,7 @@
                                 <th class="success">$/AD Req in Mil.</th>
                                 <th>Fill Rate(%)</th>
                             </tr>
+
                         </thead>
                         <tbody>
                         </tbody>
