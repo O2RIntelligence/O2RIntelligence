@@ -62,7 +62,7 @@
         window["formatMoney"] = function(number, decPlaces) {
             decPlaces = number.toString().indexOf(".") == -1 ? 0 : decPlaces;
             return number.toLocaleString(
-                undefined, // leave undefined to use the visitor's browser 
+                undefined, // leave undefined to use the visitor's browser
                 // locale or a string like 'en-US' to override it.
                 { minimumFractionDigits: decPlaces }
             );
@@ -259,7 +259,7 @@
             }
         }
 
-        // start 
+        // start
         $("input[value=today]").trigger("click");
         $("button[data-period=today]").trigger("click");
 
@@ -1111,7 +1111,7 @@
 
 
         /**
-         * Media Source 
+         * Media Source
          */
 
         async function MediaSourceAjax() {
@@ -1369,6 +1369,10 @@
                             .text(window["formatMoney"](mt.revenue_total / (mt.ad_requests / 1000000), 2) + "$")
                         )
                         .append($('<td>')
+                            .attr('class', '')
+                            .text(window["formatMoney"]((mt.impressions_good /mt.ad_requests)*100) + "%")
+                        )
+                        .append($('<td>')
                             .text(window["formatMoney"](ms.ad_requests, 0))
                         )
                         .append($('<td>')
@@ -1380,6 +1384,10 @@
                         .append($('<td>')
                             .attr('class', 'success')
                             .text(window["formatMoney"](ms.revenue_total / (ms.ad_requests / 1000000), 2) + "$")
+                        )
+                        .append($('<td>')
+                            .attr('class', '')
+                            .text(window["formatMoney"]((ms.impressions_good /ms.ad_requests)*100) + "%")
                         )
 
                     );
