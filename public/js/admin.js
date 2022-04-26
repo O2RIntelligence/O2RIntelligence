@@ -1480,11 +1480,12 @@
                     )
                 );
 
-            appendMtDailyChartByHour();
+            appendDailyChartByHour();
+            appendMonthlyChartByday();
 
 
         }
-        async function appendMtDailyChartByHour(){
+        async function appendDailyChartByHour(){
 
 
             var msChannelIds = [];
@@ -1623,6 +1624,177 @@
                 config
             );
         }
+
+         async function appendMonthlyChartByday(){
+
+            var msChannelIds = [];
+            $.get("../../api/get-ms-channel-ids", function(data, status){
+                msChannelIds = data.value.split(',');
+                // console.log(msChannelIds);
+
+            });
+             var firstday = function(y,m){
+                 return  new Date(y, m , 1).getDate();
+             }
+             var lastday = function(y,m){
+                 return  new Date(y, m +1, 0).getDate();
+             }
+            var start_date = $("input[name=start_date]").val();
+            var date = new Date(start_date);
+            // start_date = new Date(date.getFullYear()+"-"+date.getMonth()+1+"-"+firstday(date.getFullYear(), date.getMonth()));
+
+            var dateCount = lastday(date.getFullYear(), date.getMonth());
+            var dateCountArray = [...Array.from(Array(dateCount).keys())] ;
+            var end_date = $("input[name=end_date]").val();
+            if(start_date === end_date){
+                start_date = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString();
+                end_date = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleDateString();
+            }
+            var chanelRequestBody = {
+                "report": 'date,channel',
+                "date_from": start_date,
+                "date_to": end_date,
+                "fields": 'ad_requests,ad_opportunities,impressions_good,scoring_pixalate_s2s_sas_request,revenue_channel,ecpm_channel,revenue_total,ecpm,fill_rate_ad_opportunities,fill_rate_ad_requests,date,channel',
+                "limit": 1000000,
+                "page": 1,
+                "strategy": 'last-collection',
+                "type": 'ssp_statistic',
+                "tz": 'GMT',
+                "is_rtb": 'not_apply'
+            };
+            // console.log(chanelRequestBody.hour);
+            var selected_seats = get_selected_seats();
+            var DateMappedRecords = Array(dateCount).fill(0);
+            var mtAdRequestByDay = Array(dateCount).fill(0);
+            var msAdRequestByDay = Array(dateCount).fill(0);
+            var combinedAdRequestByDay = Array(dateCount).fill(0);
+            var mtImpressionsByDay = Array(dateCount).fill(0);
+            var msImpressionsByDay = Array(dateCount).fill(0);
+            var combinedImpressionsByDay = Array(dateCount).fill(0);
+
+            var msFillRateByDay = Array(dateCount).fill(0);
+            var mtFillRateByDay = Array(dateCount).fill(0);
+            var combinedFillRateByDay = Array(dateCount).fill(0);
+
+            for (let index = 0; index < selected_seats.length; index++) {
+                // init seat
+                const seatId = selected_seats[index];
+                const seat = seats[seatId];
+                // get campaign 1120 revenue for marketplace_fee
+                let channelDataByDay;
+                try {
+                    channelDataByDay = await seats[seatId].api.request(chanelRequestBody);
+
+                        $(channelDataByDay.data).each(function(key,singleData){
+                            // console.log(singleData.channel.id);
+                            var date = new Date(singleData.date.id);
+                            date = date.getDate()-1;
+                            if(msChannelIds.includes(singleData.channel.id.toString())){
+                                msAdRequestByDay[date]+=singleData.ad_requests;
+                                // console.log(msAdRequestByDay[date]);
+                                msImpressionsByDay[date]+=singleData.impressions_good;
+
+                            }else{
+                                mtAdRequestByDay[date]+=singleData.ad_requests;
+                                mtImpressionsByDay[date]+=singleData.impressions_good;
+                                // console.log(msAdRequestByDay[date]);
+                            }
+
+                        });
+
+                    // console.log(mtImpressionsByDay);
+                    // console.log({{json_encode($array_without_keys)}});
+
+                } catch (error) {
+                    console.log(error);
+                    if (error === 401) console.log("got 401");//top.location.reload();
+                    continue;
+                }
+            }
+
+
+            // console.log(msAdRequestByDay);
+
+            $(dateCountArray).each(function (key,singleDay) {
+                msFillRateByDay[key] = ((msImpressionsByDay[key]/msAdRequestByDay[key])*100).toFixed(3);
+                // console.log("key: "+key+" "+msImpressionsByDay[key]+"/"+msAdRequestByDay[key])+" *100 = "+((msImpressionsByDay[key]/msAdRequestByDay[key])*100);
+                mtFillRateByDay[key] = ((mtImpressionsByDay[key]/mtAdRequestByDay[key])*100).toFixed(3);
+                combinedAdRequestByDay[key] = combinedAdRequestByDay[key]+msAdRequestByDay[key]+mtAdRequestByDay[key];
+                combinedImpressionsByDay[key] = combinedImpressionsByDay[key]+msImpressionsByDay[key]+mtImpressionsByDay[key];
+
+            });
+
+            $(dateCountArray).each(function (key,singleDay) {
+                combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
+            });
+            // console.log("msAdRequestByDay: "+ msAdRequestByDay);
+            // console.log("msImpressionsByDay: "+ msImpressionsByDay);
+            // console.log("combinedAdRequestByDay: "+ combinedAdRequestByDay);
+            // console.log("combinedImpressionsByDay: "+ combinedImpressionsByDay);
+            // console.log("mtAdRequestByDay: "+ mtAdRequestByDay);
+            // console.log("mtImpressionsByDay: "+ mtImpressionsByDay);
+            //
+            // console.log("msFillRateByDay: "+ msFillRateByDay);
+            // console.log("mtFillRateByDay: "+ mtFillRateByDay);
+            // console.log("combinedFillRateByDay: "+ combinedFillRateByDay);
+
+            const labels = getAllDatesOfCurrnetMonth();
+            // console.log(labels);
+            const data = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: ['Media-S'],
+                        // backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: msFillRateByDay,
+                    },
+                    {
+                        label: ['Media-T'],
+                        // backgroundColor: 'rgb(8 76 199)',
+                        borderColor: 'rgb(8 76 199)',
+                        data: mtFillRateByDay,
+                    },
+                    {
+                        label: ['Combined'],
+                        // backgroundColor: 'rgb(8 199 58)',
+                        borderColor: 'rgb(8 199 58)',
+                        data: combinedFillRateByDay,
+                    },
+                ]
+            };
+            const config = {
+                type: 'line',
+                data: data,
+                options: {}
+            };
+            const graphsMonthly = new Chart(document.getElementById('mt_monthly_chart_by_day'), config);
+            // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
+            // if(graphs3!== undefined){
+                if(!graphsMonthly.reset()){
+                    console.log("Could not reset graph");
+                }
+            // }
+
+            const myChart = new Chart(
+                graphsMonthly,
+                config
+            );
+        }
+
+        function getAllDatesOfCurrnetMonth(){
+            var date = new Date();
+            var month = date.getMonth();
+            date.setDate(1);
+            var all_days = [];
+            while (date.getMonth() === month) {
+                var d = date.getFullYear() + '-' + (date.getMonth()+1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
+                all_days.push(d);
+                date.setDate(date.getDate() + 1);
+            }
+            return all_days;
+        }
+
         function appendOverallPerformanceTable(records) {
             for (let index = 0; index < records.length; index++) {
                 const record = records[index];
