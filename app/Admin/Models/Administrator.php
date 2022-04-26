@@ -31,7 +31,7 @@ class Administrator extends  BaseAdministrator{
 
     public static function APIAuth( $username, $password) {
 
-        $authEndpoint = env('ADTELLIGENT_AUTH_BASE_URL');
+        $authEndpoint = config('services.base_url.adtelligent_auth');
 
         $client = new Client([
             'base_uri' => $authEndpoint
@@ -73,7 +73,7 @@ class Administrator extends  BaseAdministrator{
 
     public function request( $path, $params ) {
 
-        $api_base = env('ADTELLIGENT_BASE_URL');
+        $api_base = config('services.base_url.adtelligent');
 
         $client = new Client([
             'base_uri' => $api_base

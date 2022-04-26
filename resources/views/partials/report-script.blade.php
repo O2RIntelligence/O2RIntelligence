@@ -37,7 +37,7 @@
 {{--        @else--}}
 {{--        window["seats"] = { "{{ $user->id }}": {id: "{{ $user->id }}", name:"{{ $user->name }}", "partner_fee": "{{ $user->partner_fee }}", "api_token": "{{ $user->api_token }}"} };--}}
 {{--        @endif--}}
-        window["ADTELLIGENT_START_URL"] = "{{ env('ADTELLIGENT_BASE_URL') }}";
+        window["ADTELLIGENT_START_URL"] = "{{ config('services.base_url.adtelligent') }}";
         window["ADTELLIGENT_BASE_URL"] = window["ADTELLIGENT_START_URL"] + "/api/statistics/ssp2";
         window["mt_channel_id"] = '{{ config('mt_channel_id') }}';
         window["mt_channel_id"] = window["mt_channel_id"].split(',');

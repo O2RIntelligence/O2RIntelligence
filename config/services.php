@@ -34,4 +34,8 @@ return [
         'secret' => env('SPARKPOST_SECRET'),
     ],
 
+    'base_url' => [
+        'adtelligent' => env('ADTELLIGENT_BASE_URL','https://ssp.adtelligent.com'),
+        'adtelligent_auth' => env('ADTELLIGENT_AUTH_BASE_URL','https://auth-service.adtelligent.com'),
+    ]
 ];
