@@ -1481,20 +1481,12 @@
                 );
 
             appendMtDailyChartByHour();
-            // appendMTDailyChartByHour({
-            //     label: seats.name,// ["a","b","c","d","e"],
-            //     data: {
-            //         'x': [1,2,3,4,5],
-            //         'y': [6,7,8,9,10]
-            //     },
-            //     // borderColor: colors[index],
-            //     // pointColor: "rgba(200,122,20,1)",
-            // });
-            // // appendMSDailyChartByHour();
-            // // appendCombinedDailyChartByHour();
+
 
         }
         async function appendMtDailyChartByHour(){
+
+
             var msChannelIds = [];
             $.get("../../api/get-ms-channel-ids", function(data, status){
                 msChannelIds = data.value.split(',');
@@ -1503,7 +1495,9 @@
             });
 
             var start_date = $("input[name=start_date]").val();
-            var hour = [...Array.from(Array(new Date().getUTCHours()).keys())];
+            var timeline = $("input[name=date_period]").val();
+            var hour = timeline==='today'?[...Array.from(Array(new Date().getUTCHours()).keys())]:[...Array.from(Array(24).keys())];
+            console.log(hour);
             var end_date = $("input[name=end_date]").val();
             var chanelRequestBody = {
                 "report": 'hour,channel',
@@ -1520,17 +1514,17 @@
             };
             // console.log(chanelRequestBody.hour);
             var selected_seats = get_selected_seats();
-            var DateMappedRecords = hour;
-            var mtAdRequestByHour = hour;
-            var msAdRequestByHour = hour;
-            var combinedAdRequestByHour = hour;
-            var mtImpressionsByHour = hour;
-            var msImpressionsByHour = hour;
-            var combinedImpressionsByHour = hour;
+            var DateMappedRecords = Array(24).fill(0);
+            var mtAdRequestByHour = Array(24).fill(0);
+            var msAdRequestByHour = Array(24).fill(0);
+            var combinedAdRequestByHour = Array(24).fill(0);
+            var mtImpressionsByHour = Array(24).fill(0);
+            var msImpressionsByHour = Array(24).fill(0);
+            var combinedImpressionsByHour = Array(24).fill(0);
 
-            var msFillRateByHour = hour;
-            var mtFillRateByHour = hour;
-            var combinedFillRateByHour = hour;
+            var msFillRateByHour = Array(24).fill(0);
+            var mtFillRateByHour = Array(24).fill(0);
+            var combinedFillRateByHour = Array(24).fill(0);
 
             for (let index = 0; index < selected_seats.length; index++) {
                 // init seat
@@ -1542,18 +1536,19 @@
                     channelDataByHour = await seats[seatId].api.request(chanelRequestBody);
 
                         $(channelDataByHour.data).each(function(key,singleData){
-                            // console.log(singleData);
-                            if(msChannelIds.includes(singleData.channel.id)){
+                            // console.log(singleData.channel.id);
+                            if(msChannelIds.includes(singleData.channel.id.toString())){
                                 msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
                                 // console.log(msAdRequestByHour[singleData.hour.id]);
                                 msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+
                             }else{
                                 mtAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
                                 mtImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+
                             }
+
                         });
-                    combinedAdRequestByHour = channelDataByHour.totals.ad_requests;
-                    combinedImpressionsByHour = channelDataByHour.totals.impressions_good;
 
                     // console.log(channelDataByHour.data);
                     // console.log({{json_encode($array_without_keys)}});
@@ -1564,13 +1559,27 @@
                     continue;
                 }
             }
-            console.log(mtAdRequestByHour);
+
+
+            // console.log(msAdRequestByHour);
 
             $(hour).each(function (key,singleHour) {
-                msFillRateByHour[key] = (msImpressionsByHour[key]/msAdRequestByHour[key]);
-                mtFillRateByHour[key] = (mtImpressionsByHour[key]/mtAdRequestByHour[key]);
-                // combinedFillRateByHour[singleHour] = (combinedImpressionsByHour[singleHour]/combinedAdRequestByHour[singleHour])*100;
+                msFillRateByHour[key] = ((msImpressionsByHour[key]/msAdRequestByHour[key])*100).toFixed(3);
+                mtFillRateByHour[key] = ((mtImpressionsByHour[key]/mtAdRequestByHour[key])*100).toFixed(3);
+                combinedAdRequestByHour[key] = combinedAdRequestByHour[key]+msAdRequestByHour[key]+mtAdRequestByHour[key];
+                combinedImpressionsByHour[key] = combinedImpressionsByHour[key]+msImpressionsByHour[key]+mtImpressionsByHour[key];
+
             });
+
+            $(hour).each(function (key,singleHour) {
+                combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
+            });
+            // console.log("msAdRequestByHour: "+ msAdRequestByHour);
+            // console.log("msImpressionsByHour: "+ msImpressionsByHour);
+            // console.log("combinedAdRequestByHour: "+ combinedAdRequestByHour);
+            // console.log("combinedImpressionsByHour: "+ combinedImpressionsByHour);
+            // console.log("mtAdRequestByHour: "+ mtAdRequestByHour);
+            // console.log("mtImpressionsByHour: "+ mtImpressionsByHour);
 
             const labels = Array.from(Array(24).keys());
             const data = {
@@ -1578,68 +1587,42 @@
                 datasets: [
                     {
                         label: ['Media-S'],
-                        backgroundColor: 'rgb(255, 99, 132)',
+                        // backgroundColor: 'rgb(255, 99, 132)',
                         borderColor: 'rgb(255, 99, 132)',
                         data: msFillRateByHour,
                     },
                     {
                         label: ['Media-T'],
-                        backgroundColor: 'rgb(255, 99, 132)',
-                        borderColor: 'rgb(255, 99, 132)',
+                        // backgroundColor: 'rgb(8 76 199)',
+                        borderColor: 'rgb(8 76 199)',
                         data: mtFillRateByHour,
                     },
                     {
                         label: ['Combined'],
-                        backgroundColor: 'rgb(255, 99, 132)',
-                        borderColor: 'rgb(255, 99, 132)',
-                        data: mtFillRateByHour,
+                        // backgroundColor: 'rgb(8 199 58)',
+                        borderColor: 'rgb(8 199 58)',
+                        data: combinedFillRateByHour,
                     },
                 ]
             };
-
             const config = {
                 type: 'line',
                 data: data,
                 options: {}
             };
-            new Chart(document.getElementById('mt_daily_chart_by_hour'),config).destroy();
+            const graphs3 = new Chart(document.getElementById('mt_daily_chart_by_hour'), config);
+            // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
+            // if(graphs3!== undefined){
+                if(!graphs3.reset()){
+                    console.log("Could not reset graph");
+                }
+            // }
+
             const myChart = new Chart(
-                document.getElementById('mt_daily_chart_by_hour'),
+                graphs3,
                 config
             );
         }
-        function appendMTDailyChartByHours(datasets){
-            document.getElementById('mt_daily_chart_by_hour').destroy();
-            var ctx = document.getElementById("mt_daily_chart_by_hour").getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array.from({ length: 25 }, (v, k) => k),
-                    datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    tooltips: {
-                        callbacks: {
-                            label: function(tooltipItem, data) {
-                                return tooltipItem.yLabel.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-                            }
-                        }
-                    },
-                    elements: {
-                        line: {
-                            tension: 0,
-                            // shadow / fill
-                            fill: false
-                        }
-                    }
-                }
-            });
-
-            $(".isResizable").resizable();
-        }
-
         function appendOverallPerformanceTable(records) {
             for (let index = 0; index < records.length; index++) {
                 const record = records[index];
