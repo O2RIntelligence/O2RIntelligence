@@ -36,16 +36,16 @@ class ReportController extends Controller
         $content->breadcrumb(
             ['text' => $title]
         );
-
         $seats = [];
         if($user->isRole('administrator') || ($user->isRole('reporter') && !$report))
             $seats = Administrator::where('api_token', '!=' , '')->select(['id', 'name', 'excluded_channels', 'api_token', 'partner_fee'])->get()->keyBy("id")->toArray();
-        
+        elseif ($user->isRole('seat'))
+            $seats = Administrator::where('id', '=' , $user->id)->select(['id', 'name', 'excluded_channels', 'api_token', 'partner_fee'])->get()->keyBy("id")->toArray();
         $content->view('dashboard/' . $view, compact('user', 'seats'));
 
         return $content;
     }
 
 
-    
+
 }

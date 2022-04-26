@@ -23,7 +23,7 @@
                             {{ __('Income Channel Overview') }}
                         </b>
                     </div>
-                    @if($user->isRole('administrator') && count($seats))
+                    @if(count($seats))
                         <div class="col-md-7">
                             <select name="seats" class="form-control select2" multiple>
                                 @foreach ($seats as $seat)
@@ -57,7 +57,7 @@
                     <tfoot>
                         <tr class="info">
                             <th>
-                            {{__('Totals')}} 
+                            {{__('Totals')}}
                             </th>
                             <td></td>
                             <td></td>
@@ -89,7 +89,7 @@
     <div class="col-md-12">
         <div class="box grid-box">
             <div class="box-header with-border text-center">
-                
+
                 <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#datatables-media-income-container-table">
                     <i class="fa fa-list"></i>
                 </button>
@@ -120,7 +120,7 @@
                     <tfoot>
                         <tr class="info">
                             <th>
-                            {{__('Totals')}} 
+                            {{__('Totals')}}
                             </th>
                             <td></td>
                             <td></td>
