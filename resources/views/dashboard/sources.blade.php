@@ -2,7 +2,7 @@
     <div class="loader">
         <div class="lds-hourglass"></div>
     </div>
-    
+
     <div class="row">
         <div class="col-md-12">
             <div class="box grid-box with-border">
@@ -218,7 +218,7 @@
                         <tbody>
                         </tbody>
                         <tfoot>
-                            
+
                         </tfoot>
                     </table>
                     <div id="overall-performance-graph" class="hiddenChart">
@@ -261,8 +261,8 @@
                         <thead>
                             <tr>
                                 <th></th>
-                                <th colspan="4" class="text-center">{{ __('Media - T') }}</th>
-                                <th colspan="4" class="text-center">{{ __('Media - S') }}</th>
+                                <th colspan="5" class="text-center">{{ __('Media - T') }}</th>
+                                <th colspan="5" class="text-center">{{ __('Media - S') }}</th>
                             </tr>
                             <tr>
                                 <th class="info">Date</th>
@@ -270,18 +270,53 @@
                                 <th>Impressions</th>
                                 <th>Total Revenue</th>
                                 <th>$/AD Req in Mil.</th>
+                                <th>Fill Rate(%)</th>
                                 <th>Ad Requests</th>
                                 <th>Impressions</th>
                                 <th>Total Revenue</th>
                                 <th class="success">$/AD Req in Mil.</th>
+                                <th>Fill Rate(%)</th>
                             </tr>
+
                         </thead>
                         <tbody>
                         </tbody>
                         <tfoot>
-                            
+
                         </tfoot>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Daily Total Fill Rate(%) Graph by Hour</h4></div>
+
+        <div class="col-md-12">
+            <div class="box grid-box with-border">
+                <div class="box-body">
+                    <h5 class="pull-left">{{__('')}}</h5>
+                    <div class="isResizable">
+                        <div class="chart-container">
+                            <canvas id="mt_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div class="row">
+        <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Monthly Total Fill Rate(%) Graph by Day</h4></div>
+
+        <div class="col-md-12">
+            <div class="box grid-box with-border">
+                <div class="box-body">
+                    <h5 class="pull-left">{{__('')}}</h5>
+                    <div class="isResizable">
+                        <div class="chart-container">
+                            <canvas id="mt_monthly_chart_by_day" style="max-width:100%;min-height:200px;"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

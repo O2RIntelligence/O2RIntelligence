@@ -62,7 +62,7 @@
         window["formatMoney"] = function(number, decPlaces) {
             decPlaces = number.toString().indexOf(".") == -1 ? 0 : decPlaces;
             return number.toLocaleString(
-                undefined, // leave undefined to use the visitor's browser 
+                undefined, // leave undefined to use the visitor's browser
                 // locale or a string like 'en-US' to override it.
                 { minimumFractionDigits: decPlaces }
             );
@@ -259,7 +259,7 @@
             }
         }
 
-        // start 
+        // start
         $("input[value=today]").trigger("click");
         $("button[data-period=today]").trigger("click");
 
@@ -1111,7 +1111,7 @@
 
 
         /**
-         * Media Source 
+         * Media Source
          */
 
         async function MediaSourceAjax() {
@@ -1316,6 +1316,12 @@
         });
 
         function appendComparePerformanceTable() {
+            let totalImpressionsMt=0
+            let totalRevenueMt=0
+            let totalAdRequestsMt = 0
+            let totalImpressionsMs=0
+            let totalRevenueMs=0
+            let totalAdRequestsMs = 0
             for (const key of Object.keys(window["compare_performance_records"])) {
                 const record = window["compare_performance_records"][key];
                 let ms, mt;
@@ -1349,6 +1355,12 @@
                     revenue_total: 0,
                     ad_requests: 0
                 };
+                totalImpressionsMt += mt.impressions_good;
+                totalRevenueMt += mt.revenue_total;
+                totalAdRequestsMt += mt.ad_requests;
+                totalImpressionsMs += ms.impressions_good;
+                totalRevenueMs += ms.revenue_total;
+                totalAdRequestsMs += ms.ad_requests;
 
                 $("#compare-performance-container-table").find('tbody')
                     .append($('<tr>')
@@ -1369,6 +1381,10 @@
                             .text(window["formatMoney"](mt.revenue_total / (mt.ad_requests / 1000000), 2) + "$")
                         )
                         .append($('<td>')
+                            .attr('class', '')
+                            .text(window["formatMoney"]((mt.impressions_good /mt.ad_requests)*100) + "%")
+                        )
+                        .append($('<td>')
                             .text(window["formatMoney"](ms.ad_requests, 0))
                         )
                         .append($('<td>')
@@ -1381,9 +1397,402 @@
                             .attr('class', 'success')
                             .text(window["formatMoney"](ms.revenue_total / (ms.ad_requests / 1000000), 2) + "$")
                         )
-
+                        .append($('<td>')
+                            .attr('class', '')
+                            .text(window["formatMoney"]((ms.impressions_good /ms.ad_requests)*100) + "%")
+                        )
                     );
+
             }
+            $("#compare-performance-container-table").find('tbody')
+                .append($('<tr>')
+                    .append($('<th>')
+                        .attr('class', 'info')
+                        .text("Total")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalAdRequestsMt))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalImpressionsMt))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMt))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMt / (totalAdRequestsMt / 1000000), 2) + "$")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"]((totalImpressionsMt /totalAdRequestsMt)*100) + "%")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalAdRequestsMs))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalImpressionsMs))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMs))
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMs / (totalAdRequestsMs / 1000000), 2) + "$")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"]((totalImpressionsMs /totalAdRequestsMs)*100) + "%")
+                    )
+
+                );
+            $("#compare-performance-container-table").find('tbody')
+                .append($('<tr>')
+                    .append($('<th>')
+                        .attr('class', 'info')
+                        .text("Combined Total")
+                    ).append($('<th>')
+                        .attr('class', 'info')
+                        .text("Total Ad Requests")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalAdRequestsMt+totalAdRequestsMs))
+                    ).append($('<th>')
+                        .attr('class', 'info')
+                        .text("Total Impressions")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalImpressionsMt+totalImpressionsMs))
+                    ).append($('<th>')
+                        .attr('class', 'info')
+                        .text("Total Revenue")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](totalRevenueMt+totalRevenueMs))
+                    ).append($('<th>')
+                        .attr('class', 'info')
+                        .text("Total $/AD Req in Mil")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"]((totalRevenueMt / (totalAdRequestsMt / 1000000)+(totalRevenueMs / (totalAdRequestsMs / 1000000))), 2) + "$")
+                    ).append($('<th>')
+                        .attr('class', 'info')
+                        .text("Total Fill Rate(%)")
+                    ).append($('<td>')
+                        .attr('class', 'info')
+                        .text(window["formatMoney"](((totalImpressionsMs /totalAdRequestsMs)+(totalImpressionsMt /totalAdRequestsMt))*100) + "%")
+                    )
+                );
+
+            appendDailyChartByHour();
+            appendMonthlyChartByday();
+
+
+        }
+        async function appendDailyChartByHour(){
+
+
+            var msChannelIds = [];
+            $.get("../../api/get-ms-channel-ids", function(data, status){
+                msChannelIds = data.value.split(',');
+                // console.log(msChannelIds);
+
+            });
+
+            var start_date = $("input[name=start_date]").val();
+            var timeline = $("input[name=date_period]").val();
+            var hour = timeline==='today'?[...Array.from(Array(new Date().getUTCHours()).keys())]:[...Array.from(Array(24).keys())];
+            console.log(hour);
+            var end_date = $("input[name=end_date]").val();
+            var chanelRequestBody = {
+                "report": 'hour,channel',
+                "date_from": start_date,
+                "date_to": end_date,
+                "fields": 'ad_requests,ad_opportunities,impressions_good,scoring_pixalate_s2s_sas_request,revenue_channel,ecpm_channel,revenue_total,ecpm,fill_rate_ad_opportunities,fill_rate_ad_requests,hour,channel',
+                "hour": hour ,
+                "limit": 1000000,
+                "page": 1,
+                "strategy": 'last-collection',
+                "type": 'ssp_statistic',
+                "tz": 'GMT',
+                "is_rtb": 'not_apply'
+            };
+            // console.log(chanelRequestBody.hour);
+            var selected_seats = get_selected_seats();
+            var DateMappedRecords = Array(24).fill(0);
+            var mtAdRequestByHour = Array(24).fill(0);
+            var msAdRequestByHour = Array(24).fill(0);
+            var combinedAdRequestByHour = Array(24).fill(0);
+            var mtImpressionsByHour = Array(24).fill(0);
+            var msImpressionsByHour = Array(24).fill(0);
+            var combinedImpressionsByHour = Array(24).fill(0);
+
+            var msFillRateByHour = Array(24).fill(0);
+            var mtFillRateByHour = Array(24).fill(0);
+            var combinedFillRateByHour = Array(24).fill(0);
+
+            for (let index = 0; index < selected_seats.length; index++) {
+                // init seat
+                const seatId = selected_seats[index];
+                const seat = seats[seatId];
+                // get campaign 1120 revenue for marketplace_fee
+                let channelDataByHour;
+                try {
+                    channelDataByHour = await seats[seatId].api.request(chanelRequestBody);
+
+                        $(channelDataByHour.data).each(function(key,singleData){
+                            // console.log(singleData.channel.id);
+                            if(msChannelIds.includes(singleData.channel.id.toString())){
+                                msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
+                                // console.log(msAdRequestByHour[singleData.hour.id]);
+                                msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+
+                            }else{
+                                mtAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
+                                mtImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+
+                            }
+
+                        });
+
+                    // console.log(channelDataByHour.data);
+                    // console.log({{json_encode($array_without_keys)}});
+
+                } catch (error) {
+                    console.log(error);
+                    if (error === 401) console.log("got 401");//top.location.reload();
+                    continue;
+                }
+            }
+
+
+            // console.log(msAdRequestByHour);
+
+            $(hour).each(function (key,singleHour) {
+                msFillRateByHour[key] = ((msImpressionsByHour[key]/msAdRequestByHour[key])*100).toFixed(3);
+                mtFillRateByHour[key] = ((mtImpressionsByHour[key]/mtAdRequestByHour[key])*100).toFixed(3);
+                combinedAdRequestByHour[key] = combinedAdRequestByHour[key]+msAdRequestByHour[key]+mtAdRequestByHour[key];
+                combinedImpressionsByHour[key] = combinedImpressionsByHour[key]+msImpressionsByHour[key]+mtImpressionsByHour[key];
+
+            });
+
+            $(hour).each(function (key,singleHour) {
+                combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
+            });
+            // console.log("msAdRequestByHour: "+ msAdRequestByHour);
+            // console.log("msImpressionsByHour: "+ msImpressionsByHour);
+            // console.log("combinedAdRequestByHour: "+ combinedAdRequestByHour);
+            // console.log("combinedImpressionsByHour: "+ combinedImpressionsByHour);
+            // console.log("mtAdRequestByHour: "+ mtAdRequestByHour);
+            // console.log("mtImpressionsByHour: "+ mtImpressionsByHour);
+
+            const labels = Array.from(Array(24).keys());
+            const data = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: ['Media-S'],
+                        // backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: msFillRateByHour,
+                    },
+                    {
+                        label: ['Media-T'],
+                        // backgroundColor: 'rgb(8 76 199)',
+                        borderColor: 'rgb(8 76 199)',
+                        data: mtFillRateByHour,
+                    },
+                    {
+                        label: ['Combined'],
+                        // backgroundColor: 'rgb(8 199 58)',
+                        borderColor: 'rgb(8 199 58)',
+                        data: combinedFillRateByHour,
+                    },
+                ]
+            };
+            const config = {
+                type: 'line',
+                data: data,
+                options: {}
+            };
+            const graphs3 = new Chart(document.getElementById('mt_daily_chart_by_hour'), config);
+            // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
+            // if(graphs3!== undefined){
+                if(!graphs3.reset()){
+                    console.log("Could not reset graph");
+                }
+            // }
+
+            const myChart = new Chart(
+                graphs3,
+                config
+            );
+        }
+
+         async function appendMonthlyChartByday(){
+
+            var msChannelIds = [];
+            $.get("../../api/get-ms-channel-ids", function(data, status){
+                msChannelIds = data.value.split(',');
+                // console.log(msChannelIds);
+
+            });
+             var firstday = function(y,m){
+                 return  new Date(y, m , 1).getDate();
+             }
+             var lastday = function(y,m){
+                 return  new Date(y, m +1, 0).getDate();
+             }
+            var start_date = $("input[name=start_date]").val();
+            var date = new Date(start_date);
+            // start_date = new Date(date.getFullYear()+"-"+date.getMonth()+1+"-"+firstday(date.getFullYear(), date.getMonth()));
+
+            var dateCount = lastday(date.getFullYear(), date.getMonth());
+            var dateCountArray = [...Array.from(Array(dateCount).keys())] ;
+            var end_date = $("input[name=end_date]").val();
+            if(start_date === end_date){
+                start_date = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString();
+                end_date = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleDateString();
+            }
+            var chanelRequestBody = {
+                "report": 'date,channel',
+                "date_from": start_date,
+                "date_to": end_date,
+                "fields": 'ad_requests,ad_opportunities,impressions_good,scoring_pixalate_s2s_sas_request,revenue_channel,ecpm_channel,revenue_total,ecpm,fill_rate_ad_opportunities,fill_rate_ad_requests,date,channel',
+                "limit": 1000000,
+                "page": 1,
+                "strategy": 'last-collection',
+                "type": 'ssp_statistic',
+                "tz": 'GMT',
+                "is_rtb": 'not_apply'
+            };
+            // console.log(chanelRequestBody.hour);
+            var selected_seats = get_selected_seats();
+            var DateMappedRecords = Array(dateCount).fill(0);
+            var mtAdRequestByDay = Array(dateCount).fill(0);
+            var msAdRequestByDay = Array(dateCount).fill(0);
+            var combinedAdRequestByDay = Array(dateCount).fill(0);
+            var mtImpressionsByDay = Array(dateCount).fill(0);
+            var msImpressionsByDay = Array(dateCount).fill(0);
+            var combinedImpressionsByDay = Array(dateCount).fill(0);
+
+            var msFillRateByDay = Array(dateCount).fill(0);
+            var mtFillRateByDay = Array(dateCount).fill(0);
+            var combinedFillRateByDay = Array(dateCount).fill(0);
+
+            for (let index = 0; index < selected_seats.length; index++) {
+                // init seat
+                const seatId = selected_seats[index];
+                const seat = seats[seatId];
+                // get campaign 1120 revenue for marketplace_fee
+                let channelDataByDay;
+                try {
+                    channelDataByDay = await seats[seatId].api.request(chanelRequestBody);
+
+                        $(channelDataByDay.data).each(function(key,singleData){
+                            // console.log(singleData.channel.id);
+                            var date = new Date(singleData.date.id);
+                            date = date.getDate()-1;
+                            if(msChannelIds.includes(singleData.channel.id.toString())){
+                                msAdRequestByDay[date]+=singleData.ad_requests;
+                                // console.log(msAdRequestByDay[date]);
+                                msImpressionsByDay[date]+=singleData.impressions_good;
+
+                            }else{
+                                mtAdRequestByDay[date]+=singleData.ad_requests;
+                                mtImpressionsByDay[date]+=singleData.impressions_good;
+                                // console.log(msAdRequestByDay[date]);
+                            }
+
+                        });
+
+                    // console.log(mtImpressionsByDay);
+                    // console.log({{json_encode($array_without_keys)}});
+
+                } catch (error) {
+                    console.log(error);
+                    if (error === 401) console.log("got 401");//top.location.reload();
+                    continue;
+                }
+            }
+
+
+            // console.log(msAdRequestByDay);
+
+            $(dateCountArray).each(function (key,singleDay) {
+                msFillRateByDay[key] = ((msImpressionsByDay[key]/msAdRequestByDay[key])*100).toFixed(3);
+                // console.log("key: "+key+" "+msImpressionsByDay[key]+"/"+msAdRequestByDay[key])+" *100 = "+((msImpressionsByDay[key]/msAdRequestByDay[key])*100);
+                mtFillRateByDay[key] = ((mtImpressionsByDay[key]/mtAdRequestByDay[key])*100).toFixed(3);
+                combinedAdRequestByDay[key] = combinedAdRequestByDay[key]+msAdRequestByDay[key]+mtAdRequestByDay[key];
+                combinedImpressionsByDay[key] = combinedImpressionsByDay[key]+msImpressionsByDay[key]+mtImpressionsByDay[key];
+
+            });
+
+            $(dateCountArray).each(function (key,singleDay) {
+                combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
+            });
+            // console.log("msAdRequestByDay: "+ msAdRequestByDay);
+            // console.log("msImpressionsByDay: "+ msImpressionsByDay);
+            // console.log("combinedAdRequestByDay: "+ combinedAdRequestByDay);
+            // console.log("combinedImpressionsByDay: "+ combinedImpressionsByDay);
+            // console.log("mtAdRequestByDay: "+ mtAdRequestByDay);
+            // console.log("mtImpressionsByDay: "+ mtImpressionsByDay);
+            //
+            // console.log("msFillRateByDay: "+ msFillRateByDay);
+            // console.log("mtFillRateByDay: "+ mtFillRateByDay);
+            // console.log("combinedFillRateByDay: "+ combinedFillRateByDay);
+
+            const labels = getAllDatesOfCurrnetMonth();
+            // console.log(labels);
+            const data = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: ['Media-S'],
+                        // backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: msFillRateByDay,
+                    },
+                    {
+                        label: ['Media-T'],
+                        // backgroundColor: 'rgb(8 76 199)',
+                        borderColor: 'rgb(8 76 199)',
+                        data: mtFillRateByDay,
+                    },
+                    {
+                        label: ['Combined'],
+                        // backgroundColor: 'rgb(8 199 58)',
+                        borderColor: 'rgb(8 199 58)',
+                        data: combinedFillRateByDay,
+                    },
+                ]
+            };
+            const config = {
+                type: 'line',
+                data: data,
+                options: {}
+            };
+            const graphsMonthly = new Chart(document.getElementById('mt_monthly_chart_by_day'), config);
+            // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
+            // if(graphs3!== undefined){
+                if(!graphsMonthly.reset()){
+                    console.log("Could not reset graph");
+                }
+            // }
+
+            const myChart = new Chart(
+                graphsMonthly,
+                config
+            );
+        }
+
+        function getAllDatesOfCurrnetMonth(){
+            var date = new Date();
+            var month = date.getMonth();
+            date.setDate(1);
+            var all_days = [];
+            while (date.getMonth() === month) {
+                var d = date.getFullYear() + '-' + (date.getMonth()+1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
+                all_days.push(d);
+                date.setDate(date.getDate() + 1);
+            }
+            return all_days;
         }
 
         function appendOverallPerformanceTable(records) {
