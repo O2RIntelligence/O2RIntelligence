@@ -9,7 +9,7 @@ use Illuminate\Support\MessageBag;
 
 class UserController extends baseUserController {
 
-    
+
 	protected function grid() {
 		$g = parent::grid();
 		$g->column( 'api_password', 'API Password' );
@@ -26,12 +26,13 @@ class UserController extends baseUserController {
 
 
 		$f->text( 'api_password' );
+        $f->multipleSelect('seats')->options($f->model()::all()->pluck('name', 'id'));
 		$f->text( 'partner_fee' )->help('Add a negative sign before number to use media cost instead of revenue total.');
 		$f->hidden( 'api_token' );
 		$f->hidden( 'adtelligent_account_id' );
-		
+
 		if( $model && !empty($model->api_password) ) {
-			
+
 			$channels = $model->request('dictionary/channel', [
 				'limit' => 1000,
 				'page' => 1
@@ -47,7 +48,7 @@ class UserController extends baseUserController {
 			if(!empty($f->api_password)) {
 
 				$auth = Administrator::APIAuth($f->username, $f->api_password);
-				
+
 				if(!$auth || !$auth['success']) {
 					// throws an exception
 					$error = new MessageBag([
@@ -65,5 +66,5 @@ class UserController extends baseUserController {
 		});
 		return $f;
 	}
-    
+
 }
