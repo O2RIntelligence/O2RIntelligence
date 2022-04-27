@@ -296,7 +296,14 @@
             <div class="box grid-box with-border">
                 <div class="box-body">
                     <h5 class="pull-left">{{__('')}}</h5>
-                    <div class="isResizable">
+                    <div class="loading col-md-12" id="appendDailyChartByHourLoader">
+                        <div class="loading-1"></div>
+                        <div class="loading-2"></div>
+                        <div class="loading-3"></div>
+                        <div class="loading-4"></div>
+                    </div>
+                    <div class="isResizable" id="isResizableHour">
+
                         <div class="chart-container">
                             <canvas id="mt_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>
                         </div>
@@ -312,7 +319,14 @@
             <div class="box grid-box with-border">
                 <div class="box-body">
                     <h5 class="pull-left">{{__('')}}</h5>
-                    <div class="isResizable">
+                    <div class="loading col-md-12" id="appendMonthlyChartBydayLoader">
+                        <div class="loading-1"></div>
+                        <div class="loading-2"></div>
+                        <div class="loading-3"></div>
+                        <div class="loading-4"></div>
+                    </div>
+                    <div class="isResizable" id="isResizableDay">
+
                         <div class="chart-container">
                             <canvas id="mt_monthly_chart_by_day" style="max-width:100%;min-height:200px;"></canvas>
                         </div>
