@@ -383,7 +383,6 @@
 
                 // calculate cost and revenue uniqly to platform << date doesn't matter here >>
                 let RecordsEnvGroupedCalculated = RecordsEnvGrouped.map(record => window["mapRecord"](seat, record, CR_EnvGrouped));
-
                 // append to table
                 let VC_RowData = _(RecordsEnvGroupedCalculated).reduce((r, c) => _.mergeWith(r, c, (o = 0, s) => o + s), {});
                 if ("revenue_total" in VC_RowData == false) VC_RowData = {
@@ -613,9 +612,11 @@
             let impression_rate = record.impressions_good / 1000;
             record.advertising_fee = impression_rate * window["rates"].advertising_fee;
             record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
-            let media_cost_rate = record.environment == 'mobile_app' ? window["rates"].mobile_rate : window["rates"].ctv_rate;
-
+            let media_cost_rate = record.environment === 'mobile_app' ? window["rates"].mobile_rate : window["rates"].ctv_rate;
+// console.log("media cost rate: "+media_cost_rate+", impression: "+record.impressions_good+", Excluded Impressions: "+record.excluded_impressions+", media cost:"+((record.impressions_good/1000)*media_cost_rate));
             record.net_media_cost = partner_fee < 0;
+            record.excluded_impressions = 0;
+            record.excluded_revenue = 0;
             record.media_cost = ((record.impressions_good - record.excluded_impressions) / 1000) * media_cost_rate;
             // calculate media cost
             // determine if this partner is related to us << we take 100% of media cost as revenue >>
@@ -948,7 +949,7 @@
                 // append to table
                 let VC_RowData = _(RecordsEnvGroupedCalculated).reduce((r, c) => _.mergeWith(r, c, (o = 0, s) => o + s), {});
 
-                if ("revenue_total" in VC_RowData == false) VC_RowData = {
+                if (!("revenue_total" in VC_RowData)) VC_RowData = {
                     "advertising_fee": 0,
                     "gross_profit": 0,
                     "impressions_good": 0,
