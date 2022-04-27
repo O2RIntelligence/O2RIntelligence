@@ -613,6 +613,7 @@
             record.advertising_fee = impression_rate * window["rates"].advertising_fee;
             record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
             let media_cost_rate = record.environment === 'mobile_app' ? window["rates"].mobile_rate : window["rates"].ctv_rate;
+// console.log("media cost rate: "+media_cost_rate+", impression: "+record.impressions_good+", Excluded Impressions: "+record.excluded_impressions+", media cost:"+((record.impressions_good/1000)*media_cost_rate));
             record.net_media_cost = partner_fee < 0;
             record.excluded_impressions = 0;
             record.excluded_revenue = 0;
