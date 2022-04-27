@@ -114,9 +114,9 @@
                                 <div class="col-md-2 text-center">
                                     <label>{{ __('Metric Filter') }}:
                                         <button class="btn btn-default btn-sm add-metric" type="button"> <i class="fa fa-plus"></i> </button>
-                                        
+
                                     </label>
-                                    
+
                                 </div>
                                 <div class="col-md-10 metric-container">
 
