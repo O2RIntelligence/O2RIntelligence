@@ -4,8 +4,8 @@ class adtelligent {
     }
 
     async request(params, route = '', base = '') {
+        var url = (base.length > 0 ? base : (window["ADTELLIGENT_BASE_URL"]??'https://ssp.adtelligent.com/api/statistics/ssp2'));
         route = route.length > 0 ? "/" + route : "";
-        var url = this.isLocalNetwork()?"https://ssp.adtelligent.com/api/statistics/ssp2":base;
         return new Promise((resolve, reject) => {
             $.ajax({
                 type: 'GET',
