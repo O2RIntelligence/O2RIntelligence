@@ -23,7 +23,202 @@
 
 <div class="modal-container">
 </div>
+<style>
+    .swal2-popup{
+        font-size: 14px !important;
+    }
 
+    .loading {
+        float: left;
+        top: 50%;
+        left: 50%;
+        margin-top: 112px;
+        margin-left: -61px;
+        margin-bottom: -248px;
+        border-left: 1px solid #fff;
+        border-bottom: 1px solid #fff;
+        box-sizing: border-box;
+    }
+
+    @keyframes loading {
+        0% {
+            background-color: #cd0a00;
+        }
+        30% {
+            background-color: #fa8a00;
+        }
+        50% {
+            height: 100px;
+            margin-top: 0px;
+        }
+        80% {
+            background-color: #91d700;
+        }
+        100% {
+            background-color: #cd0a00;
+        }
+    }
+    /*@-moz-keyframes loading {
+      50% { height: 100px; margin-top: 0px; }
+    }
+    @-o-keyframes loading {
+      50% { height: 100px; margin-top: 0px; }
+    }
+    @keyframes loading {
+      50% { height: 100px; margin-top: 0px; }
+    }*/
+    .loading .loading-1 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 0.25s;
+        animation-delay: 0.25s;
+    }
+    .loading .loading-2 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 0.5s;
+        animation-delay: 0.5s;
+    }
+    .loading .loading-3 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 0.75s;
+        animation-delay: 0.75s;
+    }
+    .loading .loading-4 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 1s;
+        animation-delay: 1s;
+    }
+    .loading .loading-5 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 1.25s;
+        animation-delay: 1.25s;
+    }
+    .loading .loading-6 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 1.5s;
+        animation-delay: 1.5s;
+    }
+    .loading .loading-7 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 1.75s;
+        animation-delay: 1.75s;
+    }
+    .loading .loading-8 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 2s;
+        animation-delay: 2s;
+    }
+    .loading .loading-9 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 2.25s;
+        animation-delay: 2.25s;
+    }
+    .loading .loading-10 {
+        height: 10px;
+        width: 30px;
+        background-color: #fff;
+        display: inline-block;
+        margin-top: 90px;
+        -webkit-animation: loading 2.5s infinite;
+        -moz-animation: loading 2.5s infinite;
+        -o-animation: loading 2.5s infinite;
+        animation: loading 2.5s infinite;
+        border-top-left-radius: 2px;
+        border-top-right-radius: 2px;
+        -webkit-animation-delay: 2.5s;
+        animation-delay: 2.5s;
+    }
+</style>
+<script src="https://unpkg.com/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
 <script>
         window["rates"] = {
             'mobile_rate': {{ config('mobile_rate') }},
