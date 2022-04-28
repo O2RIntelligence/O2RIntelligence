@@ -181,7 +181,7 @@
         </div>
     </div>
 </div>
-
+<select style="display: none" id="filterColumn" name="filterColumn[]" multiple></select>
 
 <div class="clear"></div>
 @include('partials/report-script')

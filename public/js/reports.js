@@ -1,6 +1,10 @@
 function addDropdownValue(element) {
     const operation = $(element).attr('data-operation');
+    const colIdx = $(element).attr('data-idx');
+    const title = $(element).attr('data-title');
     $(element).parents('.dropdown').find('[name="selected_filter_operation"]').val(operation);
+    $(element).parents('.dropdown').find('[name="selectedColIndex"]').val(colIdx);
+    $('#filterColumn').append('<option selected>'+title+'</option>')
 }
 
 function getDropdownValue(element) {
@@ -468,29 +472,22 @@ function getDropdownValue(element) {
                             var title = $(cell).text();
                             $(cell).html(`
                                 <div style="display: flex;">
-                                    <input type="text" placeholder="${title}" />
+                                    <input type="text" id="input${title.replace(/[^a-zA-Z0-9]/g, '-')}" placeholder="${title}" />
                                     <div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-filter"></i>
                                         </button>
 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="contains">Contain</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="not_contains">Does not contain</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="equal">Is equal to</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="not_equal">Is not equal to</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="starts_with">Starts uith</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="ends_with">Ends with</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="is_null">Is null</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="is_not_null">Is not null</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="is_empty">Is empty</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="is_not_empty">Is not empty</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="greater_than">Greater than</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="greater_equal">Greater equal</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="less">Less</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="less_equal">Less equal</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="equal">Is equal to</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="not_equal">Is not equal to</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="greater_than">Greater than</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="greater_equal">Greater equal</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="less_than">Less than</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="less_equal">Less equal</a>
                                         </div>
-                                        <input type="hidden" name="selected_filter_operation" />
+                                        <input type="hidden" id="operator${title.replace(/[^a-zA-Z0-9]/g, '-')}" name="selected_filter_operation" />
+                                        <input type="hidden" id="colIndex${title.replace(/[^a-zA-Z0-9]/g, '-')}" name="selectedColIndex" />
                                     </div>
                                 </div>
                             `);
@@ -502,7 +499,7 @@ function getDropdownValue(element) {
                             )
                                 .off('keyup change')
                                 .on('keyup change', function (e) {
-                                    e.stopPropagation();
+                                    /*e.stopPropagation();
 
                                     // Get the search value
                                     $(this).attr('title', $(this).val());
@@ -527,16 +524,16 @@ function getDropdownValue(element) {
                                                 searchRegx = `^(?!(((${this.value})))$)`;
                                                 break;
                                         }
-                                    }
+                                    }*/
 
                                     api
-                                        .column(colIdx)
-                                        .search(searchRegx, true, false)
+                                        // .column(colIdx)
+                                        // .search(searchRegx, true, false)
                                         .draw();
 
-                                    $(this)
+                                    /*$(this)
                                         .focus()[0]
-                                        .setSelectionRange(cursorPosition, cursorPosition);
+                                        .setSelectionRange(cursorPosition, cursorPosition);*/
                                 });
                         });
                 }
@@ -545,6 +542,59 @@ function getDropdownValue(element) {
             hide_loader();
 
         }
+
+        $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex) {
+                var filterableColumns = $('#filterColumn').val();
+                filterableColumns = Array.from(new Set(filterableColumns))
+                // console.log(filterableColumns)
+                var flag = true;
+
+                filterableColumns.forEach(function (item,index){
+                    if (flag){
+                        var inputValue = $("#input"+item).val();
+                        var operator = $("#operator"+item).val();
+                        var colIndex = $("#colIndex"+item).val();
+                        var cellValue = data[colIndex];
+                        console.log(item);
+                        console.log(index);
+                        console.log(inputValue);
+                        console.log(operator);
+                        console.log(colIndex);
+                        console.log(cellValue);
+                        if (item == 'Date'){
+                            //todo
+
+                        } else{
+                            switch (operator){
+                                case 'equal':
+                                    flag = cellValue == inputValue;
+                                    break;
+                                case 'not_equal':
+                                    flag = cellValue != inputValue;
+                                    break;
+                                case 'greater_than':
+                                    flag = parseFloat(cellValue) > parseFloat(inputValue);
+                                    break;
+                                case 'greater_equal':
+                                    flag = parseFloat(cellValue) >= parseFloat(inputValue);
+                                    break;
+                                case 'less_than':
+                                    flag = parseFloat(cellValue) < parseFloat(inputValue);
+                                    break;
+                                case 'less_equal':
+                                    flag = parseFloat(cellValue) <= parseFloat(inputValue);
+                                    break;
+                                default:
+                                    flag = true;
+                            }
+                        }
+                    }
+                });
+console.log(flag);
+                return flag;
+            }
+        );
 
         function getNetIncome(record) {
             const seatId = Object.keys(window["seats"]).find(x => window["seats"][x].name == record.seat);
