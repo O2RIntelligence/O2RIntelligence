@@ -1,4 +1,23 @@
-(function($) {
+function addDropdownValue(element) {
+    const operation = $(element).attr('data-operation');
+    const colIdx = $(element).attr('data-idx');
+    const title = $(element).attr('data-title');
+    $(element).parents('.dropdown').find('[name="selected_filter_operation"]').val(operation);
+    $(element).parents('.dropdown').find('[name="selectedColIndex"]').val(colIdx);
+    $('#filterColumn').append('<option selected>' + title + '</option>')
+}
+
+function getDropdownValue(element) {
+    return $(element).parent().find('[name="selected_filter_operation"]').val();
+}
+
+function clearDropdownValue(element) {
+    const title = $(element).attr('data-title');
+    $(element).parents('.dropdown').find('[name="selected_filter_operation"]').val('');
+    $('#input' + title).val('');
+}
+
+(function ($) {
 
     var filter_fields = {
         'date': 'Date',
@@ -38,7 +57,7 @@
         'fill_rate_ad_opportunities': 'Fill Rate (Ad Ops)',
         'fill_rate_ad_requests': 'Fill Rate (Ad Req)',
         'scoring_pixalate_s2s_sas_request': 'Scanned Requests'
-        
+
     };
     var showIdFields = ['Channel', 'Source', 'Campaign', 'Advertiser'];
     var sortingIndexs = ['date', 'hour', 'channel', 'source', 'sid', 'advertiser', 'campaign', 'campaign_integration_type', 'campaign_tag_type', 'adserver', 'domain', 'domain_top', 'player_size', 'country', 'region', 'city_name', 'os', 'useragent', 'useragent_version', 'environment', 'app_name', 'app_bundle', 'ad_type', 'month', 'device_type', 'source_type', 'ad_opportunities', 'ad_requests', 'ecpm', 'ecpm_channel', 'fill_rate_ad_opportunities', 'fill_rate_ad_requests', 'impressions_good', 'scoring_pixalate_s2s_sas_request', 'revenue_channel', 'revenue_total'];
@@ -62,13 +81,13 @@
         $(".loader").hide();
     }
 
-    $(function() {
+    $(function () {
         ReportFieldsCheckboxes();
         ReportFieldsInput();
         ReportMetricSelect();
     });
 
-    $(document).on('change', ".date-field", function() {
+    $(document).on('change', ".date-field", function () {
         window["calculate_dates"]($(this).val());
         if ($(this).val() == 'custom') {
             $(".custom-daterange").show();
@@ -79,20 +98,20 @@
 
     function ReportFieldsCheckboxes() {
         for (const key of Object.keys(filter_fields)) {
-            if (['ad_opportunities', 'ad_requests', 'ecpm', 'ecpm_channel', 'fill_rate_ad_opportunities', 'fill_rate_ad_requests', 'impressions_good', 'scoring_pixalate_s2s_sas_request', 'revenue_channel', 'revenue_total',  'seat'].includes(key))
+            if (['ad_opportunities', 'ad_requests', 'ecpm', 'ecpm_channel', 'fill_rate_ad_opportunities', 'fill_rate_ad_requests', 'impressions_good', 'scoring_pixalate_s2s_sas_request', 'revenue_channel', 'revenue_total', 'seat'].includes(key))
                 continue;
 
             $(".report-fields").append(
                 $("<label>")
-                .attr('class', 'btn btn-primary')
-                .append(
-                    $("<input>")
-                    .attr('class', 'selected-fields')
-                    .attr('data-field', key)
-                    .attr('type', 'checkbox')
-                    .attr('name', `fields[${key}]`)
-                )
-                .append(filter_fields[key])
+                    .attr('class', 'btn btn-primary')
+                    .append(
+                        $("<input>")
+                            .attr('class', 'selected-fields')
+                            .attr('data-field', key)
+                            .attr('type', 'checkbox')
+                            .attr('name', `fields[${key}]`)
+                    )
+                    .append(filter_fields[key])
             )
         }
         $(".report-fields").find('label:first-child').click();
@@ -134,13 +153,13 @@
             if (typeof FieldRequest != 'object' || FieldRequest.success == false)
                 return [];
 
-            FieldValues = [...FieldValues, ...FieldRequest.data.map(m => ({...m, seatId }))];
+            FieldValues = [...FieldValues, ...FieldRequest.data.map(m => ({ ...m, seatId }))];
         }
 
         return FieldValues.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
     }
 
-    $(document).on("change", '.selected-fields', function() {
+    $(document).on("change", '.selected-fields', function () {
         var fieldName = $(this).data("field");
         if (fieldName == 'date' || fieldName == 'month') return;
 
@@ -153,11 +172,11 @@
     });
 
 
-    $(document).on("click", '.delete-metric-row', function() {
+    $(document).on("click", '.delete-metric-row', function () {
         $("#metric-" + $(this).data('metric-id')).remove();
     });
 
-    $(document).on("click", '.add-metric', function() {
+    $(document).on("click", '.add-metric', function () {
 
         var metric = $(".clonable-metric").clone();
         metric.removeClass("clonable-metric");
@@ -191,7 +210,7 @@
         selectBox.select2("destroy");
         selectBox.select2({
             width: "100%",
-            closeOnSelect : false
+            closeOnSelect: false
         });
         $("#field_" + fieldName).show();
     }
@@ -208,7 +227,7 @@
             fieldInput.find('.summ').attr('name', 'filters_summary[' + fieldName + ']');
             fieldInput.find('.exclude').attr('name', 'filters_exclude[' + fieldName + ']');
             $(".field-inputs .fields-container").append(fieldInput);
-            $('select[name="filters[' + fieldName + ']"]').select2({closeOnSelect : false});
+            $('select[name="filters[' + fieldName + ']"]').select2({ closeOnSelect: false });
         }
 
     }
@@ -236,17 +255,18 @@
         }
     }
 
-    $(".run-report").on('click', function() {
+    $(".run-report").on('click', function () {
         buildRequest();
     });
 
+
     async function buildRequest() {
         start_loader();
-        
+
         var params = { report: [], fields: ['ad_requests', 'ad_opportunities', 'impressions_good', 'scoring_pixalate_s2s_sas_request', 'revenue_channel', 'ecpm_channel', 'revenue_total', 'ecpm', 'fill_rate_ad_opportunities', 'fill_rate_ad_requests'], };
         // var seat_filters = {};
         // requested fields
-        $('.selected-fields').map(function() {
+        $('.selected-fields').map(function () {
             if ($(this).prop("checked")) {
                 var name = $(this).attr('name').replace('fields[', '').replace(']', '');
                 params.fields.push(name);
@@ -259,10 +279,10 @@
         params.date_from = $("input[name=start_date]").val();
         params.date_to = $("input[name=end_date]").val();
         // custom filters
-        $('.filters').map(function() {
+        $('.filters').map(function () {
             if ($(this).val() && $(this).val().length) {
                 var name = $(this).attr('name').replace('filters[', '').replace(']', '');
-                $.each($(this).select2('data'), function(key, item) {
+                $.each($(this).select2('data'), function (key, item) {
                     if (name in params == false) params[name] = [];
                     params[name].push(item.id);
                     // var seatId = $(item.element).data('seat-id')
@@ -274,7 +294,7 @@
         });
 
         params.exclude_filter = [];
-        $('.exclude').map(function() {
+        $('.exclude').map(function () {
             if ($(this).prop('checked')) {
                 var name = $(this).attr('name').replace('filters_exclude[', '').replace(']', '');
                 params.exclude_filter.push(name);
@@ -284,7 +304,7 @@
 
 
         params.summary_filter = [];
-        $('.summ').map(function() {
+        $('.summ').map(function () {
             if ($(this).prop('checked')) {
                 var name = $(this).attr('name').replace('fields[', '').replace(']', '');
                 params.summary_filter.push(name);
@@ -306,7 +326,7 @@
         }
         if ("_filter" in params) params._filter = params._filter.join(" and ");
 
-        params = {...params, ...table_settings };
+        params = { ...params, ...table_settings };
 
         var selected_seats = $("select[name=seats]").val();
         var data = [];
@@ -327,8 +347,8 @@
                 continue;
             }
 
-            FieldRequest.data = FieldRequest.data.map( m => ({...m, seat: seat.name }));
-            FieldRequest.data = FieldRequest.data.filter( m => m.ad_requests != 0 );
+            FieldRequest.data = FieldRequest.data.map(m => ({ ...m, seat: seat.name }));
+            FieldRequest.data = FieldRequest.data.filter(m => m.ad_requests != 0);
 
             data = [...data, ...FieldRequest.data];
             totals = "total_rows" in totals == false ? FieldRequest.totals : _.mergeWith({}, totals, FieldRequest.totals, _.add);
@@ -363,14 +383,14 @@
             for (const column of columns) {
                 const columnName = column in filter_fields ? filter_fields[column] : column;
                 thead.append($("<th>").text(columnName));
-                if(showIdFields.includes(columnName)) 
+                if (showIdFields.includes(columnName))
                     thead.append($("<th>").text(columnName.substring(0, 3) + " ID"));
-                
+
 
             }
 
             let calculateNet = false;
-            if(columns.includes("environment") && window["user_role"] == 'admin') {
+            if (columns.includes("environment") && window["user_role"] == 'admin') {
                 calculateNet = true;
                 thead.append($("<th>").text("Net Revenue"));
             }
@@ -383,12 +403,12 @@
                 for (col of arrangedCols) {
                     let colValue = _.isNumber(row[col]) ? window["formatMoney"](row[col], 2) : (typeof row[col] == 'object' ? row[col].name : row[col]);
                     tr.append($("<td>").text(colValue));
-                    if(showIdFieldsLower.includes(col) && typeof row[col] == 'object' ) 
+                    if (showIdFieldsLower.includes(col) && typeof row[col] == 'object')
                         tr.append($("<td>").text(row[col].id));
 
                 }
 
-                if(calculateNet) {
+                if (calculateNet) {
                     const netIncome = getNetIncome(row);
                     tr.append($("<td>").text(window["formatMoney"](netIncome, 2)));
                 }
@@ -401,14 +421,21 @@
             for (const foot of arrangedFooter) {
                 let colValue = totals[foot] != null && _.isNumber(totals[foot]) ? window["formatMoney"](totals[foot], 2) : totals[foot];
                 // if (foot == 'date') colValue = 'Totals';
-                if(totals == 0.00) colValue = '-';
+                if (totals == 0.00) colValue = '-';
                 tfoot.append($("<td>").text(colValue));
-                if(showIdFieldsLower.includes(foot)) 
+                if (showIdFieldsLower.includes(foot))
                     tfoot.append($("<td>").text("-"));
             }
 
-            if(calculateNet) 
+            if (calculateNet) {
                 tfoot.append($("<td>").text(""));
+            }
+
+
+            $('#report thead tr')
+                .clone(true)
+                .addClass('filters')
+                .appendTo('#report thead');
 
             var firstDraw = true;
             ReportDatatable = $('table#report').DataTable({
@@ -419,16 +446,129 @@
                 orderCellsTop: true,
                 colReorder: true,
                 "order": [
-                    [arrangedFooter.length-1, "desc"]
+                    [arrangedFooter.length - 1, "desc"]
                 ],
-                "drawCallback": function( settings ) {
+                "drawCallback": function (settings) {
                     $('#report_wrapper thead th').resizable();
-                    if(calculateNet) {
+                    if (calculateNet) {
                         var api = this.api();
                         var index = api.columns().count() - 1;
                         $(api.column(index).footer()).html(window["formatMoney"](api.column(index).data().sum(), 2));
                     }
 
+                },
+                initComplete: function () {
+                    var api = this.api();
+
+                    // For each column
+                    api
+                        .columns()
+                        .eq(0)
+                        .each(function (colIdx) {
+                            function filterData(value) {
+
+                            }
+
+
+
+                            // Set the header cell to contain the input element
+                            var cell = $('.filters th').eq(
+                                $(api.column(colIdx).header()).index()
+                            );
+                            var title = $(cell).text();
+                            var type = 'text';
+                            if (title == 'Date') type = 'date'
+                            if (title == 'Month') type = 'month'
+                            $(cell).html(`
+                                <div style="display: flex;" data-contain="filter">
+                                    <input data-name="query" type="${type}" id="input${title.replace(/[^a-zA-Z0-9]/g, '-')}" placeholder="${title}" />
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-filter"></i>
+                                        </button>
+
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item text-danger" data-action="clear" style="display: block;" onclick="clearDropdownValue(this)" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}">
+                                            Clear
+                                            </a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="equal">Is equal to</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="not_equal">Is not equal to</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="greater_than">Greater than</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="greater_equal">Greater equal</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="less_than">Less than</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="less_equal">Less equal</a>
+                                        </div>
+                                        <input type="hidden" id="operator${title.replace(/[^a-zA-Z0-9]/g, '-')}" name="selected_filter_operation" />
+                                        <input type="hidden" id="colIndex${title.replace(/[^a-zA-Z0-9]/g, '-')}" name="selectedColIndex" />
+                                    </div>
+                                </div>
+                            `);
+
+                            // On every keypress in this input
+                            $(
+                                'input',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                            )
+                                .off('keyup change')
+                                .on('keyup change', function (e) {
+                                    /*e.stopPropagation();
+
+                                    // Get the search value
+                                    $(this).attr('title', $(this).val());
+                                    const filterCaseValue = getDropdownValue(this);
+                                    console.log("filterCaseValue", filterCaseValue)
+
+                                    var cursorPosition = this.selectionStart;
+                                    // Search the column for that value
+
+                                    var regexr = '({search})';
+                                    let searchRegx = this.value != ''
+                                        ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                        : '';
+
+                                    if (filterCaseValue && filterCaseValue !== '') {
+                                        switch(filterCaseValue) {
+                                            case 'not_equal':
+                                                searchRegx = `^(?!(((${this.value})))$)`;
+                                                break;
+
+                                            case 'not_equal':
+                                                searchRegx = `^(?!(((${this.value})))$)`;
+                                                break;
+                                        }
+                                    }*/
+
+                                    api
+                                        // .column(colIdx)
+                                        // .search(searchRegx, true, false)
+                                        .draw();
+
+                                    /*$(this)
+                                        .focus()[0]
+                                        .setSelectionRange(cursorPosition, cursorPosition);*/
+                                });
+
+
+                                $(
+                                    '[data-action="clear"]',
+                                    $('.filters th').eq($(api.column(colIdx).header()).index())
+                                    .on('click', function() {
+                                        setTimeout(() => {
+                                            api.draw();
+                                        }, 10);
+                                    })
+                                );
+
+
+                                $(
+                                    '.dropdown-item',
+                                    $('.filters th').eq($(api.column(colIdx).header()).index())
+                                    .on('click', function() {
+
+                                        api.draw();
+                                    })
+                                );
+                        });
                 }
             });
 
@@ -436,18 +576,126 @@
 
         }
 
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                var filterableColumns = $('#filterColumn').val();
+                filterableColumns = Array.from(new Set(filterableColumns))
+                // console.log(filterableColumns)
+                var flag = true;
+
+                filterableColumns.forEach(function (item, index) {
+                    if (flag) {
+                        var inputValue = $("#input" + item).val();
+                        var operator = $("#operator" + item).val();
+                        var colIndex = $("#colIndex" + item).val();
+                        var cellValue = data[colIndex];
+                        console.log(item);
+                        console.log(index);
+                        console.log(inputValue);
+                        console.log(operator);
+                        console.log(colIndex);
+                        console.log(cellValue);
+
+                        if (item == 'Date') {
+                            inputValue = inputValue.replaceAll('-', '/');
+
+                            let leftDate = Date.parse(cellValue);
+                            let rightDate = Date.parse(inputValue);
+
+                            switch(operator) {
+                                case 'equal':
+                                    flag = leftDate == rightDate;
+                                    break;
+                                case 'not_equal':
+                                    flag = leftDate != rightDate;
+                                    break;
+                                case 'greater_than':
+                                    flag = leftDate > rightDate;
+                                    break;
+                                case 'greater_equal':
+                                    flag = leftDate >= rightDate;
+                                    break;
+                                case 'less_than':
+                                    flag = leftDate < rightDate;
+                                    break;
+                                case 'less_equal':
+                                    flag = leftDate <= rightDate;
+                                    break;
+                                default:
+                                    flag = true;
+                            }
+
+                        } else if (item == 'Month') {
+                            inputValue = inputValue.replace('-', '/');
+
+                            let leftDate = Date.parse(cellValue);
+                            let rightDate = Date.parse(inputValue);
+
+                            switch(operator) {
+                                case 'equal':
+                                    flag = leftDate == rightDate;
+                                    break;
+                                case 'not_equal':
+                                    flag = leftDate != rightDate;
+                                    break;
+                                case 'greater_than':
+                                    flag = leftDate > rightDate;
+                                    break;
+                                case 'greater_equal':
+                                    flag = leftDate >= rightDate;
+                                    break;
+                                case 'less_than':
+                                    flag = leftDate < rightDate;
+                                    break;
+                                case 'less_equal':
+                                    flag = leftDate <= rightDate;
+                                    break;
+                                default:
+                                    flag = true;
+                            }
+
+                        } else  {
+                            switch (operator) {
+                                case 'equal':
+                                    flag = cellValue == inputValue;
+                                    break;
+                                case 'not_equal':
+                                    flag = cellValue != inputValue;
+                                    break;
+                                case 'greater_than':
+                                    flag = parseFloat(cellValue.replace(/,/g, '')) > parseFloat(inputValue.replace(/,/g, ''));
+                                    break;
+                                case 'greater_equal':
+                                    flag = parseFloat(cellValue.replace(/,/g, '')) >= parseFloat(inputValue.replace(/,/g, ''));
+                                    break;
+                                case 'less_than':
+                                    flag = parseFloat(cellValue.replace(/,/g, '')) < parseFloat(inputValue.replace(/,/g, ''));
+                                    break;
+                                case 'less_equal':
+                                    flag = parseFloat(cellValue.replace(/,/g, '')) <= parseFloat(inputValue.replace(/,/g, ''));
+                                    break;
+                                default:
+                                    flag = true;
+                            }
+                        }
+                    }
+                });
+                return flag;
+            }
+        );
+
         function getNetIncome(record) {
-            const seatId = Object.keys(window["seats"]).find( x => window["seats"][x].name == record.seat);
+            const seatId = Object.keys(window["seats"]).find(x => window["seats"][x].name == record.seat);
             const seat = window["seats"][seatId];
             let partner_fee = parseInt(seat.partner_fee);
-            record.marketplace_fee =  0;
+            record.marketplace_fee = 0;
             record.scoring_fee = (parseInt(record.scoring_pixalate_s2s_sas_request) / 1000) * window["rates"].scoring_fee;
             let impression_rate = parseInt(record.impressions_good) / 1000;
             record.advertising_fee = impression_rate * window["rates"].advertising_fee;
             record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
             let media_cost_rate = record.environment.id == 'mobile_app' ? window["rates"].mobile_rate : window["rates"].ctv_rate;
             record.net_media_cost = partner_fee < 0;
-            record.media_cost = ( record.impressions_good / 1000) * media_cost_rate;
+            record.media_cost = (record.impressions_good / 1000) * media_cost_rate;
             partner_fee = Math.abs(partner_fee);
             record.net_revenue = parseFloat(record.revenue_total) - record.marketplace_fee;
             record.gross_profit = parseFloat(record.revenue_total) - record.media_cost - record.operation_fee;
@@ -460,14 +708,14 @@
     }
 
     $(document).on("keypress", function (e) {
-        if(ReportDatatable && e.key == 'd') {
-            if(resizeActive) {
+        if (ReportDatatable && e.key == 'd') {
+            if (resizeActive) {
                 ReportDatatable.colReorder.disable();
             } else {
-                ReportDatatable.colReorder.enable( true );
+                ReportDatatable.colReorder.enable(true);
             }
             resizeActive = !resizeActive;
-        } 
+        }
     });
 
 
