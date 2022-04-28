@@ -657,10 +657,10 @@ function clearDropdownValue(element) {
                         } else  {
                             switch (operator) {
                                 case 'equal':
-                                    flag = cellValue == inputValue;
+                                    flag = cellValue.toLowerCase() == inputValue.toLowerCase();
                                     break;
                                 case 'not_equal':
-                                    flag = cellValue != inputValue;
+                                    flag = cellValue.toLowerCase() != inputValue.toLowerCase();
                                     break;
                                 case 'greater_than':
                                     flag = parseFloat(cellValue.replace(/,/g, '')) > parseFloat(inputValue.replace(/,/g, ''));
