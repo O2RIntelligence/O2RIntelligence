@@ -34,8 +34,8 @@
         var seats = window["seats"];
 
         function get_selected_seats() {
-            if (window["user_role"] == 'admin') return $("select[name=seats]").val();
-            else return [window["user_id"]];
+            /*if (window["user_role"] == 'admin')*/ return $("select[name=seats]").val();
+            // else return [window["user_id"]];
         }
 
         function start_loader() {
