@@ -589,12 +589,6 @@ function clearDropdownValue(element) {
                         var operator = $("#operator" + item).val();
                         var colIndex = $("#colIndex" + item).val();
                         var cellValue = data[colIndex];
-                        console.log(item);
-                        console.log(index);
-                        console.log(inputValue);
-                        console.log(operator);
-                        console.log(colIndex);
-                        console.log(cellValue);
 
                         if (item == 'Date' && inputValue) {
                             inputValue = inputValue.replaceAll('-', '/');
