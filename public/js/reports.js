@@ -4,11 +4,17 @@ function addDropdownValue(element) {
     const title = $(element).attr('data-title');
     $(element).parents('.dropdown').find('[name="selected_filter_operation"]').val(operation);
     $(element).parents('.dropdown').find('[name="selectedColIndex"]').val(colIdx);
-    $('#filterColumn').append('<option selected>'+title+'</option>')
+    $('#filterColumn').append('<option selected>' + title + '</option>')
 }
 
 function getDropdownValue(element) {
     return $(element).parent().find('[name="selected_filter_operation"]').val();
+}
+
+function clearDropdownValue(element) {
+    const colIdx = $(element).attr('data-idx');
+    const title = $(element).attr('data-title');
+    $(element).parents('.dropdown').find('[name="selected_filter_operation"]').val('');
 }
 
 (function ($) {
@@ -471,17 +477,20 @@ function getDropdownValue(element) {
                             );
                             var title = $(cell).text();
                             var type = 'text';
-                            if (title=='Date') type = 'date'
-                            if (title=='Month') type = 'month'
+                            if (title == 'Date') type = 'date'
+                            if (title == 'Month') type = 'month'
                             $(cell).html(`
-                                <div style="display: flex;">
-                                    <input type="${type}" id="input${title.replace(/[^a-zA-Z0-9]/g, '-')}" placeholder="${title}" />
+                                <div style="display: flex;" data-contain="filter">
+                                    <input data-name="query" type="${type}" id="input${title.replace(/[^a-zA-Z0-9]/g, '-')}" placeholder="${title}" />
                                     <div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-filter"></i>
                                         </button>
 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item text-danger" data-action="clear" style="display: block;" onclick="addDropdownValue(this)">
+                                            Clear
+                                            </a>
                                             <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="equal">Is equal to</a>
                                             <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="not_equal">Is not equal to</a>
                                             <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="greater_than">Greater than</a>
@@ -538,6 +547,27 @@ function getDropdownValue(element) {
                                         .focus()[0]
                                         .setSelectionRange(cursorPosition, cursorPosition);*/
                                 });
+
+
+                                $(
+                                    '[data-action="clear"]',
+                                    $('.filters th').eq($(api.column(colIdx).header()).index())
+                                    .on('click', function() {
+                                        setTimeout(() => {
+                                            api.draw();
+                                        }, 10);
+                                    })
+                                );
+
+
+                                $(
+                                    '.dropdown-item',
+                                    $('.filters th').eq($(api.column(colIdx).header()).index())
+                                    .on('click', function() {
+
+                                        api.draw();
+                                    })
+                                );
                         });
                 }
             });
@@ -547,17 +577,17 @@ function getDropdownValue(element) {
         }
 
         $.fn.dataTable.ext.search.push(
-            function( settings, data, dataIndex) {
+            function (settings, data, dataIndex) {
                 var filterableColumns = $('#filterColumn').val();
                 filterableColumns = Array.from(new Set(filterableColumns))
                 // console.log(filterableColumns)
                 var flag = true;
 
-                filterableColumns.forEach(function (item,index){
-                    if (flag){
-                        var inputValue = $("#input"+item).val();
-                        var operator = $("#operator"+item).val();
-                        var colIndex = $("#colIndex"+item).val();
+                filterableColumns.forEach(function (item, index) {
+                    if (flag) {
+                        var inputValue = $("#input" + item).val();
+                        var operator = $("#operator" + item).val();
+                        var colIndex = $("#colIndex" + item).val();
                         var cellValue = data[colIndex];
                         console.log(item);
                         console.log(index);
@@ -565,11 +595,67 @@ function getDropdownValue(element) {
                         console.log(operator);
                         console.log(colIndex);
                         console.log(cellValue);
-                        if (item == 'Date'){
-                            //todo
 
-                        } else{
-                            switch (operator){
+                        if (item == 'Date') {
+                            inputValue = inputValue.replaceAll('-', '/');
+
+                            let leftDate = Date.parse(cellValue);
+                            let rightDate = Date.parse(inputValue);
+
+                            switch(operator) {
+                                case 'equal':
+                                    flag = leftDate == rightDate;
+                                    break;
+                                case 'not_equal':
+                                    flag = leftDate != rightDate;
+                                    break;
+                                case 'greater_than':
+                                    flag = leftDate > rightDate;
+                                    break;
+                                case 'greater_equal':
+                                    flag = leftDate >= rightDate;
+                                    break;
+                                case 'less_than':
+                                    flag = leftDate < rightDate;
+                                    break;
+                                case 'less_equal':
+                                    flag = leftDate <= rightDate;
+                                    break;
+                                default:
+                                    flag = true;
+                            }
+
+                        } else if (item == 'Month') {
+                            inputValue = inputValue.replace('-', '/');
+
+                            let leftDate = Date.parse(cellValue);
+                            let rightDate = Date.parse(inputValue);
+
+                            switch(operator) {
+                                case 'equal':
+                                    flag = leftDate == rightDate;
+                                    break;
+                                case 'not_equal':
+                                    flag = leftDate != rightDate;
+                                    break;
+                                case 'greater_than':
+                                    flag = leftDate > rightDate;
+                                    break;
+                                case 'greater_equal':
+                                    flag = leftDate >= rightDate;
+                                    break;
+                                case 'less_than':
+                                    flag = leftDate < rightDate;
+                                    break;
+                                case 'less_equal':
+                                    flag = leftDate <= rightDate;
+                                    break;
+                                default:
+                                    flag = true;
+                            }
+
+                        } else  {
+                            switch (operator) {
                                 case 'equal':
                                     flag = cellValue == inputValue;
                                     break;
@@ -577,16 +663,16 @@ function getDropdownValue(element) {
                                     flag = cellValue != inputValue;
                                     break;
                                 case 'greater_than':
-                                    flag = parseFloat(cellValue) > parseFloat(inputValue);
+                                    flag = parseFloat(cellValue.replace(/,/g, '')) > parseFloat(inputValue.replace(/,/g, ''));
                                     break;
                                 case 'greater_equal':
-                                    flag = parseFloat(cellValue) >= parseFloat(inputValue);
+                                    flag = parseFloat(cellValue.replace(/,/g, '')) >= parseFloat(inputValue.replace(/,/g, ''));
                                     break;
                                 case 'less_than':
-                                    flag = parseFloat(cellValue) < parseFloat(inputValue);
+                                    flag = parseFloat(cellValue.replace(/,/g, '')) < parseFloat(inputValue.replace(/,/g, ''));
                                     break;
                                 case 'less_equal':
-                                    flag = parseFloat(cellValue) <= parseFloat(inputValue);
+                                    flag = parseFloat(cellValue.replace(/,/g, '')) <= parseFloat(inputValue.replace(/,/g, ''));
                                     break;
                                 default:
                                     flag = true;
@@ -594,7 +680,6 @@ function getDropdownValue(element) {
                         }
                     }
                 });
-console.log(flag);
                 return flag;
             }
         );
