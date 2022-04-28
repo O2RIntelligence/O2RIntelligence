@@ -596,7 +596,7 @@ function clearDropdownValue(element) {
                         console.log(colIndex);
                         console.log(cellValue);
 
-                        if (item == 'Date') {
+                        if (item == 'Date' && inputValue) {
                             inputValue = inputValue.replaceAll('-', '/');
 
                             let leftDate = Date.parse(cellValue);
@@ -625,7 +625,7 @@ function clearDropdownValue(element) {
                                     flag = true;
                             }
 
-                        } else if (item == 'Month') {
+                        } else if (item == 'Month' && inputValue) {
                             inputValue = inputValue.replace('-', '/');
 
                             let leftDate = Date.parse(cellValue);
