@@ -12,9 +12,9 @@ function getDropdownValue(element) {
 }
 
 function clearDropdownValue(element) {
-    const colIdx = $(element).attr('data-idx');
     const title = $(element).attr('data-title');
     $(element).parents('.dropdown').find('[name="selected_filter_operation"]').val('');
+    $('#input' + title).val('');
 }
 
 (function ($) {
@@ -488,7 +488,7 @@ function clearDropdownValue(element) {
                                         </button>
 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item text-danger" data-action="clear" style="display: block;" onclick="addDropdownValue(this)">
+                                            <a class="dropdown-item text-danger" data-action="clear" style="display: block;" onclick="clearDropdownValue(this)" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}">
                                             Clear
                                             </a>
                                             <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="equal">Is equal to</a>
