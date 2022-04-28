@@ -470,9 +470,12 @@ function getDropdownValue(element) {
                                 $(api.column(colIdx).header()).index()
                             );
                             var title = $(cell).text();
+                            var type = 'text';
+                            if (title=='Date') type = 'date'
+                            if (title=='Month') type = 'month'
                             $(cell).html(`
                                 <div style="display: flex;">
-                                    <input type="text" id="input${title.replace(/[^a-zA-Z0-9]/g, '-')}" placeholder="${title}" />
+                                    <input type="${type}" id="input${title.replace(/[^a-zA-Z0-9]/g, '-')}" placeholder="${title}" />
                                     <div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-filter"></i>
