@@ -34,8 +34,8 @@
         var seats = window["seats"];
 
         function get_selected_seats() {
-            if (window["user_role"] == 'admin') return $("select[name=seats]").val();
-            else return [window["user_id"]];
+            /*if (window["user_role"] == 'admin')*/ return $("select[name=seats]").val();
+            // else return [window["user_id"]];
         }
 
         function start_loader() {
@@ -395,12 +395,18 @@
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (error) {
                         console.log(error);
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
                         if (error == 401) top.location.reload();
                         continue;
                     }
 
                     // get impressions & data
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
                         if (e == 401) top.location.reload();
                     });
 
@@ -800,13 +806,13 @@
                             .text("$" + window["formatMoney"](record.partner_fee, 2))
                         )
                         .append($('<td>')
-                            .text(record.net_profit == 0 || record.revenue_total == 0 ? 0 : (((record.net_profit / record.revenue_total) * 100).toFixed(2)) + "%")
+                            .text(record.net_profit == 0 || record.revenue_total == 0 ||isNaN(record.net_profit / record.revenue_total)? 0 : (((record.net_profit / record.revenue_total) * 100).toFixed(2)) + "%")
                         )
                         .append($('<td>')
                             .text("$" + window["formatMoney"](record.net_income, 2))
                         )
                         .append($('<td>')
-                            .text(window["formatMoney"](record.net_income / record.revenue_total * 100, 2) + "%")
+                            .text(isNaN(record.net_income / record.revenue_total)?0:window["formatMoney"](record.net_income / record.revenue_total * 100, 2) + "%")
                         )
                     );
             }catch (e) {
@@ -845,7 +851,7 @@
                             .text("$" + window["formatMoney"](record.net_profit, 2))
                         )
                         .append($('<td>')
-                            .text(record.net_profit == 0 || record.revenue_total == 0 ? 0 : window["formatMoney"](((record.net_profit / record.revenue_total) * 100), 2) + "%")
+                            .text(record.net_profit == 0 || record.revenue_total == 0|| isNaN(record.net_profit / record.revenue_total)? 0 : window["formatMoney"](((record.net_profit / record.revenue_total) * 100), 2) + "%")
                         )
                     );
             }catch (e) {
@@ -958,11 +964,17 @@
                     try {
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (error) {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
                         if (error == 401) top.location.reload();
                         continue;
                     }
                     // get impressions & data
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
                         if (e == 401) top.location.reload();
                     });
                     // get data to deduct if has excluded channel
@@ -1080,6 +1092,9 @@
                     try {
                         sourceRequest = await seats[seatId].api.request(sourceParams);
                     } catch (error) {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
                         if (error == 401) top.location.reload();
                         continue;
                     }
@@ -1100,8 +1115,11 @@
 
                     try {
                         advertiserRequest = await seats[seatId].api.request(advertiserParams);
-                    } catch (error) {
-                        if (error == 401) top.location.reload();
+                    } catch (e) {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
+                        if (e == 401) top.location.reload();
                         continue;
                     }
                     var TakenAdvertiserLimit = (selected_seats.length > 1) ? 3 : (advertiserRequest.data.length < 10 ? advertiserRequest.data.length : 10);
@@ -1285,6 +1303,9 @@
 
                     // get impressions & data
                     let ReportRequest = await seats[seatId].api.request(dateParams).catch(e => {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
                         if (e == 401) top.location.reload();
                     });
 
@@ -1503,11 +1524,11 @@
                             )
                             .append($('<td>')
                                 .attr('class', 'success')
-                                .text(window["formatMoney"](mt.revenue_total / (mt.ad_requests / 1000000), 2) + "$")
+                                .text(isNaN(mt.revenue_total / (mt.ad_requests / 1000000))?0:window["formatMoney"](mt.revenue_total / (mt.ad_requests / 1000000), 2) + "$")
                             )
                             .append($('<td>')
                                 .attr('class', '')
-                                .text(window["formatMoney"]((mt.impressions_good /mt.ad_requests)*100) + "%")
+                                .text(isNaN(mt.impressions_good /mt.ad_requests)?0:window["formatMoney"]((mt.impressions_good /mt.ad_requests)*100) + "%")
                             )
                             .append($('<td>')
                                 .text(window["formatMoney"](ms.ad_requests, 0))
@@ -1520,11 +1541,11 @@
                             )
                             .append($('<td>')
                                 .attr('class', 'success')
-                                .text(window["formatMoney"](ms.revenue_total / (ms.ad_requests / 1000000), 2) + "$")
+                                .text(isNaN(ms.revenue_total / (ms.ad_requests / 1000000))?0:window["formatMoney"](ms.revenue_total / (ms.ad_requests / 1000000), 2) + "$")
                             )
                             .append($('<td>')
                                 .attr('class', '')
-                                .text(window["formatMoney"]((ms.impressions_good /ms.ad_requests)*100) + "%")
+                                .text(isNaN(ms.impressions_good /ms.ad_requests)?0:window["formatMoney"]((ms.impressions_good /ms.ad_requests)*100) + "%")
                             )
                         );
 
@@ -1545,7 +1566,7 @@
                             .text(window["formatMoney"](totalRevenueMt))
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(window["formatMoney"](totalRevenueMt / (totalAdRequestsMt / 1000000), 2) + "$")
+                            .text(isNaN(totalRevenueMt / (totalAdRequestsMt / 1000000))?0:window["formatMoney"](totalRevenueMt / (totalAdRequestsMt / 1000000), 2) + "$")
                         ).append($('<td>')
                             .attr('class', 'info')
                             .text(window["formatMoney"]((totalImpressionsMt /totalAdRequestsMt)*100) + "%")
@@ -1560,10 +1581,10 @@
                             .text(window["formatMoney"](totalRevenueMs))
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(window["formatMoney"](totalRevenueMs / (totalAdRequestsMs / 1000000), 2) + "$")
+                            .text(isNaN(totalRevenueMs / (totalAdRequestsMs / 1000000))?0:window["formatMoney"](totalRevenueMs / (totalAdRequestsMs / 1000000), 2) + "$")
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(window["formatMoney"]((totalImpressionsMs /totalAdRequestsMs)*100) + "%")
+                            .text(isNaN(totalImpressionsMs /totalAdRequestsMs)?0:window["formatMoney"]((totalImpressionsMs /totalAdRequestsMs)*100) + "%")
                         )
 
                     );
@@ -1595,13 +1616,13 @@
                             .text("Total $/AD Req in Mil")
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(window["formatMoney"]((totalRevenueMt / (totalAdRequestsMt / 1000000)+(totalRevenueMs / (totalAdRequestsMs / 1000000))), 2) + "$")
+                            .text(isNaN(totalRevenueMt / (totalAdRequestsMt / 1000000))||isNaN(totalRevenueMs / (totalAdRequestsMs / 1000000))?0:window["formatMoney"]((totalRevenueMt / (totalAdRequestsMt / 1000000)+(totalRevenueMs / (totalAdRequestsMs / 1000000))), 2) + "$")
                         ).append($('<th>')
                             .attr('class', 'info')
                             .text("Total Fill Rate(%)")
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(window["formatMoney"](((totalImpressionsMs /totalAdRequestsMs)+(totalImpressionsMt /totalAdRequestsMt))*100) + "%")
+                            .text(isNaN(totalImpressionsMs /totalAdRequestsMs)||isNaN(totalImpressionsMt /totalAdRequestsMt)?0:window["formatMoney"](((totalImpressionsMs /totalAdRequestsMs)+(totalImpressionsMt /totalAdRequestsMt))*100) + "%")
                         )
                     );
 
@@ -1686,9 +1707,11 @@
                         // console.log(channelDataByHour.data);
                         // console.log({{json_encode($array_without_keys)}});
 
-                    } catch (error) {
-                        console.log(error);
-                        if (error === 401) console.log("got 401");//top.location.reload();
+                    } catch (e) {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
+                        if (e === 401) console.log("got 401");//top.location.reload();
                         continue;
                     }
                 }
@@ -1847,9 +1870,11 @@
                         // console.log(mtImpressionsByDay);
                         // console.log({{json_encode($array_without_keys)}});
 
-                    } catch (error) {
-                        console.log(error);
-                        if (error === 401) console.log("got 401");//top.location.reload();
+                    } catch (e) {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        hide_loader();
+                        if (e === 401) console.log("got 401");//top.location.reload();
                         continue;
                     }
                 }
@@ -1974,11 +1999,11 @@
                                 .text("$" + window["formatMoney"](record.revenue_total, 2))
                             )
                             .append($('<td>')
-                                .text(window["formatMoney"](record.revenue_total / (record.impressions_good / 1000), 2))
+                                .text(isNaN(record.revenue_total / (record.impressions_good / 1000))?0:window["formatMoney"](record.revenue_total / (record.impressions_good / 1000), 2))
                             )
                             .append($('<td>')
                                 .attr('class', 'success')
-                                .text(window["formatMoney"](record.revenue_total / (record.ad_requests / 1000000), 2) + "$")
+                                .text(isNaN(record.revenue_total / (record.ad_requests / 1000000))?0:window["formatMoney"](record.revenue_total / (record.ad_requests / 1000000), 2) + "$")
                             )
 
                         );
@@ -2063,13 +2088,13 @@
                         .text("$" + (window["formatMoney"](EnvData["ctv"].revenue_total, 2)))
                     )
                     .append($('<td>')
-                        .text("%" + (window["formatMoney"](EnvData["ctv"].revenue_total / total * 100, 2)))
+                        .text(isNaN(EnvData["ctv"].revenue_total / total)?0:"%" + (window["formatMoney"](EnvData["ctv"].revenue_total / total * 100, 2)))
                     )
                     .append($('<td>')
                         .text("$" + (window["formatMoney"](EnvData["mobile_app"].revenue_total, 2)))
                     )
                     .append($('<td>')
-                        .text("%" + (window["formatMoney"](EnvData["mobile_app"].revenue_total / total * 100, 2)))
+                        .text(isNaN(EnvData["mobile_app"].revenue_total / total)?0:"%" + (window["formatMoney"](EnvData["mobile_app"].revenue_total / total * 100, 2)))
                     )
                 );
         }catch (e) {
@@ -2303,6 +2328,9 @@
             seatExChannelsParams.channel = seats[seatId].excluded_channels.join(',');
 
             const excludedChannels = await seats[seatId].api.request(seatExChannelsParams).catch(e => {
+                console.log("Error: "+e);
+                swal(e.name,e.message,"error");
+                hide_loader();
                 if (e == 401) top.location.reload();
             });
             for (const [index, record] of excludedChannels.data.entries()) {
