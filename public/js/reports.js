@@ -475,8 +475,20 @@ function getDropdownValue(element) {
                                         </button>
 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="equal">Equal to</a>
-                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="not_equal">Not equal to</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="contains">Contain</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="not_contains">Does not contain</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="equal">Is equal to</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="not_equal">Is not equal to</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="starts_with">Starts uith</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="ends_with">Ends with</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="is_null">Is null</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="is_not_null">Is not null</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="is_empty">Is empty</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="is_not_empty">Is not empty</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="greater_than">Greater than</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="greater_equal">Greater equal</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="less">Less</a>
+                                            <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-operation="less_equal">Less equal</a>
                                         </div>
                                         <input type="hidden" name="selected_filter_operation" />
                                     </div>
@@ -495,19 +507,31 @@ function getDropdownValue(element) {
                                     // Get the search value
                                     $(this).attr('title', $(this).val());
                                     const filterCaseValue = getDropdownValue(this);
-                                    var regexr = '({search})'; //$(this).parents('th').find('select').val();
+                                    console.log("filterCaseValue", filterCaseValue)
 
                                     var cursorPosition = this.selectionStart;
                                     // Search the column for that value
+
+                                    var regexr = '({search})';
+                                    let searchRegx = this.value != ''
+                                        ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                        : '';
+
+                                    if (filterCaseValue && filterCaseValue !== '') {
+                                        switch(filterCaseValue) {
+                                            case 'not_equal':
+                                                searchRegx = `^(?!(((${this.value})))$)`;
+                                                break;
+
+                                            case 'not_equal':
+                                                searchRegx = `^(?!(((${this.value})))$)`;
+                                                break;
+                                        }
+                                    }
+
                                     api
                                         .column(colIdx)
-                                        .search(
-                                            this.value != ''
-                                                ? regexr.replace('{search}', '(((' + this.value + ')))')
-                                                : '',
-                                            this.value != '',
-                                            this.value == ''
-                                        )
+                                        .search(searchRegx, true, false)
                                         .draw();
 
                                     $(this)
