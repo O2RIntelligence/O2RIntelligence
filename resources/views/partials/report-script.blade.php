@@ -234,8 +234,9 @@
 {{--        @endif--}}
         window["ADTELLIGENT_START_URL"] = "{{ config('services.base_url.adtelligent') }}";
         window["ADTELLIGENT_BASE_URL"] = window["ADTELLIGENT_START_URL"] + "/api/statistics/ssp2";
-        window["mt_channel_id"] = '{{ config('mt_channel_id') }}';
-        window["mt_channel_id"] = window["mt_channel_id"].split(',');
+        $.get("../../api/get-ms-channel-ids", function(data, status){
+            window['mt_channel_id'] = data.value.split(',');
+        });
         window["user_id"] = {{ $user->id }};
         window["date_default_timezone_get"] =  "{{ date_default_timezone_get() }}";
         window["admin_url"] = "{{ url('/admin') }}";
