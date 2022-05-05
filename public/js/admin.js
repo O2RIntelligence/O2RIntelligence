@@ -1,4 +1,7 @@
 (function($) {
+    $.get("../../api/get-ms-channel-ids", function(data, status){
+        window['mt_channel_id'] = data.value.split(',');
+    });
     var chartTitles = {
         MT_Seat: "Revenue By Seat",
         MT_Env: "Revenue By Media Type",
@@ -393,12 +396,12 @@
                     let campaignRequest;
                     try {
                         campaignRequest = await seats[seatId].api.request(campaignParams);
-                    } catch (error) {
-                        console.log(error);
+                    } catch (e) {
+                        console.log(e);
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (error == 401) top.location.reload();
+                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
                         continue;
                     }
 
@@ -407,7 +410,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) top.location.reload();
+                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
                     });
 
                     // excluded channels data
@@ -967,7 +970,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (error == 401) top.location.reload();
+                        if (error == 401) swal(e.name,e.message,'error');//top.location.reload();
                         continue;
                     }
                     // get impressions & data
@@ -975,7 +978,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) top.location.reload();
+                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
                     });
                     // get data to deduct if has excluded channel
                     if (seats[seatId].excluded_channels.length) {
@@ -1095,7 +1098,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (error == 401) top.location.reload();
+                        if (error == 401) swal(e.name,e.message,'error');//top.location.reload();
                         continue;
                     }
 
@@ -1119,7 +1122,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) top.location.reload();
+                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
                         continue;
                     }
                     var TakenAdvertiserLimit = (selected_seats.length > 1) ? 3 : (advertiserRequest.data.length < 10 ? advertiserRequest.data.length : 10);
@@ -1306,7 +1309,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) top.location.reload();
+                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
                     });
 
                     // excluded channels data
@@ -1470,6 +1473,8 @@
                 let totalAdRequestsMs = 0
                 for (const key of Object.keys(window["compare_performance_records"])) {
                     const record = window["compare_performance_records"][key];
+                    console.log(Object.keys(window["compare_performance_records"]));
+                    console.log(window["mt_channel_id"]);
                     let ms, mt;
                     if (selected_compare_env.length) {
                         ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
@@ -1874,7 +1879,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e === 401) console.log("got 401");//top.location.reload();
+                        if (e === 401) swal(e.name,e.message,'error');//console.log("got 401");//top.location.reload();
                         continue;
                     }
                 }
@@ -2331,7 +2336,7 @@
                 console.log("Error: "+e);
                 swal(e.name,e.message,"error");
                 hide_loader();
-                if (e == 401) top.location.reload();
+                if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
             });
             for (const [index, record] of excludedChannels.data.entries()) {
 
