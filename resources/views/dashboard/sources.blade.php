@@ -290,7 +290,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Daily Total Fill Rate(%) Graph by Hour</h4></div>
+        <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Daily Total <b>Run Rate($)</b> Graph by Hour</h4></div>
 
         <div class="col-md-12">
             <div class="box grid-box with-border">
@@ -313,7 +313,7 @@
         </div>
     </div>
       <div class="row">
-        <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Monthly Total Fill Rate(%) Graph by Day</h4></div>
+          <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Monthly Total <b>Run Rate($)</b> Graph by Day</h4></div>
 
         <div class="col-md-12">
             <div class="box grid-box with-border">
