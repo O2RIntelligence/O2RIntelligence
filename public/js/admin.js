@@ -1674,20 +1674,20 @@
                 // console.log(chanelRequestBody.hour);
                 var selected_seats = get_selected_seats();
                 var DateMappedRecords = Array(24).fill(0);
-                var mtAdRequestByHour = Array(24).fill(0);
-                var msAdRequestByHour = Array(24).fill(0);
-                var combinedAdRequestByHour = Array(24).fill(0);
-                var mtImpressionsByHour = Array(24).fill(0);
-                var msImpressionsByHour = Array(24).fill(0);
-                var combinedImpressionsByHour = Array(24).fill(0);
 
-                var msFillRateByHour = Array(24).fill(0);
-                var mtFillRateByHour = Array(24).fill(0);
-                var combinedFillRateByHour = Array(24).fill(0);
+                var mtRevenueByHour = Array(24).fill(0);
+                var msRevenueByHour = Array(24).fill(0);
+                var combinedRevenueByHour = Array(24).fill(0);
+                var today = new Date();
+                var todaysDate = today.getDate();
+                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+                var msRunRateByHour = Array(24).fill(0);
+                var mtRunRateByHour = Array(24).fill(0);
+                var combinedRunRateByHour = Array(24).fill(0);
 
-                for (let index = 0; index < selected_seats.length; index++) {
+                for (const element of selected_seats) {
                     // init seat
-                    const seatId = selected_seats[index];
+                    const seatId = element;
                     const seat = seats[seatId];
                     // get campaign 1120 revenue for marketplace_fee
                     let channelDataByHour;
@@ -1697,13 +1697,12 @@
                             $(channelDataByHour.data).each(function(key,singleData){
                                 // console.log(singleData.channel.id);
                                 if(msChannelIds.includes(singleData.channel.id.toString())){
-                                    msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
-                                    // console.log(msAdRequestByHour[singleData.hour.id]);
-                                    msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+
+                                    msRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
 
                                 }else{
-                                    mtAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
-                                    mtImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+
+                                    mtRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
 
                                 }
 
@@ -1717,7 +1716,7 @@
                         swal(e.name,e.message,"error");
                         hide_loader();
                         if (e === 401) console.log("got 401");//top.location.reload();
-                        continue;
+
                     }
                 }
 
@@ -1725,22 +1724,16 @@
                 // console.log(msAdRequestByHour);
 
                 $(hour).each(function (key,singleHour) {
-                    msFillRateByHour[key] = ((msImpressionsByHour[key]/msAdRequestByHour[key])*100).toFixed(3);
-                    mtFillRateByHour[key] = ((mtImpressionsByHour[key]/mtAdRequestByHour[key])*100).toFixed(3);
-                    combinedAdRequestByHour[key] = combinedAdRequestByHour[key]+msAdRequestByHour[key]+mtAdRequestByHour[key];
-                    combinedImpressionsByHour[key] = combinedImpressionsByHour[key]+msImpressionsByHour[key]+mtImpressionsByHour[key];
+                    msRunRateByHour[key] = ((msRevenueByHour[key]/todaysDate)*lastDay).toFixed(3);
+                    mtRunRateByHour[key] = ((mtRevenueByHour[key]/todaysDate)*lastDay).toFixed(3);
+                    //combinedAdRequestByHour[key] = combinedAdRequestByHour[key]+msAdRequestByHour[key]+mtAdRequestByHour[key];
+                    combinedRevenueByHour[key] = combinedRevenueByHour[key]+msRevenueByHour[key]+mtRevenueByHour[key];
 
                 });
 
                 $(hour).each(function (key,singleHour) {
-                    combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
+                    combinedRunRateByHour[key] = ((combinedRevenueByHour[key]/todaysDate)*lastDay).toFixed(3);
                 });
-                // console.log("msAdRequestByHour: "+ msAdRequestByHour);
-                // console.log("msImpressionsByHour: "+ msImpressionsByHour);
-                // console.log("combinedAdRequestByHour: "+ combinedAdRequestByHour);
-                // console.log("combinedImpressionsByHour: "+ combinedImpressionsByHour);
-                // console.log("mtAdRequestByHour: "+ mtAdRequestByHour);
-                // console.log("mtImpressionsByHour: "+ mtImpressionsByHour);
 
                 const labels = Array.from(Array(24).keys());
                 const data = {
@@ -1750,19 +1743,19 @@
                             label: ['Media-S'],
                             // backgroundColor: 'rgb(255, 99, 132)',
                             borderColor: 'rgb(255, 99, 132)',
-                            data: msFillRateByHour,
+                            data: msRunRateByHour,
                         },
                         {
                             label: ['Media-T'],
                             // backgroundColor: 'rgb(8 76 199)',
                             borderColor: 'rgb(8 76 199)',
-                            data: mtFillRateByHour,
+                            data: mtRunRateByHour,
                         },
                         {
                             label: ['Combined'],
                             // backgroundColor: 'rgb(8 199 58)',
                             borderColor: 'rgb(8 199 58)',
-                            data: combinedFillRateByHour,
+                            data: combinedRunRateByHour,
                         },
                     ]
                 };
@@ -1800,7 +1793,6 @@
                 var msChannelIds = [];
                 $.get("../../api/get-ms-channel-ids", function(data, status){
                     msChannelIds = data.value.split(',');
-                    // console.log(msChannelIds);
 
                 });
                  var firstday = function(y,m){
@@ -1811,8 +1803,6 @@
                  }
                 var start_date = $("input[name=start_date]").val();
                 var date = new Date(start_date);
-                // start_date = new Date(date.getFullYear()+"-"+date.getMonth()+1+"-"+firstday(date.getFullYear(), date.getMonth()));
-
                 var dateCount = lastday(date.getFullYear(), date.getMonth());
                 var dateCountArray = [...Array.from(Array(dateCount).keys())] ;
                 var end_date = $("input[name=end_date]").val();
@@ -1835,20 +1825,21 @@
                 // console.log(chanelRequestBody.hour);
                 var selected_seats = get_selected_seats();
                 var DateMappedRecords = Array(dateCount).fill(0);
-                var mtAdRequestByDay = Array(dateCount).fill(0);
-                var msAdRequestByDay = Array(dateCount).fill(0);
-                var combinedAdRequestByDay = Array(dateCount).fill(0);
-                var mtImpressionsByDay = Array(dateCount).fill(0);
-                var msImpressionsByDay = Array(dateCount).fill(0);
-                var combinedImpressionsByDay = Array(dateCount).fill(0);
 
-                var msFillRateByDay = Array(dateCount).fill(0);
-                var mtFillRateByDay = Array(dateCount).fill(0);
-                var combinedFillRateByDay = Array(dateCount).fill(0);
+                var mtRevenueByDay = Array(dateCount).fill(0);
+                var msRevenueByDay = Array(dateCount).fill(0);
+                var combinedRevenueByDay = Array(dateCount).fill(0);
 
-                for (let index = 0; index < selected_seats.length; index++) {
+                var msRunRateByDay = Array(dateCount).fill(0);
+                var mtRunRateByDay = Array(dateCount).fill(0);
+                var combinedRunRateByDay = Array(dateCount).fill(0);
+                var today = new Date();
+                var todaysDate = today.getDate();
+                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+
+                for (const element of selected_seats) {
                     // init seat
-                    const seatId = selected_seats[index];
+                    const seatId = element;
                     const seat = seats[seatId];
                     // get campaign 1120 revenue for marketplace_fee
                     let channelDataByDay;
@@ -1856,23 +1847,18 @@
                         channelDataByDay = await seats[seatId].api.request(chanelRequestBody);
 
                             $(channelDataByDay.data).each(function(key,singleData){
-                                // console.log(singleData.channel.id);
                                 var date = new Date(singleData.date.id);
                                 date = date.getDate()-1;
                                 if(msChannelIds.includes(singleData.channel.id.toString())){
-                                    msAdRequestByDay[date]+=singleData.ad_requests;
-                                    // console.log(msAdRequestByDay[date]);
-                                    msImpressionsByDay[date]+=singleData.impressions_good;
+                                    msRevenueByDay[date]+=singleData.revenue_total;
 
                                 }else{
-                                    mtAdRequestByDay[date]+=singleData.ad_requests;
-                                    mtImpressionsByDay[date]+=singleData.impressions_good;
-                                    // console.log(msAdRequestByDay[date]);
+                                    mtRevenueByDay[date]+=singleData.revenue_total;
                                 }
 
                             });
 
-                        // console.log(mtImpressionsByDay);
+                        // console.log(mtRevenueByDay);
                         // console.log({{json_encode($array_without_keys)}});
 
                     } catch (e) {
@@ -1880,35 +1866,21 @@
                         swal(e.name,e.message,"error");
                         hide_loader();
                         if (e === 401) swal(e.name,e.message,'error');//console.log("got 401");//top.location.reload();
-                        continue;
+
                     }
                 }
 
 
-                // console.log(msAdRequestByDay);
-
                 $(dateCountArray).each(function (key,singleDay) {
-                    msFillRateByDay[key] = ((msImpressionsByDay[key]/msAdRequestByDay[key])*100).toFixed(3);
-                    // console.log("key: "+key+" "+msImpressionsByDay[key]+"/"+msAdRequestByDay[key])+" *100 = "+((msImpressionsByDay[key]/msAdRequestByDay[key])*100);
-                    mtFillRateByDay[key] = ((mtImpressionsByDay[key]/mtAdRequestByDay[key])*100).toFixed(3);
-                    combinedAdRequestByDay[key] = combinedAdRequestByDay[key]+msAdRequestByDay[key]+mtAdRequestByDay[key];
-                    combinedImpressionsByDay[key] = combinedImpressionsByDay[key]+msImpressionsByDay[key]+mtImpressionsByDay[key];
+                    msRunRateByDay[key] = ((msRevenueByDay[key]/todaysDate)*lastDay).toFixed(3);
+                    mtRunRateByDay[key] = ((mtRevenueByDay[key]/todaysDate)*lastDay).toFixed(3);
+                    combinedRevenueByDay[key] = combinedRevenueByDay[key]+msRevenueByDay[key]+mtRevenueByDay[key];
 
                 });
 
                 $(dateCountArray).each(function (key,singleDay) {
-                    combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
+                    combinedRunRateByDay[key] = ((combinedRevenueByDay[key]/todaysDate)*lastDay).toFixed(3);
                 });
-                // console.log("msAdRequestByDay: "+ msAdRequestByDay);
-                // console.log("msImpressionsByDay: "+ msImpressionsByDay);
-                // console.log("combinedAdRequestByDay: "+ combinedAdRequestByDay);
-                // console.log("combinedImpressionsByDay: "+ combinedImpressionsByDay);
-                // console.log("mtAdRequestByDay: "+ mtAdRequestByDay);
-                // console.log("mtImpressionsByDay: "+ mtImpressionsByDay);
-                //
-                // console.log("msFillRateByDay: "+ msFillRateByDay);
-                // console.log("mtFillRateByDay: "+ mtFillRateByDay);
-                // console.log("combinedFillRateByDay: "+ combinedFillRateByDay);
 
                 const labels = getAllDatesOfCurrnetMonth();
                 // console.log(labels);
@@ -1919,19 +1891,19 @@
                             label: ['Media-S'],
                             // backgroundColor: 'rgb(255, 99, 132)',
                             borderColor: 'rgb(255, 99, 132)',
-                            data: msFillRateByDay,
+                            data: msRunRateByDay,
                         },
                         {
                             label: ['Media-T'],
                             // backgroundColor: 'rgb(8 76 199)',
                             borderColor: 'rgb(8 76 199)',
-                            data: mtFillRateByDay,
+                            data: mtRunRateByDay,
                         },
                         {
                             label: ['Combined'],
                             // backgroundColor: 'rgb(8 199 58)',
                             borderColor: 'rgb(8 199 58)',
-                            data: combinedFillRateByDay,
+                            data: combinedRunRateByDay,
                         },
                     ]
                 };
