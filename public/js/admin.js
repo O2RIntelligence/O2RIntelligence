@@ -1748,6 +1748,8 @@
                 console.log("MS: "+totalMsRevenueByHour+" MT:"+totalMtRevenueByHour);
                 $('#mt_daily_run_rate').html(((totalMtRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
                 $('#ms_daily_run_rate').html(((totalMsRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
+                totalMtRevenueByHour=0;
+                totalMsRevenueByHour=0;
 
                 $(hour).each(function (key,singleHour) {
                     combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
@@ -1918,6 +1920,8 @@
 
                 $('#mt_monthly_run_rate').html(((totalMtRevenueByDay/todaysDate)*lastDay).toFixed(3)+" $");
                 $('#ms_monthly_run_rate').html(((totalMsRevenueByDay/todaysDate)*lastDay).toFixed(3)+" $");
+                totalMtRevenueByDay=0;
+                totalMsRevenueByDay=0;
 
                 $(dateCountArray).each(function (key,singleDay) {
                     combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
