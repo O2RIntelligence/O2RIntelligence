@@ -100,7 +100,7 @@
                         break;
                 }
                 appendMediaSource();
-             }catch (e) {
+            }catch (e) {
                 console.log("Error: "+e);
                 swal(e.name,e.message,"error");
                 hide_loader();
@@ -126,8 +126,8 @@
                     });
                 }
                 const records = _(tableRows).groupBy(function(record) {
-                        return record.environment.id + "_" + record.date.id;
-                    })
+                    return record.environment.id + "_" + record.date.id;
+                })
                     .map((objs, key) => ({
                         'date': objs[0].date.id,
                         'environment': objs[0].environment.id,
@@ -142,7 +142,7 @@
 
                 $("#overall-performance-container-table tbody").html('');
                 appendOverallPerformanceTable(records);
-             }catch (e) {
+            }catch (e) {
                 console.log("Error: "+e);
                 swal(e.name,e.message,"error");
                 hide_loader();
@@ -420,8 +420,8 @@
 
                     // group by environment
                     let RecordsEnvGrouped = _(response.data).groupBy(function(record) {
-                            return record.environment.id;
-                        })
+                        return record.environment.id;
+                    })
                         .map((objs, key) => ({
                             'environment': key,
                             'impressions_good': _.sumBy(objs, 'impressions_good'),
@@ -434,8 +434,8 @@
 
                     // marketplace fee for environment
                     let CR_EnvGrouped = _(campaignRequest.data).groupBy(function(record) {
-                            return record.environment.id;
-                        })
+                        return record.environment.id;
+                    })
                         .map((objs, key) => ({
                             'environment': key,
                             'fee': _.sumBy(objs, 'revenue_total') * 0.2,
@@ -498,8 +498,8 @@
 
                 // master income overview groupping
                 let MI_DateGrouped = _(DateMappedRecords).groupBy(function(record) {
-                        return record.date;
-                    })
+                    return record.date;
+                })
                     .map((objs, key) => ({
                         'date': key,
                         "ad_requests": _.sumBy(objs, "ad_requests"),
@@ -704,7 +704,7 @@
                 record.advertising_fee = impression_rate * window["rates"].advertising_fee;
                 record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
                 let media_cost_rate = record.environment === 'mobile_app' ? window["rates"].mobile_rate : window["rates"].ctv_rate;
-    // console.log("media cost rate: "+media_cost_rate+", impression: "+record.impressions_good+", Excluded Impressions: "+record.excluded_impressions+", media cost:"+((record.impressions_good/1000)*media_cost_rate));
+                // console.log("media cost rate: "+media_cost_rate+", impression: "+record.impressions_good+", Excluded Impressions: "+record.excluded_impressions+", media cost:"+((record.impressions_good/1000)*media_cost_rate));
                 record.net_media_cost = partner_fee < 0;
 //removed excluded_impressions, excluded_revenue from subtracting, gave inaccurate media cost and other infos
                 record.media_cost = ((record.impressions_good) / 1000) * media_cost_rate;
@@ -1007,24 +1007,24 @@
 
                     // calculate revenue for seat
                     let SeatRevenueEnv = RecordsEnvNameGrouped.map((objs, key) => ({
-                            'environment': key,
-                            'revenue_total': _.sumBy(objs, 'revenue_total'),
-                        }))
+                        'environment': key,
+                        'revenue_total': _.sumBy(objs, 'revenue_total'),
+                    }))
                         .value();
                     chartRevenueEnv = [...chartRevenueEnv, ...SeatRevenueEnv];
                     // calculate revenue for integration type
                     let SeatRevenueInt = RecordsIntGrouped.map((objs, key) => ({
-                            'integration': key,
-                            'revenue_total': _.sumBy(objs, 'revenue_total'),
-                        }))
+                        'integration': key,
+                        'revenue_total': _.sumBy(objs, 'revenue_total'),
+                    }))
                         .value();
                     chartRevenueIntegration = [...chartRevenueIntegration, ...SeatRevenueInt];
                     // calculate impressions for hour
                     var randomRGP = () => Math.random() * 256 >> 0;
                     SeatRevenueImp = RecordsHourGrouped.map((objs, key) => ({
-                            'x': key,
-                            'y': _.sumBy(objs, 'impressions_good')
-                        }))
+                        'x': key,
+                        'y': _.sumBy(objs, 'impressions_good')
+                    }))
                         .value();
 
                     chartRevenueHour.push({
@@ -1036,8 +1036,8 @@
 
                     // group by environment
                     let RecordsEnvGrouped = _(response.data).groupBy(function(record) {
-                            return record.environment.id;
-                        })
+                        return record.environment.id;
+                    })
                         .map((objs, key) => ({
                             'environment': key,
                             'impressions_good': _.sumBy(objs, 'impressions_good'),
@@ -1055,8 +1055,8 @@
 
                     // marketplace fee for environment
                     let CR_EnvGrouped = _(campaignRequest.data).groupBy(function(record) {
-                            return record.environment.id;
-                        })
+                        return record.environment.id;
+                    })
                         .map((objs, key) => ({
                             'environment': key,
                             'fee': _.sumBy(objs, 'revenue_total') * 0.2,
@@ -1208,11 +1208,11 @@
                 appendImpressionChart(chartRevenueHour);
                 // get environment chart data ready
                 var environmentChart = _(chartRevenueEnv).groupBy(function(record) {
-                        return record.environment;
-                    }).map((objs, key) => ({
-                        'environment': key,
-                        'revenue_total': _.sumBy(objs, 'revenue_total')
-                    }))
+                    return record.environment;
+                }).map((objs, key) => ({
+                    'environment': key,
+                    'revenue_total': _.sumBy(objs, 'revenue_total')
+                }))
                     .value();
                 environmentChart.map(m => {
                     window["DoughnutCharts"]["Env"].data.push(parseFloat(m.revenue_total).toFixed(2));
@@ -1220,11 +1220,11 @@
                 });
                 // get environment chart data ready
                 var integrationChart = _(chartRevenueIntegration).groupBy(function(record) {
-                        return record.integration;
-                    }).map((objs, key) => ({
-                        'integration': key,
-                        'revenue_total': _.sumBy(objs, 'revenue_total').toFixed(2),
-                    }))
+                    return record.integration;
+                }).map((objs, key) => ({
+                    'integration': key,
+                    'revenue_total': _.sumBy(objs, 'revenue_total').toFixed(2),
+                }))
                     .value();
 
                 integrationChart.map(m => {
@@ -1320,8 +1320,8 @@
                     ReportRequest.data = ReportRequest.data.filter(m => m.environment.id != 'other');
 
                     let CR_SrcGrouped = _(ReportRequest.data).groupBy(function(record) {
-                            return window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT';
-                        })
+                        return window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT';
+                    })
                         .value();
 
                     for (const channel of Object.keys(CR_SrcGrouped)) {
@@ -1347,9 +1347,9 @@
 
                         // calculate revenue for seat
                         let ChannelRevenueEnv = RecordsEnvNameGrouped.map((objs, key) => ({
-                                'environment': key,
-                                'revenue_total': _.sumBy(objs, 'revenue_total'),
-                            }))
+                            'environment': key,
+                            'revenue_total': _.sumBy(objs, 'revenue_total'),
+                        }))
                             .keyBy('environment')
                             .value();
 
@@ -1369,9 +1369,9 @@
 
                         // calculate revenue for integration type
                         let ChannelRevenueInt = RecordsIntGrouped.map((objs, key) => ({
-                                'integration': key,
-                                'revenue_total': _.sumBy(objs, 'revenue_total'),
-                            }))
+                            'integration': key,
+                            'revenue_total': _.sumBy(objs, 'revenue_total'),
+                        }))
                             .keyBy('integration')
                             .value();
                         processChartEntity(ChannelRevenueInt, `${channel}_Int`, 'integration');
@@ -1395,8 +1395,8 @@
                     window["media_source_data"] = [...ReportRequest.data, ...window["media_source_data"]];
 
                     let RecordsDateEnvMapped = _(ReportRequest.data).groupBy(function(record) {
-                            return record.environment.id + "_" + record.date.id;
-                        })
+                        return record.environment.id + "_" + record.date.id;
+                    })
                         .map((objs, key) => ({
                             'date': objs[0].date.id,
                             'environment': objs[0].environment.id,
@@ -1409,8 +1409,8 @@
                 }
                 // overall performance groupping
                 DateMappedRecordsOverall = _(DateMappedRecordsOverall).groupBy(function(record) {
-                        return record.environment + "_" + record.date;
-                    })
+                    return record.environment + "_" + record.date;
+                })
                     .map((objs, key) => ({
                         'date': objs[0].date,
                         'environment': objs[0].environment,
@@ -1424,8 +1424,8 @@
                 // compare performance table
                 for (const dateKey of Object.keys(DateMappedRecordsCompare)) {
                     DateMappedRecordsCompare[dateKey] = _(DateMappedRecordsCompare[dateKey]).groupBy(function(record) {
-                            return (window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT') + '_' + record.environment.id;
-                        })
+                        return (window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT') + '_' + record.environment.id;
+                    })
                         .map((objs, key) => ({
                             'date': objs[0].date.id,
                             'environment': objs[0].environment.id,
@@ -1481,8 +1481,8 @@
                         mt = record.find(m => m.environment == selected_compare_env && m.channel == 'MT');
                     } else {
                         let channels = _(record).groupBy(function(m) {
-                                return m.channel;
-                            })
+                            return m.channel;
+                        })
                             .map((objs, key) => ({
                                 'channel': key,
                                 'impressions_good': _.sumBy(objs, 'impressions_good'),
@@ -1635,9 +1635,9 @@
                 appendMonthlyChartByday();
 
             }catch (e) {
-                    console.log("Error: "+e);
-                    swal(e.name,e.message,"error");
-                    hide_loader();
+                console.log("Error: "+e);
+                swal(e.name,e.message,"error");
+                hide_loader();
             }
         }
 
@@ -1704,21 +1704,21 @@
                     try {
                         channelDataByHour = await seats[seatId].api.request(chanelRequestBody);
 
-                            $(channelDataByHour.data).each(function(key,singleData){
-                                // console.log(singleData.channel.id);
-                                if(msChannelIds.includes(singleData.channel.id.toString())){
-                                    msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
-                                    msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
-                                    msRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
+                        $(channelDataByHour.data).each(function(key,singleData){
+                            // console.log(singleData.channel.id);
+                            if(msChannelIds.includes(singleData.channel.id.toString())){
+                                msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
+                                msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+                                msRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
 
-                                }else{
-                                    mtAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
-                                    mtImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
-                                    mtRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
+                            }else{
+                                mtAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
+                                mtImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+                                mtRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
 
-                                }
+                            }
 
-                            });
+                        });
 
                         // console.log(channelDataByHour.data);
                         // console.log({{json_encode($array_without_keys)}});
@@ -1740,7 +1740,7 @@
                     mtFillRateByHour[key] = ((mtImpressionsByHour[key]/mtAdRequestByHour[key])*100).toFixed(3);
                     combinedAdRequestByHour[key] = combinedAdRequestByHour[key]+msAdRequestByHour[key]+mtAdRequestByHour[key];
                     combinedImpressionsByHour[key] = combinedImpressionsByHour[key]+msImpressionsByHour[key]+mtImpressionsByHour[key];
-                  //
+                    //
                     totalMsRevenueByHour+=msRevenueByHour[key];
                     totalMtRevenueByHour+=mtRevenueByHour[key];
 
@@ -1748,6 +1748,8 @@
                 console.log("MS: "+totalMsRevenueByHour+" MT:"+totalMtRevenueByHour);
                 $('#mt_daily_run_rate').html(((totalMtRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
                 $('#ms_daily_run_rate').html(((totalMsRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
+                totalMtRevenueByHour = 0;
+                totalMsRevenueByHour = 0;
 
                 $(hour).each(function (key,singleHour) {
                     combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
@@ -1785,9 +1787,9 @@
                 const graphs3 = new Chart(document.getElementById('mt_daily_chart_by_hour'), config);
                 // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
                 // if(graphs3!== undefined){
-                    if(!graphs3.reset()){
-                        console.log("Could not reset graph");
-                    }
+                if(!graphs3.reset()){
+                    console.log("Could not reset graph");
+                }
                 // }
 
                 const myChart = new Chart(
@@ -1798,13 +1800,13 @@
                 $('#isResizableHour').css('opacity',1);
 
             }catch (e) {
-            console.log("Error: "+e);
-            swal(e.name,e.message,"error");
-            hide_loader();
+                console.log("Error: "+e);
+                swal(e.name,e.message,"error");
+                hide_loader();
             }
         }
 
-         async function appendMonthlyChartByday(){
+        async function appendMonthlyChartByday(){
             try {
                 $('#appendMonthlyChartBydayLoader').show();
                 $('#isResizableDay').css('opacity',0);
@@ -1813,12 +1815,12 @@
                     msChannelIds = data.value.split(',');
 
                 });
-                 var firstday = function(y,m){
-                     return  new Date(y, m , 1).getDate();
-                 }
-                 var lastday = function(y,m){
-                     return  new Date(y, m +1, 0).getDate();
-                 }
+                var firstday = function(y,m){
+                    return  new Date(y, m , 1).getDate();
+                }
+                var lastday = function(y,m){
+                    return  new Date(y, m +1, 0).getDate();
+                }
                 var start_date = $("input[name=start_date]").val();
                 var date = new Date(start_date);
                 var dateCount = lastday(date.getFullYear(), date.getMonth());
@@ -1874,22 +1876,22 @@
                     try {
                         channelDataByDay = await seats[seatId].api.request(chanelRequestBody);
 
-                            $(channelDataByDay.data).each(function(key,singleData){
-                                var date = new Date(singleData.date.id);
-                                date = date.getDate()-1;
-                                if(msChannelIds.includes(singleData.channel.id.toString())){
-                                    msAdRequestByDay[date]+=singleData.ad_requests;
-                                    msImpressionsByDay[date]+=singleData.impressions_good;
-                                    msRevenueByDay[date]+=singleData.revenue_total;
+                        $(channelDataByDay.data).each(function(key,singleData){
+                            var date = new Date(singleData.date.id);
+                            date = date.getDate()-1;
+                            if(msChannelIds.includes(singleData.channel.id.toString())){
+                                msAdRequestByDay[date]+=singleData.ad_requests;
+                                msImpressionsByDay[date]+=singleData.impressions_good;
+                                msRevenueByDay[date]+=singleData.revenue_total;
 
-                                }else{
-                                    mtAdRequestByDay[date]+=singleData.ad_requests;
-                                    mtImpressionsByDay[date]+=singleData.impressions_good;
+                            }else{
+                                mtAdRequestByDay[date]+=singleData.ad_requests;
+                                mtImpressionsByDay[date]+=singleData.impressions_good;
 
-                                    mtRevenueByDay[date]+=singleData.revenue_total;
-                                }
+                                mtRevenueByDay[date]+=singleData.revenue_total;
+                            }
 
-                            });
+                        });
 
                         // console.log(mtRevenueByDay);
                         // console.log(msRevenueByDay);
@@ -1918,6 +1920,8 @@
 
                 $('#mt_monthly_run_rate').html(((totalMtRevenueByDay/todaysDate)*lastDay).toFixed(3)+" $");
                 $('#ms_monthly_run_rate').html(((totalMsRevenueByDay/todaysDate)*lastDay).toFixed(3)+" $");
+                totalMtRevenueByDay = 0;
+                totalMsRevenueByDay = 0;
 
                 $(dateCountArray).each(function (key,singleDay) {
                     combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
@@ -1956,9 +1960,9 @@
                 const graphsMonthly = new Chart(document.getElementById('mt_monthly_chart_by_day'), config);
                 // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
                 // if(graphs3!== undefined){
-                    if(!graphsMonthly.reset()){
-                        console.log("Could not reset graph");
-                    }
+                if(!graphsMonthly.reset()){
+                    console.log("Could not reset graph");
+                }
                 // }
 
                 const myChart = new Chart(
@@ -2045,8 +2049,8 @@
                                     .column(colIdx)
                                     .search(
                                         this.value != '' ?
-                                        regexr.replace('{search}', '(((' + this.value + ')))') :
-                                        '',
+                                            regexr.replace('{search}', '(((' + this.value + ')))') :
+                                            '',
                                         this.value != '',
                                         this.value == ''
                                     )
@@ -2085,10 +2089,10 @@
             }
             // console.log(window["DoughnutCharts"][chartId].data);
         }catch (e) {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
-                hide_loader();
-            }
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
+        }
     }
 
 
@@ -2117,10 +2121,10 @@
                     )
                 );
         }catch (e) {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
-                hide_loader();
-            }
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
+        }
     }
 
     function appendTopAdvertiser(advData, seat = false) {
@@ -2150,10 +2154,10 @@
                     );
             }
         }catch (e) {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
-                hide_loader();
-            }
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
+        }
     }
 
     function appendTopSuppliers(srcDate, seat = false) {
@@ -2183,10 +2187,10 @@
                     );
             }
         }catch (e) {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
-                hide_loader();
-            }
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
+        }
     }
 
 
@@ -2244,10 +2248,10 @@
 
             $(".isResizable").resizable();
         }catch (e) {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
-                hide_loader();
-            }
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
+        }
     }
 
     function appendImpressionChart(datasets) {
@@ -2282,10 +2286,10 @@
 
             $(".isResizable").resizable();
         }catch (e) {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
-                hide_loader();
-            }
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
+        }
     }
 
     function appendDonughtChart(id) {
@@ -2333,10 +2337,10 @@
                 }
             });
         }catch (e) {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
-                hide_loader();
-            }
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
+        }
     }
 
     window['filterEcludedChannels'] = async(seatId, parameters, res) => {
@@ -2376,10 +2380,10 @@
 
             return res;
         }catch (e) {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
-                hide_loader();
-            }
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
+        }
     }
 
 
