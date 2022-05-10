@@ -52,6 +52,57 @@
         </div>
     @endif
 
+    <div class="row">
+        <div class="col-md-6">
+            <div class="column">
+                <div class="card">
+                    <div class="box grid-box with-border">
+                        <div class="box-header with-border text-center">
+                            <b>MT Daily Run Rate</b>
+                        </div>
+                        <div class="box-body text-center">
+                            <h2 id="mt_daily_run_rate">Calculating...</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="box grid-box with-border">
+                        <div class="box-header with-border text-center">
+                            <b>MT Monthly Run Rate</b>
+                        </div>
+                        <div class="box-body text-center">
+                            <h2 id="mt_monthly_run_rate">Calculating...</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="column">
+                <div class="card">
+                    <div class="box grid-box with-border">
+                        <div class="box-header with-border text-center">
+                            <b>MS Daily Run Rate</b>
+                        </div>
+                        <div class="box-body text-center">
+                            <h2 id="ms_daily_run_rate">Calculating...</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="box grid-box with-border">
+                        <div class="box-header with-border text-center">
+                            <b>MS Monthly Run Rate</b>
+                        </div>
+                        <div class="box-body text-center">
+                            <h2 id="ms_monthly_run_rate">Calculating...</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="General_Chart" class="row">
         <div class="col-md-3">
             <div class="box grid-box with-border">
@@ -290,7 +341,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Daily Total <b>Run Rate($)</b> Graph by Hour</h4></div>
+        <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Daily Total Fill Rate(%) Graph by Hour</h4></div>
 
         <div class="col-md-12">
             <div class="box grid-box with-border">
@@ -313,7 +364,7 @@
         </div>
     </div>
       <div class="row">
-          <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Monthly Total <b>Run Rate($)</b> Graph by Day</h4></div>
+          <div class="card col-md-12 text-center"><h4>Media-S vs Media-T vs Combined Monthly Total Fill Rate(%) Graph by Day</h4></div>
 
         <div class="col-md-12">
             <div class="box grid-box with-border">
