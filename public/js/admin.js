@@ -27,7 +27,13 @@
         '#6c779f',
         "#2ecc71",
     ];
+    function start_loader() {
+        $(".loader").show();
+    }
 
+    function hide_loader() {
+        $(".loader").hide();
+    }
     $(function() {
         // init seat APIs
         for (const seatId of Object.keys(window["seats"])) {
@@ -35,19 +41,13 @@
             window["seats"][seatId].excluded_channels = window["seats"][seatId].excluded_channels.filter(m => m != '');
         }
         var seats = window["seats"];
-
+        getMonthlyRunrateForMediaSources();
         function get_selected_seats() {
             /*if (window["user_role"] == 'admin')*/ return $("select[name=seats]").val();
             // else return [window["user_id"]];
         }
 
-        function start_loader() {
-            $(".loader").show();
-        }
 
-        function hide_loader() {
-            $(".loader").hide();
-        }
 
         // setting global variables
         if (typeof current_page != 'undefined' && current_page == 'income') {
@@ -233,7 +233,9 @@
                     runReportFunction();
                 });
                 $(".refresh-seats").on('click', function() {
+                    getMonthlyRunrateForMediaSources();
                     runReportFunction();
+
                 });
             }catch (e) {
                 console.log("Error: "+e);
@@ -1555,6 +1557,7 @@
                         );
 
                 }
+                getDailyRunrateForMediaSources(totalRevenueMs,totalRevenueMt);
                 $("#compare-performance-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<th>')
@@ -1641,22 +1644,95 @@
             }
         }
 
+        function getDailyRunrateForMediaSources(msRevenue,mtRevenue){
+            try {
+                var today = new Date();
+                var todaysDate = today.getDate();
+                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+                console.log("MS-daily: "+msRevenue+" MT-daily:"+mtRevenue);
+                if(isNaN(msRevenue)) msRevenue = 0;
+                if(isNaN(mtRevenue)) mtRevenue = 0;
+                $('#mt_daily_run_rate').html(((msRevenue/todaysDate)*lastDay).toFixed(3)+" $");
+                $('#ms_daily_run_rate').html(((mtRevenue/todaysDate)*lastDay).toFixed(3)+" $");
+
+            } catch (e) {
+                swal(e.name, e.message, "error");
+            }
+        }
+
+        async function getMonthlyRunrateForMediaSources(){
+            let revenueTotalData;
+            try {
+                var msChannelIds = [];
+                $.get("../../api/get-ms-channel-ids", function(data, status){
+                    msChannelIds = data.value.split(',');
+                });
+                var selected_seats = get_selected_seats();
+                let msRevenueMonthly=0, mtRevenueMonthly = 0;
+                var today = new Date($("input[name=start_date]").val());
+                var todaysDate = today.getDate();
+                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+                var start_date = (new Date(today.getFullYear(), today.getMonth(), 1)).toLocaleDateString("en-CA");
+                var end_date = (new Date(today.getFullYear(), today.getMonth()+1, 0)).toLocaleDateString("en-CA");
+                var chanelRequestBody = {
+                    "report": 'date,channel',
+                    "date_from": start_date,
+                    "date_to": end_date,
+                    "fields": 'revenue_channel,revenue_total,channel',
+                    "limit": 1000000,
+                    "page": 1,
+                    "strategy": 'last-collection',
+                    "type": 'ssp_statistic',
+                    "tz": 'GMT',
+                    "is_rtb": 'not_apply'
+                };
+
+                for (const element of selected_seats) {
+                    const seatId = element;
+                    const seat = seats[seatId];
+
+                    revenueTotalData = await seat.api.request(chanelRequestBody);
+                    $(revenueTotalData.data).each(function (key, singleData) {
+                        if (msChannelIds.includes(singleData.channel.id.toString())) {
+                            msRevenueMonthly += singleData.revenue_total;
+                        } else {
+                            mtRevenueMonthly += singleData.revenue_total;
+                        }
+
+                    });
+
+                }
+                console.log("MS-monthly: "+msRevenueMonthly+" MT-monthly:"+mtRevenueMonthly);
+                if(isNaN(msRevenueMonthly)) msRevenueMonthly = 0;
+                if(isNaN(mtRevenueMonthly)) mtRevenueMonthly = 0;
+                $('#mt_monthly_run_rate').html(((msRevenueMonthly/todaysDate)*lastDay).toFixed(3)+" $");
+                $('#ms_monthly_run_rate').html(((mtRevenueMonthly/todaysDate)*lastDay).toFixed(3)+" $");
+
+            } catch (e) {
+                // console.log(revenueTotalData.errors.message);
+                swal(e.name, e.message, "error");
+            }
+        }
+
+        function getMsChannelIds(){
+            var msChannelIds = [];
+            $.get("../../api/get-ms-channel-ids", function(data, status){
+                msChannelIds = data.value.split(',');
+                return msChannelIds;
+            });
+            return msChannelIds;
+        }
         async function appendDailyChartByHour(){
             try {
                 $('#appendDailyChartByHourLoader').show();
                 $('#isResizableHour').css('opacity',0);
 
-                var msChannelIds = [];
-                $.get("../../api/get-ms-channel-ids", function(data, status){
-                    msChannelIds = data.value.split(',');
-                    // console.log(msChannelIds);
-
-                });
+                var msChannelIds=getMsChannelIds();
 
                 var start_date = $("input[name=start_date]").val();
                 var timeline = $("input[name=date_period]").val();
                 var hour = timeline==='today'?[...Array.from(Array(new Date().getUTCHours()).keys())]:[...Array.from(Array(24).keys())];
-                console.log(hour);
+                // console.log(hour);
                 var end_date = $("input[name=end_date]").val();
                 var chanelRequestBody = {
                     "report": 'hour,channel',
@@ -1690,9 +1766,7 @@
                 var totalMsRevenueByHour = 0;
                 var mtRevenueByHour = Array(24).fill(0);
                 var msRevenueByHour = Array(24).fill(0);
-                var today = new Date();
-                var todaysDate = today.getDate();
-                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+
 
 
                 for (const element of selected_seats) {
@@ -1702,7 +1776,7 @@
                     // get campaign 1120 revenue for marketplace_fee
                     let channelDataByHour;
                     try {
-                        channelDataByHour = await seats[seatId].api.request(chanelRequestBody);
+                        channelDataByHour = await seat.api.request(chanelRequestBody);
 
                         $(channelDataByHour.data).each(function(key,singleData){
                             // console.log(singleData.channel.id);
@@ -1745,9 +1819,9 @@
                     totalMtRevenueByHour+=mtRevenueByHour[key];
 
                 });
-                console.log("MS: "+totalMsRevenueByHour+" MT:"+totalMtRevenueByHour);
-                $('#mt_daily_run_rate').html(((totalMtRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
-                $('#ms_daily_run_rate').html(((totalMsRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
+                // console.log("MS: "+totalMsRevenueByHour+" MT:"+totalMtRevenueByHour);
+                // $('#mt_daily_run_rate').html(((totalMtRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
+                // $('#ms_daily_run_rate').html(((totalMsRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
                 totalMtRevenueByHour = 0;
                 totalMsRevenueByHour = 0;
 
@@ -1810,11 +1884,7 @@
             try {
                 $('#appendMonthlyChartBydayLoader').show();
                 $('#isResizableDay').css('opacity',0);
-                var msChannelIds = [];
-                $.get("../../api/get-ms-channel-ids", function(data, status){
-                    msChannelIds = data.value.split(',');
-
-                });
+                var msChannelIds=getMsChannelIds();
                 var firstday = function(y,m){
                     return  new Date(y, m , 1).getDate();
                 }
@@ -1918,8 +1988,7 @@
 
                 });
 
-                $('#mt_monthly_run_rate').html(((totalMtRevenueByDay/todaysDate)*lastDay).toFixed(3)+" $");
-                $('#ms_monthly_run_rate').html(((totalMsRevenueByDay/todaysDate)*lastDay).toFixed(3)+" $");
+
                 totalMtRevenueByDay = 0;
                 totalMsRevenueByDay = 0;
 
@@ -2344,17 +2413,17 @@
     }
 
     window['filterEcludedChannels'] = async(seatId, parameters, res) => {
+        let excludedChannels;
         try {
             let seatExChannelsParams = {...parameters };
             seatExChannelsParams.fields += ',channel';
             seatExChannelsParams.report += ',channel';
             seatExChannelsParams.channel = seats[seatId].excluded_channels.join(',');
 
-            const excludedChannels = await seats[seatId].api.request(seatExChannelsParams).catch(e => {
-                console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+            excludedChannels = await seats[seatId].api.request(seatExChannelsParams).catch(e => {
+                // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
                 hide_loader();
-                if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                if (e === 401) swal("Api Request Error",e.message,'error');//top.location.reload();
             });
             for (const [index, record] of excludedChannels.data.entries()) {
 
@@ -2380,8 +2449,10 @@
 
             return res;
         }catch (e) {
+            // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            if (e === 401) swal("Api Request Error",e.message,'error');
+            // swal(e.name,e.message,"error");
             hide_loader();
         }
     }
