@@ -234,24 +234,31 @@ function clearDropdownValue(element) {
 
     async function ReportMetricSelect() {
 
-        var selected_seats = $("select[name=seats]").val();
+        try{
+            var selected_seats = $("select[name=seats]").val();
 
-        let MetricRequest;
+            let MetricRequest;
 
-        try {
-            MetricRequest = await window["seats"][selected_seats[0]].api.request({}, "metrics", window["ADTELLIGENT_START_URL"] + "/api/statistics/ssp_statistic");
-        } catch (error) {
-            if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
-        }
-
-        metrics = MetricRequest.data.metrics;
-        for (const key of Object.keys(metrics)) {
-            const metric = metrics[key];
-            if (metric.is_filterable) {
-                $("select.metric").append(
-                    $("<option>").attr('value', metric.system_name).text(metric.name)
-                );
+            try {
+                MetricRequest = await window["seats"][selected_seats[0]].api.request({}, "metrics", window["ADTELLIGENT_START_URL"] + "/api/statistics/ssp_statistic");
+            } catch (error) {
+                seat = window["seats"][selected_seats[0]];
+                if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
             }
+
+            metrics = MetricRequest.data.metrics;
+            for (const key of Object.keys(metrics)) {
+                const metric = metrics[key];
+                if (metric.is_filterable) {
+                    $("select.metric").append(
+                        $("<option>").attr('value', metric.system_name).text(metric.name)
+                    );
+                }
+            }
+        } catch (e) {
+            console.log("Error: "+e);
+            swal(e.name,e.message,"error");
+            hide_loader();
         }
     }
 
