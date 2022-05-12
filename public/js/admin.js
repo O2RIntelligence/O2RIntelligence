@@ -754,24 +754,30 @@
                 var ctx = document.getElementById("RNP_1").getContext('2d');
                 if (RNP_1)
                     RNP_1.destroy();
+                var dataset =[{
+                    label: 'Revenue',
+                    data: RNP_1_Data.revenue,
+                    backgroundColor: revenue_background,
+                }] ;
+                if (window['user_role']=='seat') {
+                    dataset.push({
+                        label: 'Gross Profit',
+                        data: RNP_1_Data.gross_profit,
+                        backgroundColor: gross_profit_background,
+                    });
+                } else{
+                    dataset.push({
+                        label: 'Net Income',
+                        data: RNP_1_Data.net_profit,
+                        backgroundColor: net_profit_background,
+                    });
+                }
 
                 RNP_1 = new Chart(ctx, {
                     type: 'horizontalBar',
                     data: {
                         labels: selected_seats_names,
-                        datasets: [{
-                            label: 'Revenue',
-                            data: RNP_1_Data.revenue,
-                            backgroundColor: revenue_background,
-                        }, {
-                            label: 'Net Income',
-                            data: RNP_1_Data.net_profit,
-                            backgroundColor: net_profit_background,
-                        },{
-                            label: 'Net Income',
-                            data: RNP_1_Data.gross_profit,
-                            backgroundColor: gross_profit_background,
-                        }]
+                        datasets: dataset
                     },
                     options: {
                         maintainAspectRatio: false,
