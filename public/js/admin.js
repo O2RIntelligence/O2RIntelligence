@@ -246,8 +246,6 @@
         }
         function runReportFunction() {
             try {
-                getMonthlyRunrateForMediaSources();
-
                 if (typeof current_page != 'undefined') {
                     start_loader();
                     switch (current_page) {
