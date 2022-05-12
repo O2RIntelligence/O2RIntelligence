@@ -30,7 +30,7 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="row" @if($user->isRole('seat')) style="display:none;" @endif>
+                            <div class="row">
                                 <div class="col-md-2 text-center">
                                     <label>{{ __('Select Seats') }}:</label>
                                 </div>

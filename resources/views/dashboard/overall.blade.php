@@ -11,7 +11,7 @@
                         <div class="col-md-4">
                             <b style="line-height:35px;">{{ __('Income Channel Overview') }}</b>
                         </div>
-                        @if($user->isRole('administrator') && count($seats))
+                        @if(count($seats))
                             <div class="col-md-7">
                                 <select name="seats" class="form-control select2" multiple>
                                     @foreach ($seats as $seat)
@@ -20,12 +20,12 @@
                                 </select>
                             </div>
                             <div class="col-md-1">
-                                <button class="btn-black btn btn-sm btn-block refresh-seats" style="margin-top: 2px;">{{__('Refresh')}}</button>
+                                <button class="refresh-seats btn-black btn btn-sm btn-block" style="margin-top: 2px;">{{__('Refresh')}}</button>
                             </div>
                         @endif
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -109,7 +109,7 @@
                         <tfoot>
                             <tr class="info">
                                 <th>
-                                {{__('Totals')}} 
+                                {{__('Totals')}}
                                 </th>
                                 <td></td>
                                 <td></td>

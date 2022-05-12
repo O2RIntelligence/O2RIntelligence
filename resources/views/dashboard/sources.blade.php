@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    @if($user->isRole('administrator') && count($seats))
+    @if(count($seats))
         <div class="row">
             <div class="col-md-12">
                 <div class="box grid-box">
