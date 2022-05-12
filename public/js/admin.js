@@ -1687,6 +1687,7 @@
                     "is_rtb": 'not_apply'
                 };
 
+                if (!selected_seats) return 0;
                 for (const element of selected_seats) {
                     const seatId = element;
                     const seat = seats[seatId];
