@@ -146,7 +146,7 @@ function clearDropdownValue(element) {
             try {
                 FieldRequest = await seat.api.request(sourceParams, "dictionary/" + fieldName);
             } catch (error) {
-                if (error == 401) top.location.reload();
+                if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                 continue;
             }
 
@@ -241,7 +241,7 @@ function clearDropdownValue(element) {
         try {
             MetricRequest = await window["seats"][selected_seats[0]].api.request({}, "metrics", window["ADTELLIGENT_START_URL"] + "/api/statistics/ssp_statistic");
         } catch (error) {
-            // if (error == 401) top.location.reload();
+            if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
         }
 
         metrics = MetricRequest.data.metrics;
@@ -343,7 +343,7 @@ function clearDropdownValue(element) {
             try {
                 FieldRequest = await seat.api.request(params);
             } catch (error) {
-                if (error == 401) top.location.reload();
+                if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error'); //top.location.reload();
                 continue;
             }
 

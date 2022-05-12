@@ -78,13 +78,13 @@
                 campaignRequest = await seat.api.request(Camparams);
             } catch (error) {
                 console.log(error);
-                if (error == 401) top.location.reload();
+                if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                 continue;
             }
 
             // get impressions & data
             let response = await seat.api.request(params).catch(e => {
-                if (e == 401) top.location.reload();
+                if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
             });
 
             // excluded channels data

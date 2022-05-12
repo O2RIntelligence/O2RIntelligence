@@ -403,7 +403,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
 
@@ -412,7 +412,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
 
                     // excluded channels data
@@ -972,7 +972,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (error == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
                     // get impressions & data
@@ -980,7 +980,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
                     // get data to deduct if has excluded channel
                     if (seats[seatId].excluded_channels.length) {
@@ -1100,7 +1100,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (error == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
 
@@ -1124,7 +1124,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
                     var TakenAdvertiserLimit = (selected_seats.length > 1) ? 3 : (advertiserRequest.data.length < 10 ? advertiserRequest.data.length : 10);
@@ -1311,7 +1311,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
 
                     // excluded channels data
@@ -1971,7 +1971,7 @@
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
-                        if (e === 401) swal(e.name,e.message,'error');//console.log("got 401");//top.location.reload();
+                        if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//console.log("got 401");//top.location.reload();
 
                     }
                 }
