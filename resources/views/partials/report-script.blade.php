@@ -27,6 +27,11 @@
     .swal2-popup{
         font-size: 14px !important;
     }
+    @if($user->isRole('seat'))
+        .non-partner{
+            display: none;
+        }
+    @endif
 
     .loading {
         float: left;

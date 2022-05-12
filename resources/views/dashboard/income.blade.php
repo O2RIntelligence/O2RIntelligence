@@ -46,10 +46,10 @@
                             <th>Media Cost</th>
                             <th>Operation Fee</th>
                             <th>Gross Profit</th>
-                            <th>Partner Fee</th>
-                            <th>Profit Margin</th>
-                            <th>Net Income</th>
-                            <th>Net Inc (%)</th>
+                            <th class="non-partner">Partner Fee</th>
+                            <th class="non-partner">Profit Margin</th>
+                            <th class="non-partner">Net Income</th>
+                            <th class="non-partner">Net Inc (%)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,10 +63,10 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td class="non-partner"></td>
+                            <td class="non-partner"></td>
+                            <td class="non-partner"></td>
+                            <td class="non-partner"></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -111,8 +111,8 @@
                             <th>Ad Serving Fee</th>
                             <th>Scanning Fee</th>
                             <th>Gross Profit</th>
-                            <th>Net Income</th>
-                            <th></th>
+                            <th class="non-partner">Net Income</th>
+                            <th class="non-partner"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,7 +131,7 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td></td>
+                            <td class="non-partner"></td>
                             <td></td>
                         </tr>
                     </tfoot>
