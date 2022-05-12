@@ -399,7 +399,6 @@
                     try {
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (e) {
-                        console.log(e);
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
                         hide_loader();
@@ -1097,8 +1096,8 @@
                     try {
                         sourceRequest = await seats[seatId].api.request(sourceParams);
                     } catch (error) {
-                        console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        console.log("Error: "+error);
+                        swal(error.name,error.message,"error");
                         hide_loader();
                         if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
@@ -1656,6 +1655,7 @@
                 $('#ms_daily_run_rate').html(((mtRevenue/todaysDate)*lastDay).toFixed(3)+" $");
 
             } catch (e) {
+                console.log("Error: "+e);
                 swal(e.name, e.message, "error");
             }
         }
@@ -1709,6 +1709,7 @@
                 $('#ms_monthly_run_rate').html(((mtRevenueMonthly/todaysDate)*lastDay).toFixed(3)+" $");
 
             } catch (e) {
+                console.log("Error: "+e);
                 // console.log(revenueTotalData.errors.message);
                 swal(e.name, e.message, "error");
             }
@@ -2421,6 +2422,7 @@
             seatExChannelsParams.channel = seats[seatId].excluded_channels.join(',');
 
             excludedChannels = await seats[seatId].api.request(seatExChannelsParams).catch(e => {
+                console.log("Error: "+e);
                 // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
                 hide_loader();
                 if (e === 401) swal("Api Request Error",e.message,'error');//top.location.reload();
