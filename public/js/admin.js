@@ -969,8 +969,8 @@
                     try {
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (error) {
-                        console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        console.log("Error: "+error);
+                        swal(error.name,error.message,"error");
                         hide_loader();
                         if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
