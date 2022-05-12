@@ -2624,7 +2624,7 @@
                 console.log("Error: "+e);
                 // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
                 // hide_loader();
-                if (e === 401) swal("Api Request Error",e.message,'error');//top.location.reload();
+                if (e === 401) swal('Unauthenticated','API not authenticated','error');//top.location.reload();
             });
             if(!excludedChannels) return 0;
             for (const [index, record] of excludedChannels.data.entries()) {
@@ -2654,7 +2654,7 @@
             // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
             console.log("Error: "+e);
             swal(e.name,e.message,"error");
-            if (e === 401) swal("Api Request Error",e.message,'error');
+            if (e === 401) swal('Unauthenticated',' API not authenticated','error');//top.location.reload();
             // hide_loader();
         }
     }
