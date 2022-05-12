@@ -245,7 +245,7 @@ function clearDropdownValue(element) {
                 seat = window["seats"][selected_seats[0]];
                 if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
             }
-
+            if (!MetricRequest) return 0;
             metrics = MetricRequest.data.metrics;
             for (const key of Object.keys(metrics)) {
                 const metric = metrics[key];

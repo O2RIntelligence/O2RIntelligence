@@ -35,6 +35,7 @@
         $(".loader").hide();
     }
     $(function() {
+        if (!window["seats"]) return 0;
         // init seat APIs
         for (const seatId of Object.keys(window["seats"])) {
             window["seats"][seatId].api = new adtelligent(window["seats"][seatId]);
@@ -401,7 +402,7 @@
                     } catch (e) {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
+                        // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
@@ -410,7 +411,7 @@
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
+                        // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
 
@@ -970,7 +971,7 @@
                     } catch (error) {
                         console.log("Error: "+error);
                         swal(error.name,error.message,"error");
-                        hide_loader();
+                        // hide_loader();
                         if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
@@ -978,7 +979,7 @@
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
+                        // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
                     // get data to deduct if has excluded channel
@@ -1098,7 +1099,7 @@
                     } catch (error) {
                         console.log("Error: "+error);
                         swal(error.name,error.message,"error");
-                        hide_loader();
+                        // hide_loader();
                         if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
@@ -1122,7 +1123,7 @@
                     } catch (e) {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
+                        // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
@@ -1309,10 +1310,11 @@
                     let ReportRequest = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
+                        // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
 
+                    if (!ReportRequest) continue;
                     // excluded channels data
                     if (seats[seatId].excluded_channels.length) {
                         ReportRequest = await window['filterEcludedChannels'](seatId, dateParams, ReportRequest);
@@ -1692,7 +1694,13 @@
                     const seatId = element;
                     const seat = seats[seatId];
 
-                    revenueTotalData = await seat.api.request(chanelRequestBody);
+                    revenueTotalData = await seat.api.request(chanelRequestBody).catch(e => {
+                        console.log("Error: "+e);
+                        // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
+                        // hide_loader();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//console.log("got 401");//top.location.reload();
+                    });
+                    if (!revenueTotalData) continue;
                     $(revenueTotalData.data).each(function (key, singleData) {
                         if (msChannelIds.includes(singleData.channel.id.toString())) {
                             msRevenueMonthly += singleData.revenue_total;
@@ -1712,7 +1720,8 @@
             } catch (e) {
                 console.log("Error: "+e);
                 // console.log(revenueTotalData.errors.message);
-                swal(e.name, e.message, "error");
+                if (e === 401) swal("Api Request Error",e.message,'error');//top.location.reload();
+                else swal(e.name, e.message, "error");
             }
         }
 
@@ -1801,10 +1810,9 @@
 
                     } catch (e) {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (e === 401) console.log("got 401");//top.location.reload();
-
+                        // hide_loader();
+                        if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        else swal(e.name,e.message,"error");
                     }
                 }
 
@@ -1972,7 +1980,7 @@
                     } catch (e) {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
+                        // hide_loader();
                         if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//console.log("got 401");//top.location.reload();
 
                     }
@@ -2425,9 +2433,10 @@
             excludedChannels = await seats[seatId].api.request(seatExChannelsParams).catch(e => {
                 console.log("Error: "+e);
                 // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
-                hide_loader();
+                // hide_loader();
                 if (e === 401) swal("Api Request Error",e.message,'error');//top.location.reload();
             });
+            if(!excludedChannels) return 0;
             for (const [index, record] of excludedChannels.data.entries()) {
 
                 const dataIdx = res.data.findIndex(m => {
@@ -2456,7 +2465,7 @@
             console.log("Error: "+e);
             if (e === 401) swal("Api Request Error",e.message,'error');
             // swal(e.name,e.message,"error");
-            hide_loader();
+            // hide_loader();
         }
     }
 
