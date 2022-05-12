@@ -997,6 +997,12 @@
                         swal(error.name,error.message,"error");
                         // hide_loader();
                         if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        chartRevenueHour.push({
+                            label: seat.name,
+                            data: 0,
+                            borderColor: colors[index],
+                            pointColor: "rgba(200,122,20,1)",
+                        })
                         continue;
                     }
                     // get impressions & data
@@ -1006,6 +1012,15 @@
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
+                    if (!response){
+                        chartRevenueHour.push({
+                            label: seat.name,
+                            data: 0,
+                            borderColor: colors[index],
+                            pointColor: "rgba(200,122,20,1)",
+                        })
+                        continue;
+                    }
                     // get data to deduct if has excluded channel
                     if (seats[seatId].excluded_channels.length) {
                         response = await window['filterEcludedChannels'](seatId, dateParams, response);
@@ -2358,6 +2373,7 @@
     }
 
     function appendImpressionChart(datasets) {
+        console.log(datasets);
         try {
             if (window["impressionChart"]) window["impressionChart"].destroy();
             var ctx = document.getElementById("impression_chart").getContext('2d');
