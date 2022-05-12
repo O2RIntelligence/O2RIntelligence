@@ -41,7 +41,7 @@
             window["seats"][seatId].excluded_channels = window["seats"][seatId].excluded_channels.filter(m => m != '');
         }
         var seats = window["seats"];
-        getMonthlyRunrateForMediaSources();
+        // getMonthlyRunrateForMediaSources();
         function get_selected_seats() {
             /*if (window["user_role"] == 'admin')*/ return $("select[name=seats]").val();
             // else return [window["user_id"]];
@@ -231,9 +231,9 @@
 
                 $(".filter-dates").on("click", function() {
                     runReportFunction();
+
                 });
                 $(".refresh-seats").on('click', function() {
-                    getMonthlyRunrateForMediaSources();
                     runReportFunction();
 
                 });
@@ -245,6 +245,8 @@
         }
         function runReportFunction() {
             try {
+                getMonthlyRunrateForMediaSources();
+
                 if (typeof current_page != 'undefined') {
                     start_loader();
                     switch (current_page) {
@@ -1251,6 +1253,7 @@
 
         async function MediaSourceAjax() {
             try {
+                getMonthlyRunrateForMediaSources();
                 $("#general_media").trigger('click');
                 // $("#general_media").prop("checked", true);
                 // window["media_type"] = 'general';
@@ -1644,16 +1647,40 @@
             }
         }
 
-        function getDailyRunrateForMediaSources(msRevenue,mtRevenue){
+        async function getDailyRunrateForMediaSources(msRevenue,mtRevenue){
             try {
-                var today = new Date();
-                var todaysDate = today.getDate();
-                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
-                console.log("MS-daily: "+msRevenue+" MT-daily:"+mtRevenue);
+                var today = new Date($("input[name=start_date]").val());
+                var hourParams = {
+                    'date_from': today.toLocaleDateString('en-ca'),
+                    'date_to': today.toLocaleDateString('en-ca'),
+                    'limit': 10000,
+                    'page': 1,
+                    'report': 'date,hour',
+                    'type': 'ssp_statistic',
+                    'tz': 'GMT',
+                };
+                let seat;
+                for(let i=1;i<=3;i++){
+                    if(window["seats"][i]!==undefined) {
+                        seat = window["seats"][i];
+                        break;
+                    }
+                }
+                let api = new adtelligent(seat);
+                let hourResponse = await api.request(hourParams,"dictionary/hour" ).catch(e => {
+                    console.log("Error: "+e);
+                    swal(e.name,e.message,"error");
+                    // hide_loader();
+                    if (e == 401) swal('Request Error' + 'Could not send Hour Request','error');//top.location.reload();
+                });
+                console.log(hourResponse)
+                let hour = hourResponse.data.length;
+                console.log("MS-daily: "+msRevenue+" MT-daily:"+mtRevenue+" HourCount: "+hour);
                 if(isNaN(msRevenue)) msRevenue = 0;
                 if(isNaN(mtRevenue)) mtRevenue = 0;
-                $('#mt_daily_run_rate').html(((msRevenue/todaysDate)*lastDay).toFixed(3)+" $");
-                $('#ms_daily_run_rate').html(((mtRevenue/todaysDate)*lastDay).toFixed(3)+" $");
+                if(isNaN(hour)||hour===0||hour===undefined) hour = 1;
+                $('#ms_daily_run_rate').html(((msRevenue/hour)*24).toFixed(3)+" $");
+                $('#mt_daily_run_rate').html(((mtRevenue/hour)*24).toFixed(3)+" $");
 
             } catch (e) {
                 swal(e.name, e.message, "error");
@@ -1661,56 +1688,184 @@
         }
 
         async function getMonthlyRunrateForMediaSources(){
-            let revenueTotalData;
             try {
-                var msChannelIds = [];
-                $.get("../../api/get-ms-channel-ids", function(data, status){
-                    msChannelIds = data.value.split(',');
-                });
-                var selected_seats = get_selected_seats();
-                let msRevenueMonthly=0, mtRevenueMonthly = 0;
-                var today = new Date($("input[name=start_date]").val());
+
+                var today = new Date($("input[name=end_date]").val());
                 var todaysDate = today.getDate();
                 var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
                 var start_date = (new Date(today.getFullYear(), today.getMonth(), 1)).toLocaleDateString("en-CA");
-                var end_date = (new Date(today.getFullYear(), today.getMonth()+1, 0)).toLocaleDateString("en-CA");
-                var chanelRequestBody = {
-                    "report": 'date,channel',
+                var end_date = today.toLocaleDateString("en-CA");//(new Date(today.getFullYear(), today.getMonth()+1, 0)).toLocaleDateString("en-CA");
+                var dateParams = {
                     "date_from": start_date,
                     "date_to": end_date,
-                    "fields": 'revenue_channel,revenue_total,channel',
-                    "limit": 1000000,
+                    "fields": 'date,channel,campaign_integration_type,environment,ad_requests,ad_opportunities,impressions_good,revenue_channel,ecpm_channel,revenue_total,ecpm,fill_rate_ad_opportunities,scoring_pixalate_s2s_sas_request',
+                    "is_rtb": 'not_apply',
+                    "limit": 10000,
                     "page": 1,
+                    "report": "date,channel,campaign_integration_type,environment",
                     "strategy": 'last-collection',
                     "type": 'ssp_statistic',
-                    "tz": 'GMT',
-                    "is_rtb": 'not_apply'
+                    "tz": 'GMT'
                 };
 
-                for (const element of selected_seats) {
-                    const seatId = element;
+                var selected_seats = get_selected_seats();
+                let DateMappedRecordsOverall = [];
+                let RevenueDataFromeDateMappedRecordsCompare = {};
+                window["media_source_data"] = [];
+                for (let index = 0; index < selected_seats.length; index++) {
+                    // init seat
+                    const seatId = selected_seats[index];
                     const seat = seats[seatId];
 
-                    revenueTotalData = await seat.api.request(chanelRequestBody);
-                    $(revenueTotalData.data).each(function (key, singleData) {
-                        if (msChannelIds.includes(singleData.channel.id.toString())) {
-                            msRevenueMonthly += singleData.revenue_total;
+                    // get impressions & data
+                    let ReportRequest = await seats[seatId].api.request(dateParams).catch(e => {
+                        console.log("Error: "+e);
+                        swal(e.name,e.message,"error");
+                        // hide_loader();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                    });
+                    if (!ReportRequest) continue;
+                    // excluded channels data
+                    if (seats[seatId].excluded_channels.length) {
+                        ReportRequest = await window['filterEcludedChannels'](seatId, dateParams, ReportRequest);
+                    }
+
+                    ReportRequest.data = ReportRequest.data.filter(m => m.environment.id != 'other');
+
+                    let CR_SrcGrouped = _(ReportRequest.data).groupBy(function(record) {
+                        return window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT';
+                    }).value();
+
+                    for (const channel of Object.keys(CR_SrcGrouped)) {
+                        var totalSeatRevenue = _(CR_SrcGrouped[channel]).sumBy((o) => parseFloat(o.revenue_total)).toFixed(2);
+
+                        // group records by environment
+                        let RecordsEnvNameGrouped = _(CR_SrcGrouped[channel]).groupBy(function(record) {
+                            return record.environment.name;
+                        });
+
+                        // group records by integration type
+                        let RecordsIntGrouped = _(CR_SrcGrouped[channel]).groupBy(function(record) {
+                            return record.campaign_integration_type.name;
+                        });
+
+
+                        // calculate revenue for integration type
+                        let ChannelRevenueInt = RecordsIntGrouped.map((objs, key) => ({
+                            'integration': key,
+                            'revenue_total': _.sumBy(objs, 'revenue_total'),
+                        })).keyBy('integration').value();
+                        processChartEntity(ChannelRevenueInt, `${channel}_Int`, 'integration');
+                        processChartEntity(ChannelRevenueInt, 'G_Int', 'integration');
+
+                    }
+
+                    // map data for source compare report
+                    let RecordsDateEnvChannelGroupped = _(ReportRequest.data).groupBy(function(record) {
+                        return record.date.id;
+                    }).value();
+
+                    for (const dateKey of Object.keys(RecordsDateEnvChannelGroupped)) {
+                        if (dateKey in RevenueDataFromeDateMappedRecordsCompare == false)
+                            RevenueDataFromeDateMappedRecordsCompare[dateKey] = RecordsDateEnvChannelGroupped[dateKey];
+                        else
+                            RevenueDataFromeDateMappedRecordsCompare[dateKey] = [...RevenueDataFromeDateMappedRecordsCompare[dateKey], ...RecordsDateEnvChannelGroupped[dateKey]];
+                    }
+
+                    // map data for overall performance report
+                    window["media_source_data"] = [...ReportRequest.data, ...window["media_source_data"]];
+
+                    let RecordsDateEnvMapped = _(ReportRequest.data).groupBy(function(record) {
+                        return record.environment.id + "_" + record.date.id;
+                    })
+                        .map((objs, key) => ({
+                            'date': objs[0].date.id,
+                            'environment': objs[0].environment.id,
+                            'impressions_good': _.sumBy(objs, 'impressions_good'),
+                            'ad_requests': _.sumBy(objs, 'ad_requests'),
+                            'revenue_total': _.sumBy(objs, 'revenue_total'),
+                        })).value();
+
+                    DateMappedRecordsOverall = [...DateMappedRecordsOverall, ...RecordsDateEnvMapped];
+                }
+                // overall performance groupping
+                DateMappedRecordsOverall = _(DateMappedRecordsOverall).groupBy(function(record) {
+                    return record.environment + "_" + record.date;
+                })
+                    .map((objs, key) => ({
+                        'date': objs[0].date,
+                        'environment': objs[0].environment,
+                        'impressions_good': _.sumBy(objs, 'impressions_good'),
+                        'ad_requests': _.sumBy(objs, 'ad_requests'),
+                        'revenue_total': _.sumBy(objs, 'revenue_total'),
+                    })).value();
+
+
+                // compare performance table
+                for (const dateKey of Object.keys(RevenueDataFromeDateMappedRecordsCompare)) {
+                    RevenueDataFromeDateMappedRecordsCompare[dateKey] = _(RevenueDataFromeDateMappedRecordsCompare[dateKey]).groupBy(function(record) {
+                        return (window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT') + '_' + record.environment.id;
+                    })
+                        .map((objs, key) => ({
+                            'date': objs[0].date.id,
+                            'environment': objs[0].environment.id,
+                            'channel': key.split('_')[0],
+                            'impressions_good': _.sumBy(objs, 'impressions_good'),
+                            'ad_requests': _.sumBy(objs, 'ad_requests'),
+                            'revenue_total': _.sumBy(objs, 'revenue_total'),
+                        })).value();
+                }
+                window["revenue_data_from_performance_records"] = RevenueDataFromeDateMappedRecordsCompare;
+                    let totalRevenueMt=0
+                    let totalRevenueMs=0
+                    for (const key of Object.keys(window["revenue_data_from_performance_records"])) {
+                        const record = window["revenue_data_from_performance_records"][key];
+
+                        let ms, mt;
+                        if (selected_compare_env.length) {
+                            ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
+                            mt = record.find(m => m.environment == selected_compare_env && m.channel == 'MT');
                         } else {
-                            mtRevenueMonthly += singleData.revenue_total;
+                            let channels = _(record).groupBy(function (m) {
+                                return m.channel;
+                            })
+                                .map((objs, key) => ({
+                                    'channel': key,
+                                    'impressions_good': _.sumBy(objs, 'impressions_good'),
+                                    'revenue_total': _.sumBy(objs, 'revenue_total'),
+                                    'ad_requests': _.sumBy(objs, 'ad_requests')
+                                }))
+                                .keyBy("channel")
+                                .value();
+                            ms = channels["MS"];
+                            mt = channels["MT"];
                         }
 
-                    });
+                        if (!ms || ms == -1) ms = {
+                            impressions_good: 0,
+                            revenue_total: 0,
+                            ad_requests: 0
+                        };
 
-                }
-                console.log("MS-monthly: "+msRevenueMonthly+" MT-monthly:"+mtRevenueMonthly);
-                if(isNaN(msRevenueMonthly)) msRevenueMonthly = 0;
-                if(isNaN(mtRevenueMonthly)) mtRevenueMonthly = 0;
-                $('#mt_monthly_run_rate').html(((msRevenueMonthly/todaysDate)*lastDay).toFixed(3)+" $");
-                $('#ms_monthly_run_rate').html(((mtRevenueMonthly/todaysDate)*lastDay).toFixed(3)+" $");
+                        if (!mt || mt == -1) mt = {
+                            impressions_good: 0,
+                            revenue_total: 0,
+                            ad_requests: 0
+                        };
+                        totalRevenueMt += mt.revenue_total;
+                        totalRevenueMs += ms.revenue_total;
 
-            } catch (e) {
-                // console.log(revenueTotalData.errors.message);
-                swal(e.name, e.message, "error");
+                    }
+                console.log("MS-monthly--: "+totalRevenueMs+" MT-monthly--:"+totalRevenueMt);
+                if(isNaN(totalRevenueMs)) totalRevenueMs = 0;
+                if(isNaN(totalRevenueMt)) totalRevenueMt = 0;
+                $('#ms_monthly_run_rate').html(((totalRevenueMs/todaysDate)*lastDay).toFixed(3)+" $");
+                $('#mt_monthly_run_rate').html(((totalRevenueMt/todaysDate)*lastDay).toFixed(3)+" $");
+                delete window["revenue_data_from_performance_records"];
+            }catch (e) {
+                console.log("Error: "+e);
+                swal(e.name,e.message,"error");
+                hide_loader();
             }
         }
 
@@ -2135,8 +2290,6 @@
                 hide_loader();
             }
         }
-
-
 
 
     });
