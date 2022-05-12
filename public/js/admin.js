@@ -1003,6 +1003,9 @@
                             borderColor: colors[index],
                             pointColor: "rgba(200,122,20,1)",
                         })
+                        window["DoughnutCharts"]["Seat"].data.push(0);
+                        window["DoughnutCharts"]["Seat"].labels.push(seat.name);
+
                         continue;
                     }
                     // get impressions & data
@@ -1019,6 +1022,9 @@
                             borderColor: colors[index],
                             pointColor: "rgba(200,122,20,1)",
                         })
+                        window["DoughnutCharts"]["Seat"].data.push(0);
+                        window["DoughnutCharts"]["Seat"].labels.push(seat.name);
+
                         continue;
                     }
                     // get data to deduct if has excluded channel

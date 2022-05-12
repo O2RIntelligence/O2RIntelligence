@@ -46,7 +46,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5 non-partner">
             <div class="box grid-box with-border">
                 <div class="box-body">
                     <div class="isResizable">
@@ -57,7 +57,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="@if($user->isRole('seat')) col-md-6 @else col-md-4 @endif">
             <div class="box grid-box with-border">
                 <div class="box-body">
                     <div class="isResizable">
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="@if($user->isRole('seat')) col-md-6 @else col-md-3 @endif">
             <div class="box grid-box with-border">
                 <div class="box-body">
                     <div class="isResizable">
