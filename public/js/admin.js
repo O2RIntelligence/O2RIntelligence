@@ -55,7 +55,8 @@
             var RNP_1 = false;
             var RNP_1_Data = {
                 revenue: [],
-                net_profit: []
+                net_profit: [],
+                gross_profit: []
             }
         }
 
@@ -389,7 +390,8 @@
                 var DateMappedRecords = [];
                 RNP_1_Data = {
                     revenue: [],
-                    net_profit: []
+                    net_profit: [],
+                    gross_profit: []
                 }
                 for (let index = 0; index < selected_seats.length; index++) {
                     // init seat
@@ -404,6 +406,10 @@
                         swal(e.name,e.message,"error");
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+
+                        RNP_1_Data.revenue.push(0);
+                        RNP_1_Data.net_profit.push(0);
+                        RNP_1_Data.gross_profit.push(0);
                         continue;
                     }
 
@@ -413,7 +419,13 @@
                         swal(e.name,e.message,"error");
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+
+                        RNP_1_Data.revenue.push(0);
+                        RNP_1_Data.net_profit.push(0);
+                        RNP_1_Data.gross_profit.push(0);
                     });
+
+                    if(!response) continue;
 
                     // excluded channels data
                     if (seats[seatId].excluded_channels.length) {
@@ -472,6 +484,7 @@
                     // push data for first chart
                     RNP_1_Data.revenue.push(VC_RowData.revenue_total);
                     RNP_1_Data.net_profit.push(VC_RowData.net_income);
+                    RNP_1_Data.gross_profit.push(VC_RowData.gross_profit);
 
                     // marketplace fee for environment & date
                     let CR_DateEnvGrouped = _(campaignRequest.data)
@@ -736,6 +749,7 @@
                 var selected_seats_names = selected_seats.map(m => seats[m].name);
                 var revenue_background = Array(selected_seats.length).fill('rgb(148 211 247)');
                 var net_profit_background = Array(selected_seats.length).fill('rgb(0 166 90)');
+                var gross_profit_background = Array(selected_seats.length).fill('rgb(0 0 90)');
 
                 var ctx = document.getElementById("RNP_1").getContext('2d');
                 if (RNP_1)
@@ -753,6 +767,10 @@
                             label: 'Net Income',
                             data: RNP_1_Data.net_profit,
                             backgroundColor: net_profit_background,
+                        },{
+                            label: 'Net Income',
+                            data: RNP_1_Data.gross_profit,
+                            backgroundColor: gross_profit_background,
                         }]
                     },
                     options: {
