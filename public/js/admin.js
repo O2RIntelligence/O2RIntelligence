@@ -1916,12 +1916,12 @@
         }
 
         function getMsChannelIds(){
-            var msChannelIds = [];
-            $.get("../../api/get-ms-channel-ids", function(data, status){
-                msChannelIds = data.value.split(',');
-                return msChannelIds;
-            });
-            return msChannelIds;
+            // var msChannelIds = [];
+            // $.get("../../api/get-ms-channel-ids", function(data, status){
+            //     msChannelIds = data.value.split(',');
+            //     // return msChannelIds;
+            // });
+            return window['mt_channel_id'];
         }
         async function appendDailyChartByHour(){
             try {
