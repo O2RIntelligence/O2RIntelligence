@@ -2020,11 +2020,8 @@
                     totalMtRevenueByHour+=mtRevenueByHour[key];
 
                 });
-                // console.log("MS: "+totalMsRevenueByHour+" MT:"+totalMtRevenueByHour);
-                // $('#mt_daily_run_rate').html(((totalMtRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
-                // $('#ms_daily_run_rate').html(((totalMsRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
-                totalMtRevenueByHour = 0;
-                totalMsRevenueByHour = 0;
+                console.log("MS::H: "+msFillRateByHour+" MT::H:"+mtFillRateByHour);
+
 
                 $(hour).each(function (key,singleHour) {
                     combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
@@ -2126,7 +2123,7 @@
                 var mtImpressionsByDay = Array(dateCount).fill(0);
                 var msImpressionsByDay = Array(dateCount).fill(0);
                 var combinedImpressionsByDay = Array(dateCount).fill(0);
-
+                console.log("msdaily Initialized: "+msAdRequestByDay+" datecount: "+dateCountnt);
                 var msFillRateByDay = Array(dateCount).fill(0);
                 var mtFillRateByDay = Array(dateCount).fill(0);
                 var combinedFillRateByDay = Array(dateCount).fill(0);
@@ -2188,9 +2185,7 @@
 
                 });
 
-
-                totalMtRevenueByDay = 0;
-                totalMsRevenueByDay = 0;
+                console.log("MS::D: "+msFillRateByDay+" MT::D:"+mtFillRateByDay);
 
                 $(dateCountArray).each(function (key,singleDay) {
                     combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
