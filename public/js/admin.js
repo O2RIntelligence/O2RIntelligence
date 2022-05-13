@@ -1522,8 +1522,8 @@
                 let totalAdRequestsMs = 0
                 for (const key of Object.keys(window["compare_performance_records"])) {
                     const record = window["compare_performance_records"][key];
-                    console.log(Object.keys(window["compare_performance_records"]));
-                    console.log(window["mt_channel_id"]);
+                    // console.log(Object.keys(window["compare_performance_records"]));
+                    // console.log(window["mt_channel_id"]);
                     let ms, mt;
                     if (selected_compare_env.length) {
                         ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
@@ -1717,9 +1717,9 @@
                     // hide_loader();
                     if (e == 401) swal('Request Error' + 'Could not send Hour Request','error');//top.location.reload();
                 });
-                console.log(hourResponse)
+                // console.log(hourResponse)
                 let hour = hourResponse.data.length;
-                console.log("MS-daily: "+msRevenue+" MT-daily:"+mtRevenue+" HourCount: "+hour);
+                // console.log("MS-daily: "+msRevenue+" MT-daily:"+mtRevenue+" HourCount: "+hour);
                 if(isNaN(msRevenue)) msRevenue = 0;
                 if(isNaN(mtRevenue)) mtRevenue = 0;
                 if(isNaN(hour)||hour===0||hour===undefined) hour = 1;
@@ -1902,7 +1902,7 @@
                     totalRevenueMs += ms.revenue_total;
 
                 }
-                console.log("MS-monthly--: "+totalRevenueMs+" MT-monthly--:"+totalRevenueMt);
+                // console.log("MS-monthly--: "+totalRevenueMs+" MT-monthly--:"+totalRevenueMt);
                 if(isNaN(totalRevenueMs)) totalRevenueMs = 0;
                 if(isNaN(totalRevenueMt)) totalRevenueMt = 0;
                 $('#ms_monthly_run_rate').html(((totalRevenueMs/todaysDate)*lastDay).toFixed(3)+" $");
@@ -1918,6 +1918,7 @@
         function getMsChannelIds(){
             return window['mt_channel_id'];
         }
+
         async function appendDailyChartByHour(){
             try {
                 $('#appendDailyChartByHourLoader').show();
@@ -1983,7 +1984,7 @@
 
                         });
 
-                        console.log("msAdRequestByHour: "+msAdRequestByHour+" mtAdRequestByHour: "+mtAdRequestByHour);
+                        // console.log("msAdRequestByHour: "+msAdRequestByHour+" mtAdRequestByHour: "+mtAdRequestByHour);
                         // console.log({{json_encode($array_without_keys)}});
 
                     } catch (e) {
@@ -2045,7 +2046,7 @@
                 // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
                 // if(graphs3!== undefined){
                 if(!graphs3.reset()){
-                    console.log("Could not reset graph");
+                    // console.log("Could not reset graph");
                 }
                 // }
 
@@ -2209,7 +2210,7 @@
                 // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
                 // if(graphs3!== undefined){
                 if(!graphsMonthly.reset()){
-                    console.log("Could not reset graph");
+                    // console.log("Could not reset graph");
                 }
                 // }
 
