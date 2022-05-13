@@ -1916,11 +1916,6 @@
         }
 
         function getMsChannelIds(){
-            // var msChannelIds = [];
-            // $.get("../../api/get-ms-channel-ids", function(data, status){
-            //     msChannelIds = data.value.split(',');
-            //     // return msChannelIds;
-            // });
             return window['mt_channel_id'];
         }
         async function appendDailyChartByHour(){
@@ -1950,7 +1945,7 @@
                 };
                 // console.log(chanelRequestBody.hour);
                 var selected_seats = get_selected_seats();
-                var DateMappedRecords = Array(24).fill(0);
+
 
                 var mtAdRequestByHour = Array(24).fill(0);
                 var msAdRequestByHour = Array(24).fill(0);
@@ -1962,12 +1957,6 @@
                 var msFillRateByHour = Array(24).fill(0);
                 var mtFillRateByHour = Array(24).fill(0);
                 var combinedFillRateByHour = Array(24).fill(0);
-
-                var totalMtRevenueByHour = 0;
-                var totalMsRevenueByHour = 0;
-                var mtRevenueByHour = Array(24).fill(0);
-                var msRevenueByHour = Array(24).fill(0);
-
 
 
                 for (const element of selected_seats) {
@@ -2016,7 +2005,7 @@
 
 
                 });
-                console.log("MS::H: "+msFillRateByHour+" MT::H:"+mtFillRateByHour);
+                // console.log("MS::H: "+msFillRateByHour+" MT::H:"+mtFillRateByHour);
 
 
                 $(hour).each(function (key,singleHour) {
@@ -2075,9 +2064,7 @@
         }
 
         function channelIdExists(channelList, channelId) {
-            console.log("channelList: "+channelList+" channelId: "+channelId);
             var channelIndex = channelList.findIndex(c => Number(c) === Number(channelId));
-            console.log("channelIndex: "+channelIndex);
             return channelIndex > -1;
         }
 
@@ -2121,7 +2108,6 @@
                 var mtImpressionsByDay = Array(dateCount).fill(0);
                 var msImpressionsByDay = Array(dateCount).fill(0);
                 var combinedImpressionsByDay = Array(dateCount).fill(0);
-                console.log("msdaily Initialized: "+msAdRequestByDay+" datecount: "+dateCount);
                 var msFillRateByDay = Array(dateCount).fill(0);
                 var mtFillRateByDay = Array(dateCount).fill(0);
                 var combinedFillRateByDay = Array(dateCount).fill(0);
@@ -2183,7 +2169,7 @@
 
                 });
 
-                console.log("MS::D: "+msFillRateByDay+" MT::D:"+mtFillRateByDay);
+                // console.log("MS::D: "+msFillRateByDay+" MT::D:"+mtFillRateByDay);
 
                 $(dateCountArray).each(function (key,singleDay) {
                     combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
