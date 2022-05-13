@@ -1960,9 +1960,9 @@
                 var combinedFillRateByHour = Array(24).fill(0);
 
 
-                for (const element of selected_seats) {
+                for (let index = 0; index < selected_seats.length; index++) {
                     // init seat
-                    const seatId = element;
+                    const seatId = selected_seats[index];
                     const seat = seats[seatId];
                     // get campaign 1120 revenue for marketplace_fee
                     let channelDataByHour;
@@ -2013,9 +2013,9 @@
                     combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
                 });
 
-                const labels = Array.from(Array(24).keys());
-                const data = {
-                    labels: labels,
+                var hourlyLabels = Array.from(Array(24).keys());
+                var hourlyData = {
+                    labels: hourlyLabels,
                     datasets: [
                         {
                             label: ['Media-S'],
@@ -2037,25 +2037,19 @@
                         },
                     ]
                 };
-                const config = {
+                var config_hourly = {
                     type: 'line',
-                    data: data,
-                    options: {}
-                };
-                const graphs3 = new Chart(document.getElementById('mt_daily_chart_by_hour'), config);
-                // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
-                // if(graphs3!== undefined){
-                if(!graphs3.reset()){
-                    // console.log("Could not reset graph");
-                }
-                // }
+                    data: hourlyData,
 
-                const myChart = new Chart(
-                    graphs3,
-                    config
-                );
+                };
+
+                if($('#mt_daily_chart_by_hour').attr("class") !== undefined){
+                    resetGraph('mt_daily_chart_by_hour','mt_daily_chart_by_hour_container','<canvas id="mt_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>')
+                }
+                new Chart('mt_daily_chart_by_hour',config_hourly);
                 $('#appendDailyChartByHourLoader').hide()
                 $('#isResizableHour').css('opacity',1);
+
 
             }catch (e) {
                 console.log("Error: "+e);
@@ -2064,6 +2058,10 @@
             }
         }
 
+        function  resetGraph(canvasId,containerId,canvasElement){
+            $('#'+canvasId).remove();
+            $('#'+containerId).html(canvasElement)
+        }
         function channelIdExists(channelList, channelId) {
             var channelIndex = channelList.findIndex(c => Number(c) === Number(channelId));
             return channelIndex > -1;
@@ -2120,9 +2118,9 @@
                 var msRevenueByDay = Array(dateCount).fill(0);
 
 
-                for (const element of selected_seats) {
+                for (let index = 0; index < selected_seats.length; index++) {
                     // init seat
-                    const seatId = element;
+                    const seatId = selected_seats[index];
                     const seat = seats[seatId];
                     // get campaign 1120 revenue for marketplace_fee
                     let channelDataByDay;
@@ -2206,18 +2204,10 @@
                     data: data,
                     options: {}
                 };
-                const graphsMonthly = new Chart(document.getElementById('mt_monthly_chart_by_day'), config);
-                // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
-                // if(graphs3!== undefined){
-                if(!graphsMonthly.reset()){
-                    // console.log("Could not reset graph");
+                if($('#mt_monthly_chart_by_day').attr("class") !== undefined){
+                    resetGraph('mt_monthly_chart_by_day','mt_monthly_chart_by_day_container','<canvas id="mt_monthly_chart_by_day" style="max-width:100%;min-height:200px;"></canvas>')
                 }
-                // }
-
-                const myChart = new Chart(
-                    graphsMonthly,
-                    config
-                );
+                new Chart('mt_monthly_chart_by_day',config);
                 $('#appendMonthlyChartBydayLoader').hide();
                 $('#isResizableDay').css('opacity',1);
 
