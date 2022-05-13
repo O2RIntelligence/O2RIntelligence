@@ -35,6 +35,7 @@
         $(".loader").hide();
     }
     $(function() {
+        if (!window["seats"]) return 0;
         // init seat APIs
         for (const seatId of Object.keys(window["seats"])) {
             window["seats"][seatId].api = new adtelligent(window["seats"][seatId]);
@@ -54,7 +55,8 @@
             var RNP_1 = false;
             var RNP_1_Data = {
                 revenue: [],
-                net_profit: []
+                net_profit: [],
+                gross_profit: []
             }
         }
 
@@ -231,7 +233,6 @@
 
                 $(".filter-dates").on("click", function() {
                     runReportFunction();
-
                 });
                 $(".refresh-seats").on('click', function() {
                     runReportFunction();
@@ -245,8 +246,6 @@
         }
         function runReportFunction() {
             try {
-                getMonthlyRunrateForMediaSources();
-
                 if (typeof current_page != 'undefined') {
                     start_loader();
                     switch (current_page) {
@@ -265,6 +264,7 @@
                         default:
                             break;
                     }
+                    hide_loader();
                 }
             }catch (e) {
                 console.log("Error: "+e);
@@ -390,7 +390,8 @@
                 var DateMappedRecords = [];
                 RNP_1_Data = {
                     revenue: [],
-                    net_profit: []
+                    net_profit: [],
+                    gross_profit: []
                 }
                 for (let index = 0; index < selected_seats.length; index++) {
                     // init seat
@@ -401,11 +402,14 @@
                     try {
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (e) {
-                        console.log(e);
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        // hide_loader();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+
+                        RNP_1_Data.revenue.push(0);
+                        RNP_1_Data.net_profit.push(0);
+                        RNP_1_Data.gross_profit.push(0);
                         continue;
                     }
 
@@ -413,9 +417,15 @@
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        // hide_loader();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+
+                        RNP_1_Data.revenue.push(0);
+                        RNP_1_Data.net_profit.push(0);
+                        RNP_1_Data.gross_profit.push(0);
                     });
+
+                    if(!response) continue;
 
                     // excluded channels data
                     if (seats[seatId].excluded_channels.length) {
@@ -474,6 +484,7 @@
                     // push data for first chart
                     RNP_1_Data.revenue.push(VC_RowData.revenue_total);
                     RNP_1_Data.net_profit.push(VC_RowData.net_income);
+                    RNP_1_Data.gross_profit.push(VC_RowData.gross_profit);
 
                     // marketplace fee for environment & date
                     let CR_DateEnvGrouped = _(campaignRequest.data)
@@ -635,10 +646,10 @@
                             .append($('<td>')
                                 .text("$" + window["formatMoney"](record.gross_profit, 2))
                             )
-                            .append($('<td>')
+                            .append($('<td class="non-partner">')
                                 .text("$" + window["formatMoney"](record.net_income, 2))
                             )
-                            .append($('<td>')
+                            .append($('<td class="non-partner">')
                                 .text("$" + window["formatMoney"](difference, 2))
                                 .css('background-color', background)
                             )
@@ -738,24 +749,35 @@
                 var selected_seats_names = selected_seats.map(m => seats[m].name);
                 var revenue_background = Array(selected_seats.length).fill('rgb(148 211 247)');
                 var net_profit_background = Array(selected_seats.length).fill('rgb(0 166 90)');
+                var gross_profit_background = Array(selected_seats.length).fill('rgb(0 0 90)');
 
                 var ctx = document.getElementById("RNP_1").getContext('2d');
                 if (RNP_1)
                     RNP_1.destroy();
+                var dataset =[{
+                    label: 'Revenue',
+                    data: RNP_1_Data.revenue,
+                    backgroundColor: revenue_background,
+                }] ;
+                if (window['user_role']=='seat') {
+                    dataset.push({
+                        label: 'Gross Profit',
+                        data: RNP_1_Data.gross_profit,
+                        backgroundColor: gross_profit_background,
+                    });
+                } else{
+                    dataset.push({
+                        label: 'Net Income',
+                        data: RNP_1_Data.net_profit,
+                        backgroundColor: net_profit_background,
+                    });
+                }
 
                 RNP_1 = new Chart(ctx, {
                     type: 'horizontalBar',
                     data: {
                         labels: selected_seats_names,
-                        datasets: [{
-                            label: 'Revenue',
-                            data: RNP_1_Data.revenue,
-                            backgroundColor: revenue_background,
-                        }, {
-                            label: 'Net Income',
-                            data: RNP_1_Data.net_profit,
-                            backgroundColor: net_profit_background,
-                        }]
+                        datasets: dataset
                     },
                     options: {
                         maintainAspectRatio: false,
@@ -809,16 +831,16 @@
                         .append($('<td>')
                             .text("$" + window["formatMoney"](record.gross_profit, 2))
                         )
-                        .append($('<td>')
+                        .append($('<td class="non-partner">')
                             .text("$" + window["formatMoney"](record.partner_fee, 2))
                         )
-                        .append($('<td>')
+                        .append($('<td class="non-partner">')
                             .text(record.net_profit == 0 || record.revenue_total == 0 ||isNaN(record.net_profit / record.revenue_total)? 0 : (((record.net_profit / record.revenue_total) * 100).toFixed(2)) + "%")
                         )
-                        .append($('<td>')
+                        .append($('<td class="non-partner">')
                             .text("$" + window["formatMoney"](record.net_income, 2))
                         )
-                        .append($('<td>')
+                        .append($('<td class="non-partner">')
                             .text(isNaN(record.net_income / record.revenue_total)?0:window["formatMoney"](record.net_income / record.revenue_total * 100, 2) + "%")
                         )
                     );
@@ -971,19 +993,40 @@
                     try {
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (error) {
-                        console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (error == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        console.log("Error: "+error);
+                        swal(error.name,error.message,"error");
+                        // hide_loader();
+                        if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        chartRevenueHour.push({
+                            label: seat.name,
+                            data: 0,
+                            borderColor: colors[index],
+                            pointColor: "rgba(200,122,20,1)",
+                        })
+                        window["DoughnutCharts"]["Seat"].data.push(0);
+                        window["DoughnutCharts"]["Seat"].labels.push(seat.name);
+
                         continue;
                     }
                     // get impressions & data
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        // hide_loader();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
+                    if (!response){
+                        chartRevenueHour.push({
+                            label: seat.name,
+                            data: 0,
+                            borderColor: colors[index],
+                            pointColor: "rgba(200,122,20,1)",
+                        })
+                        window["DoughnutCharts"]["Seat"].data.push(0);
+                        window["DoughnutCharts"]["Seat"].labels.push(seat.name);
+
+                        continue;
+                    }
                     // get data to deduct if has excluded channel
                     if (seats[seatId].excluded_channels.length) {
                         response = await window['filterEcludedChannels'](seatId, dateParams, response);
@@ -1099,10 +1142,10 @@
                     try {
                         sourceRequest = await seats[seatId].api.request(sourceParams);
                     } catch (error) {
-                        console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (error == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        console.log("Error: "+error);
+                        swal(error.name,error.message,"error");
+                        // hide_loader();
+                        if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
 
@@ -1125,8 +1168,8 @@
                     } catch (e) {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        // hide_loader();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
                     }
                     var TakenAdvertiserLimit = (selected_seats.length > 1) ? 3 : (advertiserRequest.data.length < 10 ? advertiserRequest.data.length : 10);
@@ -1313,10 +1356,11 @@
                     let ReportRequest = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (e == 401) swal(e.name,e.message,'error');//top.location.reload();
+                        // hide_loader();
+                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
 
+                    if (!ReportRequest) continue;
                     // excluded channels data
                     if (seats[seatId].excluded_channels.length) {
                         ReportRequest = await window['filterEcludedChannels'](seatId, dateParams, ReportRequest);
@@ -1683,6 +1727,7 @@
                 $('#mt_daily_run_rate').html(((mtRevenue/hour)*24).toFixed(3)+" $");
 
             } catch (e) {
+                console.log("Error: "+e);
                 swal(e.name, e.message, "error");
             }
         }
@@ -1712,6 +1757,7 @@
                 let DateMappedRecordsOverall = [];
                 let RevenueDataFromeDateMappedRecordsCompare = {};
                 window["media_source_data"] = [];
+                if (!selected_seats) return 0;
                 for (let index = 0; index < selected_seats.length; index++) {
                     // init seat
                     const seatId = selected_seats[index];
@@ -1816,46 +1862,46 @@
                         })).value();
                 }
                 window["revenue_data_from_performance_records"] = RevenueDataFromeDateMappedRecordsCompare;
-                    let totalRevenueMt=0
-                    let totalRevenueMs=0
-                    for (const key of Object.keys(window["revenue_data_from_performance_records"])) {
-                        const record = window["revenue_data_from_performance_records"][key];
+                let totalRevenueMt=0
+                let totalRevenueMs=0
+                for (const key of Object.keys(window["revenue_data_from_performance_records"])) {
+                    const record = window["revenue_data_from_performance_records"][key];
 
-                        let ms, mt;
-                        if (selected_compare_env.length) {
-                            ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
-                            mt = record.find(m => m.environment == selected_compare_env && m.channel == 'MT');
-                        } else {
-                            let channels = _(record).groupBy(function (m) {
-                                return m.channel;
-                            })
-                                .map((objs, key) => ({
-                                    'channel': key,
-                                    'impressions_good': _.sumBy(objs, 'impressions_good'),
-                                    'revenue_total': _.sumBy(objs, 'revenue_total'),
-                                    'ad_requests': _.sumBy(objs, 'ad_requests')
-                                }))
-                                .keyBy("channel")
-                                .value();
-                            ms = channels["MS"];
-                            mt = channels["MT"];
-                        }
-
-                        if (!ms || ms == -1) ms = {
-                            impressions_good: 0,
-                            revenue_total: 0,
-                            ad_requests: 0
-                        };
-
-                        if (!mt || mt == -1) mt = {
-                            impressions_good: 0,
-                            revenue_total: 0,
-                            ad_requests: 0
-                        };
-                        totalRevenueMt += mt.revenue_total;
-                        totalRevenueMs += ms.revenue_total;
-
+                    let ms, mt;
+                    if (selected_compare_env.length) {
+                        ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
+                        mt = record.find(m => m.environment == selected_compare_env && m.channel == 'MT');
+                    } else {
+                        let channels = _(record).groupBy(function (m) {
+                            return m.channel;
+                        })
+                            .map((objs, key) => ({
+                                'channel': key,
+                                'impressions_good': _.sumBy(objs, 'impressions_good'),
+                                'revenue_total': _.sumBy(objs, 'revenue_total'),
+                                'ad_requests': _.sumBy(objs, 'ad_requests')
+                            }))
+                            .keyBy("channel")
+                            .value();
+                        ms = channels["MS"];
+                        mt = channels["MT"];
                     }
+
+                    if (!ms || ms == -1) ms = {
+                        impressions_good: 0,
+                        revenue_total: 0,
+                        ad_requests: 0
+                    };
+
+                    if (!mt || mt == -1) mt = {
+                        impressions_good: 0,
+                        revenue_total: 0,
+                        ad_requests: 0
+                    };
+                    totalRevenueMt += mt.revenue_total;
+                    totalRevenueMs += ms.revenue_total;
+
+                }
                 console.log("MS-monthly--: "+totalRevenueMs+" MT-monthly--:"+totalRevenueMt);
                 if(isNaN(totalRevenueMs)) totalRevenueMs = 0;
                 if(isNaN(totalRevenueMt)) totalRevenueMt = 0;
@@ -1935,7 +1981,8 @@
 
                         $(channelDataByHour.data).each(function(key,singleData){
                             // console.log(singleData.channel.id);
-                            if(msChannelIds.includes(singleData.channel.id.toString())){
+
+                            if(channelIdExists(msChannelIds,singleData.channel.id)){
                                 msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
                                 msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
                                 msRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
@@ -1954,10 +2001,9 @@
 
                     } catch (e) {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (e === 401) console.log("got 401");//top.location.reload();
-
+                        // hide_loader();
+                        if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        else swal(e.name,e.message,"error");
                     }
                 }
 
@@ -2035,6 +2081,11 @@
             }
         }
 
+        function channelIdExists(channelList, channelId) {
+            var channelIndex = channelList.findIndex(c => Number(c) === Number(channelId));
+            return channelIndex > -1;
+        }
+
         async function appendMonthlyChartByday(){
             try {
                 $('#appendMonthlyChartBydayLoader').show();
@@ -2069,8 +2120,6 @@
                 };
                 // console.log(chanelRequestBody.hour);
                 var selected_seats = get_selected_seats();
-                var DateMappedRecords = Array(dateCount).fill(0);
-
                 var mtAdRequestByDay = Array(dateCount).fill(0);
                 var msAdRequestByDay = Array(dateCount).fill(0);
                 var combinedAdRequestByDay = Array(dateCount).fill(0);
@@ -2088,9 +2137,6 @@
                 var mtRevenueByDay = Array(dateCount).fill(0);
                 var msRevenueByDay = Array(dateCount).fill(0);
 
-                var today = new Date();
-                var todaysDate = today.getDate();
-                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
 
                 for (const element of selected_seats) {
                     // init seat
@@ -2104,7 +2150,7 @@
                         $(channelDataByDay.data).each(function(key,singleData){
                             var date = new Date(singleData.date.id);
                             date = date.getDate()-1;
-                            if(msChannelIds.includes(singleData.channel.id.toString())){
+                            if(channelIdExists(msChannelIds,singleData.channel.id)){
                                 msAdRequestByDay[date]+=singleData.ad_requests;
                                 msImpressionsByDay[date]+=singleData.impressions_good;
                                 msRevenueByDay[date]+=singleData.revenue_total;
@@ -2112,7 +2158,6 @@
                             }else{
                                 mtAdRequestByDay[date]+=singleData.ad_requests;
                                 mtImpressionsByDay[date]+=singleData.impressions_good;
-
                                 mtRevenueByDay[date]+=singleData.revenue_total;
                             }
 
@@ -2125,8 +2170,8 @@
                     } catch (e) {
                         console.log("Error: "+e);
                         swal(e.name,e.message,"error");
-                        hide_loader();
-                        if (e === 401) swal(e.name,e.message,'error');//console.log("got 401");//top.location.reload();
+                        // hide_loader();
+                        if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//console.log("got 401");//top.location.reload();
 
                     }
                 }
@@ -2477,6 +2522,7 @@
     }
 
     function appendImpressionChart(datasets) {
+        console.log(datasets);
         try {
             if (window["impressionChart"]) window["impressionChart"].destroy();
             var ctx = document.getElementById("impression_chart").getContext('2d');
@@ -2574,10 +2620,12 @@
             seatExChannelsParams.channel = seats[seatId].excluded_channels.join(',');
 
             excludedChannels = await seats[seatId].api.request(seatExChannelsParams).catch(e => {
+                console.log("Error: "+e);
                 // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
-                hide_loader();
-                if (e === 401) swal("Api Request Error",e.message,'error');//top.location.reload();
+                // hide_loader();
+                if (e === 401) swal('Unauthenticated','API not authenticated','error');//top.location.reload();
             });
+            if(!excludedChannels) return 0;
             for (const [index, record] of excludedChannels.data.entries()) {
 
                 const dataIdx = res.data.findIndex(m => {
@@ -2604,9 +2652,9 @@
         }catch (e) {
             // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
             console.log("Error: "+e);
-            if (e === 401) swal("Api Request Error",e.message,'error');
-            // swal(e.name,e.message,"error");
-            hide_loader();
+            swal(e.name,e.message,"error");
+            if (e === 401) swal('Unauthenticated',' API not authenticated','error');//top.location.reload();
+            // hide_loader();
         }
     }
 
