@@ -264,6 +264,7 @@
                         default:
                             break;
                     }
+                    hide_loader();
                 }
             }catch (e) {
                 console.log("Error: "+e);
