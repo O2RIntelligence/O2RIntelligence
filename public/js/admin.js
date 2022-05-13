@@ -1985,18 +1985,16 @@
                             if(channelIdExists(msChannelIds,singleData.channel.id)){
                                 msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
                                 msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
-                                msRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
 
                             }else{
                                 mtAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
                                 mtImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
-                                mtRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
 
                             }
 
                         });
 
-                        // console.log(channelDataByHour.data);
+                        console.log("msAdRequestByHour: "+msAdRequestByHour+" mtAdRequestByHour: "+mtAdRequestByHour);
                         // console.log({{json_encode($array_without_keys)}});
 
                     } catch (e) {
@@ -2015,9 +2013,7 @@
                     mtFillRateByHour[key] = ((mtImpressionsByHour[key]/mtAdRequestByHour[key])*100).toFixed(3);
                     combinedAdRequestByHour[key] = combinedAdRequestByHour[key]+msAdRequestByHour[key]+mtAdRequestByHour[key];
                     combinedImpressionsByHour[key] = combinedImpressionsByHour[key]+msImpressionsByHour[key]+mtImpressionsByHour[key];
-                    //
-                    totalMsRevenueByHour+=msRevenueByHour[key];
-                    totalMtRevenueByHour+=mtRevenueByHour[key];
+
 
                 });
                 console.log("MS::H: "+msFillRateByHour+" MT::H:"+mtFillRateByHour);
@@ -2080,6 +2076,7 @@
 
         function channelIdExists(channelList, channelId) {
             var channelIndex = channelList.findIndex(c => Number(c) === Number(channelId));
+            console.log("channelIndex: "+channelIndex)
             return channelIndex > -1;
         }
 
