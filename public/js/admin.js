@@ -2123,7 +2123,7 @@
                 var mtImpressionsByDay = Array(dateCount).fill(0);
                 var msImpressionsByDay = Array(dateCount).fill(0);
                 var combinedImpressionsByDay = Array(dateCount).fill(0);
-                console.log("msdaily Initialized: "+msAdRequestByDay+" datecount: "+dateCountnt);
+                console.log("msdaily Initialized: "+msAdRequestByDay+" datecount: "+dateCount);
                 var msFillRateByDay = Array(dateCount).fill(0);
                 var mtFillRateByDay = Array(dateCount).fill(0);
                 var combinedFillRateByDay = Array(dateCount).fill(0);
