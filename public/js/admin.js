@@ -2075,8 +2075,9 @@
         }
 
         function channelIdExists(channelList, channelId) {
+            console.log("channelList: "+channelList+" channelId: "+channelId);
             var channelIndex = channelList.findIndex(c => Number(c) === Number(channelId));
-            console.log("channelIndex: "+channelIndex)
+            console.log("channelIndex: "+channelIndex);
             return channelIndex > -1;
         }
 
