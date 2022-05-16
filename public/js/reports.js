@@ -257,7 +257,7 @@ function clearDropdownValue(element) {
             }
         } catch (e) {
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 007","Error Occurred in Adtelligent Server","error");
             hide_loader();
         }
     }

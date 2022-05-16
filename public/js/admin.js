@@ -75,7 +75,7 @@
                 // return number.toFixed(decPlaces).replace(/\d(?=(\d{3})+\.)/g, '$&,');
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 001","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -104,7 +104,7 @@
                 appendMediaSource();
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 002","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -146,7 +146,7 @@
                 appendOverallPerformanceTable(records);
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 003","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -197,7 +197,7 @@
                 appendOverallPerformanceChart(OverallPerformanceChart);
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 004","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -240,7 +240,7 @@
                 });
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 005","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -267,7 +267,7 @@
                 }
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 006","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -300,7 +300,7 @@
                 }
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 008","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -315,7 +315,7 @@
                 window["calculate_media"]();
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 009","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         });
@@ -331,7 +331,7 @@
                 }
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 010","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         });
@@ -402,7 +402,7 @@
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (e) {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        swal("Server Error Code: 011","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
 
@@ -415,7 +415,7 @@
                     // get impressions & data
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        swal("Server Error Code: 012","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
 
@@ -561,7 +561,7 @@
                 hide_loader();
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 013","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -572,7 +572,7 @@
                 column.visible(!column.visible());
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 014","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         });
@@ -584,7 +584,7 @@
                 $(".modal-container").append(modal);
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 015","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -598,7 +598,7 @@
                 );
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 016","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -682,7 +682,7 @@
                 });
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 017","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -737,7 +737,7 @@
 
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 018","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -805,7 +805,7 @@
                 $(".isResizable").resizable();
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 019","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
 
@@ -845,7 +845,7 @@
                     );
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 020","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -884,7 +884,7 @@
                     );
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 021","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -993,7 +993,7 @@
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (error) {
                         console.log("Error: "+error);
-                        swal(error.name,error.message,"error");
+                        swal("Server Error Code: 022","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         chartRevenueHour.push({
@@ -1010,7 +1010,7 @@
                     // get impressions & data
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        swal("Server Error Code: 023","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
@@ -1142,7 +1142,7 @@
                         sourceRequest = await seats[seatId].api.request(sourceParams);
                     } catch (error) {
                         console.log("Error: "+error);
-                        swal(error.name,error.message,"error");
+                        swal("Server Error Code: 024","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
@@ -1166,7 +1166,7 @@
                         advertiserRequest = await seats[seatId].api.request(advertiserParams);
                     } catch (e) {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        swal("Server Error Code: 025","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                         continue;
@@ -1283,7 +1283,7 @@
                 hide_loader();
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 026","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -1354,7 +1354,7 @@
                     // get impressions & data
                     let ReportRequest = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        swal("Server Error Code: 027","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
@@ -1494,7 +1494,7 @@
                 hide_loader();
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 028","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -1506,7 +1506,7 @@
                 appendComparePerformanceTable();
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 029","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         });
@@ -1685,7 +1685,7 @@
 
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 030","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -1712,7 +1712,7 @@
                 let api = new adtelligent(seat);
                 let hourResponse = await api.request(hourParams,"dictionary/hour" ).catch(e => {
                     console.log("Error: "+e);
-                    swal(e.name,e.message,"error");
+                    swal("Server Error Code: 031","Error Occurred in Adtelligent Server","error");
                     // hide_loader();
                     if (e == 401) swal('Request Error' + 'Could not send Hour Request','error');//top.location.reload();
                 });
@@ -1765,7 +1765,7 @@
                     // get impressions & data
                     let ReportRequest = await seats[seatId].api.request(dateParams).catch(e => {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        swal("Server Error Code: 032","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
                     });
@@ -1909,7 +1909,7 @@
                 delete window["revenue_data_from_performance_records"];
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 033","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -1990,7 +1990,7 @@
                         console.log("Error: "+e);
                         // hide_loader();
                         if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
-                        else swal(e.name,e.message,"error");
+                        else swal("Server Error Code: 034","Error Occurred in Adtelligent Server","error");
                     }
                 }
 
@@ -2052,7 +2052,7 @@
 
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 035","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -2148,7 +2148,7 @@
 
                     } catch (e) {
                         console.log("Error: "+e);
-                        swal(e.name,e.message,"error");
+                        swal("Server Error Code: 036","Error Occurred in Adtelligent Server","error");
                         // hide_loader();
                         if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//console.log("got 401");//top.location.reload();
 
@@ -2212,7 +2212,7 @@
 
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 037","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -2231,7 +2231,7 @@
                 return all_days;
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 038","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -2300,7 +2300,7 @@
 
             }catch (e) {
                 console.log("Error: "+e);
-                swal(e.name,e.message,"error");
+                swal("Server Error Code: 039","Error Occurred in Adtelligent Server","error");
                 hide_loader();
             }
         }
@@ -2326,7 +2326,7 @@
             // console.log(window["DoughnutCharts"][chartId].data);
         }catch (e) {
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 040","Error Occurred in Adtelligent Server","error");
             hide_loader();
         }
     }
@@ -2358,7 +2358,7 @@
                 );
         }catch (e) {
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 041","Error Occurred in Adtelligent Server","error");
             hide_loader();
         }
     }
@@ -2391,7 +2391,7 @@
             }
         }catch (e) {
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 042","Error Occurred in Adtelligent Server","error");
             hide_loader();
         }
     }
@@ -2424,7 +2424,7 @@
             }
         }catch (e) {
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 043","Error Occurred in Adtelligent Server","error");
             hide_loader();
         }
     }
@@ -2485,7 +2485,7 @@
             $(".isResizable").resizable();
         }catch (e) {
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 044","Error Occurred in Adtelligent Server","error");
             hide_loader();
         }
     }
@@ -2524,7 +2524,7 @@
             $(".isResizable").resizable();
         }catch (e) {
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 045","Error Occurred in Adtelligent Server","error");
             hide_loader();
         }
     }
@@ -2575,7 +2575,7 @@
             });
         }catch (e) {
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 046","Error Occurred in Adtelligent Server","error");
             hide_loader();
         }
     }
@@ -2621,7 +2621,7 @@
         }catch (e) {
             // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
             console.log("Error: "+e);
-            swal(e.name,e.message,"error");
+            swal("Server Error Code: 047","Error Occurred in Adtelligent Server","error");
             if (e === 401) swal('Unauthenticated',' API not authenticated','error');//top.location.reload();
             // hide_loader();
         }
