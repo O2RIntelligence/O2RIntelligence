@@ -263,8 +263,8 @@ function clearDropdownValue(element) {
     }
 
     $(".run-report").on('click', function () {
-        buildRequest();
-        hide_loader();
+        buildRequest().then(hide_loader);
+        // hide_loader();
     });
 
 
