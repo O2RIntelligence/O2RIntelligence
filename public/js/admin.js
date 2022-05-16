@@ -1522,8 +1522,8 @@
                 let totalAdRequestsMs = 0
                 for (const key of Object.keys(window["compare_performance_records"])) {
                     const record = window["compare_performance_records"][key];
-                    console.log(Object.keys(window["compare_performance_records"]));
-                    console.log(window["mt_channel_id"]);
+                    // console.log(Object.keys(window["compare_performance_records"]));
+                    // console.log(window["mt_channel_id"]);
                     let ms, mt;
                     if (selected_compare_env.length) {
                         ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
@@ -1717,9 +1717,9 @@
                     // hide_loader();
                     if (e == 401) swal('Request Error' + 'Could not send Hour Request','error');//top.location.reload();
                 });
-                console.log(hourResponse)
+                // console.log(hourResponse)
                 let hour = hourResponse.data.length;
-                console.log("MS-daily: "+msRevenue+" MT-daily:"+mtRevenue+" HourCount: "+hour);
+                // console.log("MS-daily: "+msRevenue+" MT-daily:"+mtRevenue+" HourCount: "+hour);
                 if(isNaN(msRevenue)) msRevenue = 0;
                 if(isNaN(mtRevenue)) mtRevenue = 0;
                 if(isNaN(hour)||hour===0||hour===undefined) hour = 1;
@@ -1862,47 +1862,47 @@
                         })).value();
                 }
                 window["revenue_data_from_performance_records"] = RevenueDataFromeDateMappedRecordsCompare;
-                    let totalRevenueMt=0
-                    let totalRevenueMs=0
-                    for (const key of Object.keys(window["revenue_data_from_performance_records"])) {
-                        const record = window["revenue_data_from_performance_records"][key];
+                let totalRevenueMt=0
+                let totalRevenueMs=0
+                for (const key of Object.keys(window["revenue_data_from_performance_records"])) {
+                    const record = window["revenue_data_from_performance_records"][key];
 
-                        let ms, mt;
-                        if (selected_compare_env.length) {
-                            ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
-                            mt = record.find(m => m.environment == selected_compare_env && m.channel == 'MT');
-                        } else {
-                            let channels = _(record).groupBy(function (m) {
-                                return m.channel;
-                            })
-                                .map((objs, key) => ({
-                                    'channel': key,
-                                    'impressions_good': _.sumBy(objs, 'impressions_good'),
-                                    'revenue_total': _.sumBy(objs, 'revenue_total'),
-                                    'ad_requests': _.sumBy(objs, 'ad_requests')
-                                }))
-                                .keyBy("channel")
-                                .value();
-                            ms = channels["MS"];
-                            mt = channels["MT"];
-                        }
-
-                        if (!ms || ms == -1) ms = {
-                            impressions_good: 0,
-                            revenue_total: 0,
-                            ad_requests: 0
-                        };
-
-                        if (!mt || mt == -1) mt = {
-                            impressions_good: 0,
-                            revenue_total: 0,
-                            ad_requests: 0
-                        };
-                        totalRevenueMt += mt.revenue_total;
-                        totalRevenueMs += ms.revenue_total;
-
+                    let ms, mt;
+                    if (selected_compare_env.length) {
+                        ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
+                        mt = record.find(m => m.environment == selected_compare_env && m.channel == 'MT');
+                    } else {
+                        let channels = _(record).groupBy(function (m) {
+                            return m.channel;
+                        })
+                            .map((objs, key) => ({
+                                'channel': key,
+                                'impressions_good': _.sumBy(objs, 'impressions_good'),
+                                'revenue_total': _.sumBy(objs, 'revenue_total'),
+                                'ad_requests': _.sumBy(objs, 'ad_requests')
+                            }))
+                            .keyBy("channel")
+                            .value();
+                        ms = channels["MS"];
+                        mt = channels["MT"];
                     }
-                console.log("MS-monthly--: "+totalRevenueMs+" MT-monthly--:"+totalRevenueMt);
+
+                    if (!ms || ms == -1) ms = {
+                        impressions_good: 0,
+                        revenue_total: 0,
+                        ad_requests: 0
+                    };
+
+                    if (!mt || mt == -1) mt = {
+                        impressions_good: 0,
+                        revenue_total: 0,
+                        ad_requests: 0
+                    };
+                    totalRevenueMt += mt.revenue_total;
+                    totalRevenueMs += ms.revenue_total;
+
+                }
+                // console.log("MS-monthly--: "+totalRevenueMs+" MT-monthly--:"+totalRevenueMt);
                 if(isNaN(totalRevenueMs)) totalRevenueMs = 0;
                 if(isNaN(totalRevenueMt)) totalRevenueMt = 0;
                 $('#ms_monthly_run_rate').html(((totalRevenueMs/todaysDate)*lastDay).toFixed(3)+" $");
@@ -1916,13 +1916,9 @@
         }
 
         function getMsChannelIds(){
-            var msChannelIds = [];
-            $.get("../../api/get-ms-channel-ids", function(data, status){
-                msChannelIds = data.value.split(',');
-                return msChannelIds;
-            });
-            return msChannelIds;
+            return window['mt_channel_id'];
         }
+
         async function appendDailyChartByHour(){
             try {
                 $('#appendDailyChartByHourLoader').show();
@@ -1950,7 +1946,7 @@
                 };
                 // console.log(chanelRequestBody.hour);
                 var selected_seats = get_selected_seats();
-                var DateMappedRecords = Array(24).fill(0);
+
 
                 var mtAdRequestByHour = Array(24).fill(0);
                 var msAdRequestByHour = Array(24).fill(0);
@@ -1963,16 +1959,10 @@
                 var mtFillRateByHour = Array(24).fill(0);
                 var combinedFillRateByHour = Array(24).fill(0);
 
-                var totalMtRevenueByHour = 0;
-                var totalMsRevenueByHour = 0;
-                var mtRevenueByHour = Array(24).fill(0);
-                var msRevenueByHour = Array(24).fill(0);
 
-
-
-                for (const element of selected_seats) {
+                for (let index = 0; index < selected_seats.length; index++) {
                     // init seat
-                    const seatId = element;
+                    const seatId = selected_seats[index];
                     const seat = seats[seatId];
                     // get campaign 1120 revenue for marketplace_fee
                     let channelDataByHour;
@@ -1981,21 +1971,20 @@
 
                         $(channelDataByHour.data).each(function(key,singleData){
                             // console.log(singleData.channel.id);
-                            if(msChannelIds.includes(singleData.channel.id.toString())){
+
+                            if(channelIdExists(msChannelIds,singleData.channel.id)){
                                 msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
                                 msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
-                                msRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
 
                             }else{
                                 mtAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
                                 mtImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
-                                mtRevenueByHour[singleData.hour.id]+=singleData.revenue_total;
 
                             }
 
                         });
 
-                        // console.log(channelDataByHour.data);
+                        // console.log("msAdRequestByHour: "+msAdRequestByHour+" mtAdRequestByHour: "+mtAdRequestByHour);
                         // console.log({{json_encode($array_without_keys)}});
 
                     } catch (e) {
@@ -2014,24 +2003,19 @@
                     mtFillRateByHour[key] = ((mtImpressionsByHour[key]/mtAdRequestByHour[key])*100).toFixed(3);
                     combinedAdRequestByHour[key] = combinedAdRequestByHour[key]+msAdRequestByHour[key]+mtAdRequestByHour[key];
                     combinedImpressionsByHour[key] = combinedImpressionsByHour[key]+msImpressionsByHour[key]+mtImpressionsByHour[key];
-                    //
-                    totalMsRevenueByHour+=msRevenueByHour[key];
-                    totalMtRevenueByHour+=mtRevenueByHour[key];
+
 
                 });
-                // console.log("MS: "+totalMsRevenueByHour+" MT:"+totalMtRevenueByHour);
-                // $('#mt_daily_run_rate').html(((totalMtRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
-                // $('#ms_daily_run_rate').html(((totalMsRevenueByHour/todaysDate)*lastDay).toFixed(3)+" $");
-                totalMtRevenueByHour = 0;
-                totalMsRevenueByHour = 0;
+                // console.log("MS::H: "+msFillRateByHour+" MT::H:"+mtFillRateByHour);
+
 
                 $(hour).each(function (key,singleHour) {
                     combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
                 });
 
-                const labels = Array.from(Array(24).keys());
-                const data = {
-                    labels: labels,
+                var hourlyLabels = Array.from(Array(24).keys());
+                var hourlyData = {
+                    labels: hourlyLabels,
                     datasets: [
                         {
                             label: ['Media-S'],
@@ -2053,31 +2037,34 @@
                         },
                     ]
                 };
-                const config = {
+                var config_hourly = {
                     type: 'line',
-                    data: data,
-                    options: {}
-                };
-                const graphs3 = new Chart(document.getElementById('mt_daily_chart_by_hour'), config);
-                // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
-                // if(graphs3!== undefined){
-                if(!graphs3.reset()){
-                    console.log("Could not reset graph");
-                }
-                // }
+                    data: hourlyData,
 
-                const myChart = new Chart(
-                    graphs3,
-                    config
-                );
+                };
+
+                if($('#mt_daily_chart_by_hour').attr("class") !== undefined){
+                    resetGraph('mt_daily_chart_by_hour','mt_daily_chart_by_hour_container','<canvas id="mt_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>')
+                }
+                new Chart('mt_daily_chart_by_hour',config_hourly);
                 $('#appendDailyChartByHourLoader').hide()
                 $('#isResizableHour').css('opacity',1);
+
 
             }catch (e) {
                 console.log("Error: "+e);
                 swal(e.name,e.message,"error");
                 hide_loader();
             }
+        }
+
+        function  resetGraph(canvasId,containerId,canvasElement){
+            $('#'+canvasId).remove();
+            $('#'+containerId).html(canvasElement)
+        }
+        function channelIdExists(channelList, channelId) {
+            var channelIndex = channelList.findIndex(c => Number(c) === Number(channelId));
+            return channelIndex > -1;
         }
 
         async function appendMonthlyChartByday(){
@@ -2114,15 +2101,12 @@
                 };
                 // console.log(chanelRequestBody.hour);
                 var selected_seats = get_selected_seats();
-                var DateMappedRecords = Array(dateCount).fill(0);
-
                 var mtAdRequestByDay = Array(dateCount).fill(0);
                 var msAdRequestByDay = Array(dateCount).fill(0);
                 var combinedAdRequestByDay = Array(dateCount).fill(0);
                 var mtImpressionsByDay = Array(dateCount).fill(0);
                 var msImpressionsByDay = Array(dateCount).fill(0);
                 var combinedImpressionsByDay = Array(dateCount).fill(0);
-
                 var msFillRateByDay = Array(dateCount).fill(0);
                 var mtFillRateByDay = Array(dateCount).fill(0);
                 var combinedFillRateByDay = Array(dateCount).fill(0);
@@ -2133,13 +2117,10 @@
                 var mtRevenueByDay = Array(dateCount).fill(0);
                 var msRevenueByDay = Array(dateCount).fill(0);
 
-                var today = new Date();
-                var todaysDate = today.getDate();
-                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
 
-                for (const element of selected_seats) {
+                for (let index = 0; index < selected_seats.length; index++) {
                     // init seat
-                    const seatId = element;
+                    const seatId = selected_seats[index];
                     const seat = seats[seatId];
                     // get campaign 1120 revenue for marketplace_fee
                     let channelDataByDay;
@@ -2149,7 +2130,7 @@
                         $(channelDataByDay.data).each(function(key,singleData){
                             var date = new Date(singleData.date.id);
                             date = date.getDate()-1;
-                            if(msChannelIds.includes(singleData.channel.id.toString())){
+                            if(channelIdExists(msChannelIds,singleData.channel.id)){
                                 msAdRequestByDay[date]+=singleData.ad_requests;
                                 msImpressionsByDay[date]+=singleData.impressions_good;
                                 msRevenueByDay[date]+=singleData.revenue_total;
@@ -2157,7 +2138,6 @@
                             }else{
                                 mtAdRequestByDay[date]+=singleData.ad_requests;
                                 mtImpressionsByDay[date]+=singleData.impressions_good;
-
                                 mtRevenueByDay[date]+=singleData.revenue_total;
                             }
 
@@ -2188,9 +2168,7 @@
 
                 });
 
-
-                totalMtRevenueByDay = 0;
-                totalMsRevenueByDay = 0;
+                // console.log("MS::D: "+msFillRateByDay+" MT::D:"+mtFillRateByDay);
 
                 $(dateCountArray).each(function (key,singleDay) {
                     combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
@@ -2226,18 +2204,10 @@
                     data: data,
                     options: {}
                 };
-                const graphsMonthly = new Chart(document.getElementById('mt_monthly_chart_by_day'), config);
-                // var chartStatus = Chart.getChart("#mt_daily_chart_by_hour");
-                // if(graphs3!== undefined){
-                if(!graphsMonthly.reset()){
-                    console.log("Could not reset graph");
+                if($('#mt_monthly_chart_by_day').attr("class") !== undefined){
+                    resetGraph('mt_monthly_chart_by_day','mt_monthly_chart_by_day_container','<canvas id="mt_monthly_chart_by_day" style="max-width:100%;min-height:200px;"></canvas>')
                 }
-                // }
-
-                const myChart = new Chart(
-                    graphsMonthly,
-                    config
-                );
+                new Chart('mt_monthly_chart_by_day',config);
                 $('#appendMonthlyChartBydayLoader').hide();
                 $('#isResizableDay').css('opacity',1);
 

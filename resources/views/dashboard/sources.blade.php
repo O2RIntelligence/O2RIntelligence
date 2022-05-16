@@ -355,7 +355,7 @@
                     </div>
                     <div class="isResizable" id="isResizableHour">
 
-                        <div class="chart-container">
+                        <div class="chart-container" id="mt_daily_chart_by_hour_container">
                             <canvas id="mt_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>
                         </div>
                     </div>
@@ -378,7 +378,7 @@
                     </div>
                     <div class="isResizable" id="isResizableDay">
 
-                        <div class="chart-container">
+                        <div class="chart-container" id="mt_monthly_chart_by_day_container">
                             <canvas id="mt_monthly_chart_by_day" style="max-width:100%;min-height:200px;"></canvas>
                         </div>
                     </div>
