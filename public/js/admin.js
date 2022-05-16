@@ -250,21 +250,20 @@
                     start_loader();
                     switch (current_page) {
                         case 'overall-report':
-                            overallAjax();
+                            overallAjax().then(hide_loader);
                             break;
 
                         case 'income':
-                            incomeAjax();
+                            incomeAjax().then(hide_loader);
                             break;
 
                         case 'media_sources':
-                            MediaSourceAjax();
+                            MediaSourceAjax().then(hide_loader);
                             break;
 
                         default:
                             break;
                     }
-                    hide_loader();
                 }
             }catch (e) {
                 console.log("Error: "+e);

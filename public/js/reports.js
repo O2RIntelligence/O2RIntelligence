@@ -264,7 +264,6 @@ function clearDropdownValue(element) {
 
     $(".run-report").on('click', function () {
         buildRequest().then(hide_loader);
-        // hide_loader();
     });
 
 
