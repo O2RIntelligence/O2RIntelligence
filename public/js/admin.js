@@ -2219,8 +2219,8 @@
 
         function getAllDatesOfCurrnetMonth(){
             try {
-                var date = new Date();
-                var month = date.getMonth();
+                var selectedDate = $("input[name=start_date]").val();
+                var date = new Date(selectedDate);
                 date.setDate(1);
                 var all_days = [];
                 while (date.getMonth() === month) {
