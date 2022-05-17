@@ -585,16 +585,23 @@ function clearDropdownValue(element) {
                         });
 
 
-                        $('tr.headers:not(".filters") th').append(`
+                    $('tr.headers:not(".filters") th').append(`
                             <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right"
                 data-html="true" data-trigger="focus" data-placement="right"
                 data-toggle="popover"
                 title="Only Equal to and Not Equal to filter option is applied for filtering Text data
                 All the filter options can be applied for Number value."></i>
                             `);
-                            initiatePopover();
+                    initiatePopover();
                 }
             });
+
+
+            ReportDatatable.on('search.dt', function() {
+                const rowNodes = ReportDatatable.rows( { filter : 'applied'} );
+                const data = rowNodes?.data();
+                console.log("data", data.length);
+            })
 
             hide_loader();
 
