@@ -600,83 +600,95 @@ function clearDropdownValue(element) {
                         if (item == 'Date' && inputValue) {
                             inputValue = inputValue.replaceAll('-', '/');
 
-                            let leftDate = Date.parse(cellValue);
-                            let rightDate = Date.parse(inputValue);
+                            let leftDate = Date.parse(cellValue.trim());
+                            let rightDate = Date.parse(inputValue.trim());
 
-                            switch(operator) {
-                                case 'equal':
-                                    flag = leftDate == rightDate;
-                                    break;
-                                case 'not_equal':
-                                    flag = leftDate != rightDate;
-                                    break;
-                                case 'greater_than':
-                                    flag = leftDate > rightDate;
-                                    break;
-                                case 'greater_equal':
-                                    flag = leftDate >= rightDate;
-                                    break;
-                                case 'less_than':
-                                    flag = leftDate < rightDate;
-                                    break;
-                                case 'less_equal':
-                                    flag = leftDate <= rightDate;
-                                    break;
-                                default:
-                                    flag = true;
+                            if(inputValue.trim() !== '') {
+                                switch(operator) {
+                                    case 'equal':
+                                        flag = leftDate == rightDate;
+                                        break;
+                                    case 'not_equal':
+                                        flag = leftDate != rightDate;
+                                        break;
+                                    case 'greater_than':
+                                        flag = leftDate > rightDate;
+                                        break;
+                                    case 'greater_equal':
+                                        flag = leftDate >= rightDate;
+                                        break;
+                                    case 'less_than':
+                                        flag = leftDate < rightDate;
+                                        break;
+                                    case 'less_equal':
+                                        flag = leftDate <= rightDate;
+                                        break;
+                                    default:
+                                        flag = true;
+                                }
+                            } else {
+                                flag = true;
                             }
 
                         } else if (item == 'Month' && inputValue) {
                             inputValue = inputValue.replace('-', '/');
 
-                            let leftDate = Date.parse(cellValue);
-                            let rightDate = Date.parse(inputValue);
+                            let leftDate = Date.parse(cellValue.trim());
+                            let rightDate = Date.parse(inputValue.trim());
 
-                            switch(operator) {
-                                case 'equal':
-                                    flag = leftDate == rightDate;
-                                    break;
-                                case 'not_equal':
-                                    flag = leftDate != rightDate;
-                                    break;
-                                case 'greater_than':
-                                    flag = leftDate > rightDate;
-                                    break;
-                                case 'greater_equal':
-                                    flag = leftDate >= rightDate;
-                                    break;
-                                case 'less_than':
-                                    flag = leftDate < rightDate;
-                                    break;
-                                case 'less_equal':
-                                    flag = leftDate <= rightDate;
-                                    break;
-                                default:
-                                    flag = true;
+                            if(inputValue.trim() !== '') {
+                                switch(operator) {
+                                    case 'equal':
+                                        flag = leftDate == rightDate;
+                                        break;
+                                    case 'not_equal':
+                                        flag = leftDate != rightDate;
+                                        break;
+                                    case 'greater_than':
+                                        flag = leftDate > rightDate;
+                                        break;
+                                    case 'greater_equal':
+                                        flag = leftDate >= rightDate;
+                                        break;
+                                    case 'less_than':
+                                        flag = leftDate < rightDate;
+                                        break;
+                                    case 'less_equal':
+                                        flag = leftDate <= rightDate;
+                                        break;
+                                    default:
+                                        flag = true;
+                                }
+                            } else{
+                                flag = true;
                             }
 
                         } else  {
-                            switch (operator) {
-                                case 'equal':
-                                    flag = cellValue.toLowerCase() == inputValue.toLowerCase();
-                                    break;
-                                case 'not_equal':
-                                    flag = cellValue.toLowerCase() != inputValue.toLowerCase();
-                                    break;
-                                case 'greater_than':
-                                    flag = parseFloat(cellValue.replace(/,/g, '')) > parseFloat(inputValue.replace(/,/g, ''));
-                                    break;
-                                case 'greater_equal':
-                                    flag = parseFloat(cellValue.replace(/,/g, '')) >= parseFloat(inputValue.replace(/,/g, ''));
-                                    break;
-                                case 'less_than':
-                                    flag = parseFloat(cellValue.replace(/,/g, '')) < parseFloat(inputValue.replace(/,/g, ''));
-                                    break;
-                                case 'less_equal':
-                                    flag = parseFloat(cellValue.replace(/,/g, '')) <= parseFloat(inputValue.replace(/,/g, ''));
-                                    break;
-                                default:
-                                    flag = true;
+                            if(inputValue.toLowerCase().trim() !== '') {
+                                switch (operator) {
+                                    case 'equal':
+                                        flag = cellValue.toLowerCase().trim() == inputValue.toLowerCase().trim();
+                                        break;
+                                    case 'not_equal':
+                                        flag = cellValue.toLowerCase().trim() != inputValue.toLowerCase().trim();
+                                        break;
+                                    case 'greater_than':
+                                        flag = parseFloat(cellValue.trim().replace(/,/g, '')) > parseFloat(inputValue.trim().replace(/,/g, ''));
+                                        break;
+                                    case 'greater_equal':
+                                        flag = parseFloat(cellValue.trim().replace(/,/g, '')) >= parseFloat(inputValue.trim().replace(/,/g, ''));
+                                        break;
+                                    case 'less_than':
+                                        flag = parseFloat(cellValue.trim().replace(/,/g, '')) < parseFloat(inputValue.trim().replace(/,/g, ''));
+                                        break;
+                                    case 'less_equal':
+                                        flag = parseFloat(cellValue.trim().replace(/,/g, '')) <= parseFloat(inputValue.trim().replace(/,/g, ''));
+                                        break;
+                                    default:
+                                        flag = true;
+                                }
+                            } else {
+                                flag = true;
                             }
                         }
                     }
