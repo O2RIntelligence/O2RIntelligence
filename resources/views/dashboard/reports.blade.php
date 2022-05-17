@@ -1,3 +1,25 @@
+<style>
+    .custom-filter-dropdown {
+        border-radius: 5px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    }
+
+    .custom-filter-dropdown a {
+        display: block;
+        padding: 2px 15px;
+        color: #3c8dbc !important;
+        cursor: pointer;
+    }
+
+    .custom-filter-dropdown a[data-action="clear"] {
+        color: red !important;
+    }
+
+    .custom-filter-dropdown a:hover {
+        background: #f8f8f8;
+    }
+</style>
+
 <div class="main-report">
     <div class="loader">
         <div class="lds-hourglass"></div>
@@ -53,27 +75,34 @@
                                 <div class="col-md-10">
                                     <div class="btn-group date-fields" data-toggle="buttons">
                                         <label class="btn btn-info active">
-                                            <input class="date-field" name="date_period" type="radio" value="today"> {{ __('Today') }}
+                                            <input class="date-field" name="date_period" type="radio" value="today">
+                                            {{ __('Today') }}
                                         </label>
                                         <label class="btn btn-info">
-                                            <input class="date-field" name="date_period" type="radio" value="yesterday"> {{ __('Yesterday') }}
+                                            <input class="date-field" name="date_period" type="radio"
+                                                value="yesterday"> {{ __('Yesterday') }}
                                         </label>
 
                                         <label class="btn btn-info">
-                                            <input class="date-field" name="date_period" type="radio" value="last7"> {{ __('Last 7 days') }}
+                                            <input class="date-field" name="date_period" type="radio" value="last7">
+                                            {{ __('Last 7 days') }}
                                         </label>
                                         <label class="btn btn-info">
-                                            <input class="date-field" name="date_period" type="radio" value="last30"> {{ __('This Month') }}
+                                            <input class="date-field" name="date_period" type="radio"
+                                                value="last30"> {{ __('This Month') }}
                                         </label>
                                         <label class="btn btn-info">
-                                            <input class="date-field" name="date_period" type="radio" value="custom"> {{ __('Custom range') }}
+                                            <input class="date-field" name="date_period" type="radio"
+                                                value="custom"> {{ __('Custom range') }}
                                         </label>
                                     </div>
                                     <div class="custom-daterange">
                                         <div class="input-group input-daterange">
-                                            <input type="text" name="start_date" class="form-control " value="{{ date('Y-m-d') }}">
+                                            <input type="text" name="start_date" class="form-control "
+                                                value="{{ date('Y-m-d') }}">
                                             <div class="input-group-addon">to</div>
-                                            <input type="text" name="end_date" class="form-control" value="{{ date('Y-m-d') }}">
+                                            <input type="text" name="end_date" class="form-control"
+                                                value="{{ date('Y-m-d') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -84,24 +113,25 @@
                         <div class="field-inputs">
                             <div class="fields-container">
                                 <div style="display:none;" class="form-group col-md-6 clonable-field">
-                                        <div class="col-md-2 text-center">
-                                            <label></label>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <select class="filters" name="dummy" multiple></select>
-                                            <div class="text-right">
-                                                <div class="checkbox" style="display: inline-block; margin-right:5px;">
-                                                    <label>
+                                    <div class="col-md-2 text-center">
+                                        <label></label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <select class="filters" name="dummy" multiple></select>
+                                        <div class="text-right">
+                                            <div class="checkbox"
+                                                style="display: inline-block; margin-right:5px;">
+                                                <label>
                                                     <input class="summ" value="1" type="checkbox"> Summary
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox" style="display: inline-block;">
-                                                    <label>
+                                                </label>
+                                            </div>
+                                            <div class="checkbox" style="display: inline-block;">
+                                                <label>
                                                     <input class="exclude" value="1" type="checkbox"> Exclude
-                                                    </label>
-                                                </div>
+                                                </label>
                                             </div>
                                         </div>
+                                    </div>
                                     <div class="clear"></div>
                                 </div>
                             </div>
@@ -113,7 +143,8 @@
                             <div class="row">
                                 <div class="col-md-2 text-center">
                                     <label>{{ __('Metric Filter') }}:
-                                        <button class="btn btn-default btn-sm add-metric" type="button"> <i class="fa fa-plus"></i> </button>
+                                        <button class="btn btn-default btn-sm add-metric" type="button"> <i
+                                                class="fa fa-plus"></i> </button>
 
                                     </label>
 
@@ -131,15 +162,18 @@
                                                     <option value="ne">!=</option>
                                                     <option value="gt">></option>
                                                     <option value="ge">>=</option>
-                                                    <option value="lt"><</option>
-                                                    <option value="le"><=</option>
+                                                    <option value="lt">
+                                                        << /option>
+                                                    <option value="le">
+                                                        <=< /option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <input type="text" class="form-control">
                                             </div>
                                             <div class="col-md-1">
-                                                <button class="btn btn-danger delete-metric-row" type="button"> <i class="fa fa-trash"></i> </button>
+                                                <button class="btn btn-danger delete-metric-row" type="button"> <i
+                                                        class="fa fa-trash"></i> </button>
                                             </div>
                                         </div>
                                         <div class="clear"></div>

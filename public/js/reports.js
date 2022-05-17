@@ -494,7 +494,7 @@ function clearDropdownValue(element) {
                                             <i class="fa fa-filter"></i>
                                         </button>
 
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <div class="dropdown-menu custom-filter-dropdown">
                                             <a class="dropdown-item text-danger" data-action="clear" style="display: block;" onclick="clearDropdownValue(this)" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}">
                                             Clear
                                             </a>
