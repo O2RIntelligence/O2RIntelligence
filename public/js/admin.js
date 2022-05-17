@@ -2221,6 +2221,7 @@
             try {
                 var selectedDate = $("input[name=start_date]").val();
                 var date = new Date(selectedDate);
+                var month = date.getMonth();
                 date.setDate(1);
                 var all_days = [];
                 while (date.getMonth() === month) {
