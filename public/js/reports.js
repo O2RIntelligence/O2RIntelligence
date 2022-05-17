@@ -1,3 +1,9 @@
+function initiatePopover() {
+    $('[data-toggle="popover"]').popover({
+        trigger: 'hover',
+    });
+}
+
 function addDropdownValue(element) {
     const operation = $(element).attr('data-operation');
     const colIdx = $(element).attr('data-idx');
@@ -146,7 +152,7 @@ function clearDropdownValue(element) {
             try {
                 FieldRequest = await seat.api.request(sourceParams, "dictionary/" + fieldName);
             } catch (error) {
-                if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                if (error == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
                 continue;
             }
 
@@ -234,7 +240,7 @@ function clearDropdownValue(element) {
 
     async function ReportMetricSelect() {
 
-        try{
+        try {
             var selected_seats = $("select[name=seats]").val();
 
             let MetricRequest;
@@ -243,7 +249,7 @@ function clearDropdownValue(element) {
                 MetricRequest = await window["seats"][selected_seats[0]].api.request({}, "metrics", window["ADTELLIGENT_START_URL"] + "/api/statistics/ssp_statistic");
             } catch (error) {
                 seat = window["seats"][selected_seats[0]];
-                if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                if (error == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
             }
             if (!MetricRequest) return 0;
             metrics = MetricRequest.data.metrics;
@@ -256,8 +262,8 @@ function clearDropdownValue(element) {
                 }
             }
         } catch (e) {
-            console.log("Error: "+e);
-            swal("Server Error Code: 007","Error Occurred in Adtelligent Server","error");
+            console.log("Error: " + e);
+            swal("Server Error Code: 007", "Error Occurred in Adtelligent Server", "error");
             hide_loader();
         }
     }
@@ -350,7 +356,7 @@ function clearDropdownValue(element) {
             try {
                 FieldRequest = await seat.api.request(params);
             } catch (error) {
-                if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error'); //top.location.reload();
+                if (error == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error'); //top.location.reload();
                 continue;
             }
 
@@ -378,7 +384,7 @@ function clearDropdownValue(element) {
             }
 
             const table = $("table#report");
-            table.find('thead').html('<tr></tr>');
+            table.find('thead').html('<tr class="headers"></tr>');
             table.find('tbody').html('');
             table.find('tfoot').html('<tr class="info"></tr>');
             const thead = table.find('thead > tr');
@@ -486,6 +492,7 @@ function clearDropdownValue(element) {
                             var type = 'text';
                             if (title == 'Date') type = 'date'
                             if (title == 'Month') type = 'month'
+
                             $(cell).html(`
                                 <div style="display: flex;" data-contain="filter">
                                     <input data-name="query" type="${type}" id="input${title.replace(/[^a-zA-Z0-9]/g, '-')}" placeholder="${title}" />
@@ -556,26 +563,36 @@ function clearDropdownValue(element) {
                                 });
 
 
-                                $(
-                                    '[data-action="clear"]',
-                                    $('.filters th').eq($(api.column(colIdx).header()).index())
-                                    .on('click', function() {
+                            $(
+                                '[data-action="clear"]',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                                    .on('click', function () {
                                         setTimeout(() => {
                                             api.draw();
                                         }, 10);
                                     })
-                                );
+                            );
 
 
-                                $(
-                                    '.dropdown-item',
-                                    $('.filters th').eq($(api.column(colIdx).header()).index())
-                                    .on('click', function() {
+                            $(
+                                '.dropdown-item',
+                                $('.filters th').eq($(api.column(colIdx).header()).index())
+                                    .on('click', function () {
 
                                         api.draw();
                                     })
-                                );
+                            );
                         });
+
+
+                        $('tr.headers:not(".filters") th').append(`
+                            <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right"
+                data-html="true" data-trigger="focus" data-placement="right"
+                data-toggle="popover"
+                title="Only Equal to and Not Equal to filter option is applied for filtering Text data
+                All the filter options can be applied for Number value."></i>
+                            `);
+                            initiatePopover();
                 }
             });
 
@@ -603,8 +620,8 @@ function clearDropdownValue(element) {
                             let leftDate = Date.parse(cellValue.trim());
                             let rightDate = Date.parse(inputValue.trim());
 
-                            if(inputValue.trim() !== '') {
-                                switch(operator) {
+                            if (inputValue.trim() !== '') {
+                                switch (operator) {
                                     case 'equal':
                                         flag = leftDate == rightDate;
                                         break;
@@ -636,8 +653,8 @@ function clearDropdownValue(element) {
                             let leftDate = Date.parse(cellValue.trim());
                             let rightDate = Date.parse(inputValue.trim());
 
-                            if(inputValue.trim() !== '') {
-                                switch(operator) {
+                            if (inputValue.trim() !== '') {
+                                switch (operator) {
                                     case 'equal':
                                         flag = leftDate == rightDate;
                                         break;
@@ -659,12 +676,12 @@ function clearDropdownValue(element) {
                                     default:
                                         flag = true;
                                 }
-                            } else{
+                            } else {
                                 flag = true;
                             }
 
-                        } else  {
-                            if(inputValue.toLowerCase().trim() !== '') {
+                        } else {
+                            if (inputValue.toLowerCase().trim() !== '') {
                                 switch (operator) {
                                     case 'equal':
                                         flag = cellValue.toLowerCase().trim() == inputValue.toLowerCase().trim();

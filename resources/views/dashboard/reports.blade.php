@@ -18,6 +18,12 @@
     .custom-filter-dropdown a:hover {
         background: #f8f8f8;
     }
+
+    .custom-filter-dropdown [data-disabled="true"] {
+        cursor: default !important;
+        pointer-events: none !important;
+        opacity: 0.3 !important;
+    }
 </style>
 
 <div class="main-report">
@@ -204,6 +210,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="box-body table-responsive">
                     <table id="report" class="table table-bordered table-hover grid-table">
                         <thead></thead>
