@@ -23,6 +23,8 @@ function clearDropdownValue(element) {
     $('#input' + title).val('');
 }
 
+var ReportDatatable;
+
 (function ($) {
 
     var filter_fields = {
@@ -76,7 +78,6 @@ function clearDropdownValue(element) {
         tz: 'GMT',
         is_rtb: "not_apply"
     }
-    var ReportDatatable;
     var resizeActive = true;
 
     function start_loader() {
@@ -598,13 +599,53 @@ function clearDropdownValue(element) {
 
 
             ReportDatatable.on('search.dt', function() {
-                const rowNodes = ReportDatatable.rows( { filter : 'applied'} );
-                const data = rowNodes?.data();
-                console.log("data", data.length);
+                const columns = ReportDatatable.columns().header().toArray().map(x => x?.innerText);
+                let summationData = [];
+
+                function updateSummationValue(index, value) {
+                    let _value = value.includes('/') ? '/' : parseFloat(value.trim().replace(/,/g, ''));
+
+                    if(isNaN(_value)) {
+                        summationData[index] = '';
+                    } else {
+                        let prevSumValue = summationData[index];
+                        prevSumValue = prevSumValue ? Number(prevSumValue) : 0;
+
+                        let sumVaue = prevSumValue + _value;
+                        sumVaue = sumVaue.toString().includes('.') ? Number(sumVaue).toFixed(3) : sumVaue;
+                        summationData[index] = Number(sumVaue);
+                    }
+                }
+
+                ReportDatatable.rows( { search:'applied' } ).data().each(function(value, index) {
+                    const rowValues = value;
+                    if(rowValues && rowValues.length > 0) {
+                        for(let i = 0; i < rowValues.length; i++) {
+                            updateSummationValue(i, rowValues[i]);
+                        }
+                    }
+                });
+
+                if(summationData.length === 0 || summationData.length !== columns.length) {
+                    summationData = new Array(columns.length).fill(0);
+                }
+
+                summationData[0] = 'Sub Totals';
+
+                let summationHtml = `<tr class="info summation">`
+
+                for(let i = 0; i < summationData.length; i++) {
+                    const value = summationData[i] === '' ? 0 : summationData[i]?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    summationHtml += `<td>${value}</td>`;
+                }
+
+                summationHtml += `</tr>`;
+
+                $('#report tfoot tr.summation').remove();
+                $(summationHtml).insertBefore($('#report tfoot tr:first-child'));
             })
 
             hide_loader();
-
         }
 
         $.fn.dataTable.ext.search.push(
