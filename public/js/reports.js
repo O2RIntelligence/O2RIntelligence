@@ -446,10 +446,7 @@ var ReportDatatable;
             }
 
 
-            $('#report thead tr')
-                .clone(true)
-                .addClass('filters')
-                .appendTo('#report thead');
+            $('#report thead tr').clone(true).addClass('filters').appendTo('#report thead');
 
             var firstDraw = true;
             ReportDatatable = $('table#report').DataTable({
@@ -463,7 +460,7 @@ var ReportDatatable;
                     [arrangedFooter.length - 1, "desc"]
                 ],
                 "drawCallback": function (settings) {
-                    $('#report_wrapper thead th').resizable();
+                    $('#report_wrapper thead tr:not(.filters) th').resizable();
                     if (calculateNet) {
                         var api = this.api();
                         var index = api.columns().count() - 1;
@@ -617,6 +614,8 @@ var ReportDatatable;
                     }
                 }
 
+                let totalFilteredRows = 0;
+
                 ReportDatatable.rows( { search:'applied' } ).data().each(function(value, index) {
                     const rowValues = value;
                     if(rowValues && rowValues.length > 0) {
@@ -624,6 +623,8 @@ var ReportDatatable;
                             updateSummationValue(i, rowValues[i]);
                         }
                     }
+
+                    totalFilteredRows++;
                 });
 
                 if(summationData.length === 0 || summationData.length !== columns.length) {
@@ -634,8 +635,38 @@ var ReportDatatable;
 
                 let summationHtml = `<tr class="info summation">`
 
+                console.clear();
+
                 for(let i = 0; i < summationData.length; i++) {
-                    const value = summationData[i] === '' ? 0 : summationData[i]?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    let sumValue = summationData[i];
+
+                    if(
+                        sumValue !== '' && Number(sumValue) > 0 &&
+                        (
+                            columns[i]?.trim() === 'eCPM, USD' ||
+                            columns[i]?.trim() === 'eCPM Channel' ||
+                            columns[i]?.trim() === 'Fill Rate (Ad Req)' ||
+                            columns[i]?.trim() === 'Fill Rate (Ad Ops)'
+                        )
+                    ) {
+                        console.log("totalFilteredRows", totalFilteredRows);
+                        console.log("sumValue", sumValue);
+                        sumValue = sumValue / totalFilteredRows;
+                    }
+
+                    let value = sumValue === '' ? 0 : sumValue?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                    if(sumValue !== '' && value?.toString().includes('.') && value?.toString().includes(',')) {
+                        const splitted = value?.toString().split('.');
+                        if(splitted && splitted.length > 0) {
+                            value = splitted[0];
+
+                            if(splitted.length === 2) {
+                                value += '.' + splitted[1]?.toString().replaceAll(',', '').substr(0, 3);
+                            }
+                        }
+                    }
+
                     summationHtml += `<td>${value}</td>`;
                 }
 
