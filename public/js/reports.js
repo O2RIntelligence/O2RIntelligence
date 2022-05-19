@@ -649,8 +649,6 @@ var ReportDatatable;
                             columns[i]?.trim() === 'Fill Rate (Ad Ops)'
                         )
                     ) {
-                        console.log("totalFilteredRows", totalFilteredRows);
-                        console.log("sumValue", sumValue);
                         sumValue = sumValue / totalFilteredRows;
                     }
 
