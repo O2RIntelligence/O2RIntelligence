@@ -471,6 +471,76 @@ var ReportDatatable;
                 initComplete: function () {
                     var api = this.api();
 
+                    const columns = api.columns().header().toArray().map(x => x?.innerText);
+
+                    let summationData = [];
+
+                    function updateSummationValue(index, value) {
+                        let _value = value.includes('/') ? '/' : parseFloat(value.trim().replace(/,/g, ''));
+
+                        if (isNaN(_value)) {
+                            summationData[index] = '';
+                        } else {
+                            let prevSumValue = summationData[index];
+                            prevSumValue = prevSumValue ? Number(prevSumValue) : 0;
+
+                            let sumVaue = prevSumValue + _value;
+                            sumVaue = sumVaue.toString().includes('.') ? Number(sumVaue).toFixed(3) : sumVaue;
+                            summationData[index] = Number(sumVaue);
+                        }
+                    }
+
+                    let totalFilteredRows = 0;
+
+                    api.rows().data().each(function (value, index) {
+                        const rowValues = value;
+                        if (rowValues && rowValues.length > 0) {
+                            for (let i = 0; i < rowValues.length; i++) {
+                                updateSummationValue(i, rowValues[i]);
+                            }
+                        }
+
+                        totalFilteredRows++;
+                    });
+
+
+                    for (let i = 0; i < summationData.length; i++) {
+                        let sumValue = summationData[i];
+
+                        if (
+                            sumValue !== '' && Number(sumValue) > 0 &&
+                            (
+                                columns[i]?.trim() === 'eCPM, USD' ||
+                                columns[i]?.trim() === 'eCPM Channel' ||
+                                columns[i]?.trim() === 'Fill Rate (Ad Req)' ||
+                                columns[i]?.trim() === 'Fill Rate (Ad Ops)'
+                            )
+                        ) {
+                            sumValue = sumValue / totalFilteredRows;
+
+                            let value = sumValue === '' ? 0 : sumValue?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                            if (sumValue !== '' && value?.toString().includes('.') && value?.toString().includes(',')) {
+                                const splitted = value?.toString().split('.');
+                                if (splitted && splitted.length > 0) {
+                                    value = splitted[0];
+
+                                    if (splitted.length === 2) {
+                                        value += '.' + splitted[1]?.toString().replaceAll(',', '').substr(0, 3);
+                                    }
+                                }
+                            }
+
+                            $('#report tfoot tr.info td').each(function(index) {
+                                if(index === i) {
+                                    $(this).text(value);
+                                }
+                            });
+                        }
+                    }
+
+
+
                     // For each column
                     api
                         .columns()
@@ -595,14 +665,14 @@ var ReportDatatable;
             });
 
 
-            ReportDatatable.on('search.dt', function() {
+            ReportDatatable.on('search.dt', function () {
                 const columns = ReportDatatable.columns().header().toArray().map(x => x?.innerText);
                 let summationData = [];
 
                 function updateSummationValue(index, value) {
                     let _value = value.includes('/') ? '/' : parseFloat(value.trim().replace(/,/g, ''));
 
-                    if(isNaN(_value)) {
+                    if (isNaN(_value)) {
                         summationData[index] = '';
                     } else {
                         let prevSumValue = summationData[index];
@@ -616,10 +686,10 @@ var ReportDatatable;
 
                 let totalFilteredRows = 0;
 
-                ReportDatatable.rows( { search:'applied' } ).data().each(function(value, index) {
+                ReportDatatable.rows({ search: 'applied' }).data().each(function (value, index) {
                     const rowValues = value;
-                    if(rowValues && rowValues.length > 0) {
-                        for(let i = 0; i < rowValues.length; i++) {
+                    if (rowValues && rowValues.length > 0) {
+                        for (let i = 0; i < rowValues.length; i++) {
                             updateSummationValue(i, rowValues[i]);
                         }
                     }
@@ -627,20 +697,18 @@ var ReportDatatable;
                     totalFilteredRows++;
                 });
 
-                if(summationData.length === 0 || summationData.length !== columns.length) {
+                if (summationData.length === 0 || summationData.length !== columns.length) {
                     summationData = new Array(columns.length).fill(0);
                 }
 
                 summationData[0] = 'Sub Totals';
 
-                let summationHtml = `<tr class="info summation">`
+                let summationHtml = `<tr class="info summation">`;
 
-                console.clear();
-
-                for(let i = 0; i < summationData.length; i++) {
+                for (let i = 0; i < summationData.length; i++) {
                     let sumValue = summationData[i];
 
-                    if(
+                    if (
                         sumValue !== '' && Number(sumValue) > 0 &&
                         (
                             columns[i]?.trim() === 'eCPM, USD' ||
@@ -654,12 +722,12 @@ var ReportDatatable;
 
                     let value = sumValue === '' ? 0 : sumValue?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-                    if(sumValue !== '' && value?.toString().includes('.') && value?.toString().includes(',')) {
+                    if (sumValue !== '' && value?.toString().includes('.') && value?.toString().includes(',')) {
                         const splitted = value?.toString().split('.');
-                        if(splitted && splitted.length > 0) {
+                        if (splitted && splitted.length > 0) {
                             value = splitted[0];
 
-                            if(splitted.length === 2) {
+                            if (splitted.length === 2) {
                                 value += '.' + splitted[1]?.toString().replaceAll(',', '').substr(0, 3);
                             }
                         }
@@ -672,7 +740,7 @@ var ReportDatatable;
 
                 $('#report tfoot tr.summation').remove();
                 $(summationHtml).insertBefore($('#report tfoot tr:first-child'));
-            })
+            });
 
             hide_loader();
         }
