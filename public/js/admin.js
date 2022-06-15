@@ -2078,13 +2078,16 @@
                     return  new Date(y, m +1, 0).getDate();
                 }
                 var start_date = $("input[name=start_date]").val();
+                console.log("SAT_P", start_date);
                 var date = new Date(start_date);
                 var dateCount = lastday(date.getFullYear(), date.getMonth());
                 var dateCountArray = [...Array.from(Array(dateCount).keys())] ;
                 var end_date = $("input[name=end_date]").val();
                 if(start_date === end_date){
-                    start_date = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString();
-                    end_date = new Date(date.getFullYear(), date.getMonth() + 1, 0).toLocaleDateString();
+                    // start_date = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString();
+                    start_date = (date.getMonth() + 1).toString() + '/' + 1 + '/' + date.getFullYear().toString();
+                    end_date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                    end_date = (end_date.getMonth() + 1) + '/' + end_date.getDate() + '/' + end_date.getFullYear();
                 }
                 var chanelRequestBody = {
                     "report": 'date,channel',

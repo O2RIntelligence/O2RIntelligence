@@ -4,6 +4,7 @@ class adtelligent {
     }
 
     async request(params, route = '', base = '') {
+        // console.log("params", params);
         // route = route.length > 0 ? "/" + route : "";
         // var url = this.isLocalNetwork()?"https://ssp.adtelligent.com/api/statistics/ssp2":base;
 
