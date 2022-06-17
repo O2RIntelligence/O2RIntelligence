@@ -33,14 +33,14 @@ class AuthService
     {
         try {
             $oAuth2Credential = (new OAuth2TokenBuilder())
-                ->withClientId('427262788972-qrdrnh2tqk4tdh0irnshnu6p1l6emcfb.apps.googleusercontent.com')
-                ->withClientSecret('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')
-                ->withRefreshToken('1//04Rb0dFn_vHLRCgYIARAAGAQSNwF-L9IrI5r-6wV4cCwcU5BO06kYP_Ot30FBAKR8w3h4mmBv5obwAGogULpj6RrFkXg0ViFMiFc')
+                ->withClientId('')
+                ->withClientSecret('')
+                ->withRefreshToken('')
                 ->build();
 
             $googleAdsClient = (new GoogleAdsClientBuilder())
                 ->withOAuth2Credential($oAuth2Credential)
-                ->withDeveloperToken('4Z7nw1N2229CNuPpKNi9LA')
+                ->withDeveloperToken('')
                 ->withLoginCustomerId('6432926678')
                 ->build();
             return $googleAdsClient;
