@@ -12,15 +12,21 @@ use Illuminate\Http\JsonResponse;
 
 class MasterAccountController extends Controller
 {
+    public function subAccountController(){
+        return new SubAccountController();
+    }
+
     /**Stores a Master Account
      * @param StoreMasterAccountRequest $request
+     * @return JsonResponse|void
      */
     public function store(StoreMasterAccountRequest $request)
     {
         try {
             $masterAccountInformation = $request->validated();
             if(MasterAccount::create($masterAccountInformation)){
-                return response()->json(array(['success' => true]));
+               $response = $this->subAccountController()->getSubAccountsFromGoogleAds();
+                return $response;
             }else return response()->json(array(['success' => false]));
         } catch (Exception $exception) {
             dd($exception);
@@ -29,6 +35,7 @@ class MasterAccountController extends Controller
 
     /** Shows a specific Master Account from provided master account id
      * @param UpdateMasterAccountRequest $request
+     * @return JsonResponse|void
      */
     public function show(UpdateMasterAccountRequest $request)
     {
@@ -42,7 +49,7 @@ class MasterAccountController extends Controller
     }
 
     /**Shows All Master Accounts
-     * @return Exception|JsonResponse
+     * @return JsonResponse
      */
     public function getAll()
     {
@@ -57,7 +64,7 @@ class MasterAccountController extends Controller
 
     /** Updates a Master Account on provided id
      * @param UpdateMasterAccountRequest $request
-     * @return Exception|JsonResponse|void
+     * @return JsonResponse|void
      */
     public function update(UpdateMasterAccountRequest $request)
     {
@@ -73,7 +80,7 @@ class MasterAccountController extends Controller
 
     /**Changes Status of a Master Account
      * @param UpdateMasterAccountRequest $request
-     * @return Exception|JsonResponse|void
+     * @return JsonResponse|void
      */
     public function switchStatus(UpdateMasterAccountRequest $request)
     {
@@ -89,7 +96,7 @@ class MasterAccountController extends Controller
 
     /**Deletes a Master Account
      * @param UpdateMasterAccountRequest $request
-     * @return Exception|JsonResponse
+     * @return JsonResponse
      */
     public function delete(UpdateMasterAccountRequest $request)
     {
