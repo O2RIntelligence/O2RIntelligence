@@ -2,6 +2,7 @@
 
 use App\Admin\Controllers\ReportController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
