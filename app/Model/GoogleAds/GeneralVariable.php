@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GeneralVariable extends Model
 {
-    use HasFactory, SoftDeletes, UsesUuid;
+    use SoftDeletes, UsesUuid;
     protected $fillable=[
         'id',
         'official_dollar',
