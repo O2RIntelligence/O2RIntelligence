@@ -21,6 +21,8 @@ class CreateSubAccountsTable extends Migration
 
             $table->string('name');
             $table->string('account_id')->unique();
+            $table->string('timezone')->nullable();
+            $table->string('currency_code')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_online')->default(false);
 
