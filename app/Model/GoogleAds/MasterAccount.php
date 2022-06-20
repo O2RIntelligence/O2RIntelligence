@@ -19,4 +19,8 @@ class MasterAccount extends Model
         'is_active',
         'is_online',
     ];
+
+    public function subAccount() {
+        $this->belongsToMany('id','sub_accounts');
+    }
 }
