@@ -20,7 +20,7 @@ class CreateSubAccountsTable extends Migration
             $table->foreign('master_account_id')->references('id')->on('master_accounts')->onDelete('cascade');
 
             $table->string('name');
-            $table->string('account_id');
+            $table->string('account_id')->unique();
             $table->boolean('is_active')->default(true);
             $table->boolean('is_online')->default(false);
 

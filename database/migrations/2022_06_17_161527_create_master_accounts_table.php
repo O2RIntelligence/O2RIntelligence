@@ -17,7 +17,7 @@ class CreateMasterAccountsTable extends Migration
             $table->uuid('id')->primary();
 
             $table->string('name');
-            $table->string('account_id');
+            $table->string('account_id')->unique();
             $table->string('developer_token');
             $table->string('discount')->default(0);
             $table->string('revenue_conversion_rate')->nullable();
