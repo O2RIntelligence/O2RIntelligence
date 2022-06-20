@@ -11,6 +11,27 @@
 |
 */
 
+use App\Http\Controllers\GoogleAds\GoogleLoginController;
+use App\Http\Controllers\GoogleAds\MasterAccountController;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return redirect('/admin');
 });
+
+//Route::group(['middleware'=>'auth'],function (){
+
+    //Master Account Operations
+    Route::post('/google-ads/master-account/store',[MasterAccountController::class,'store'])->name('google-ads.master-account.store');
+    Route::post('/google-ads/master-account/show',[MasterAccountController::class,'show'])->name('google-ads.master-accounts.show');
+    Route::get('/google-ads/master-accounts',[MasterAccountController::class,'getAll'])->name('google-ads.master-accounts.get');
+    Route::post('/google-ads/master-account/update',[MasterAccountController::class,'update'])->name('google-ads.master-account.update');
+    Route::post('/google-ads/master-account/status',[MasterAccountController::class,'switchStatus'])->name('google-ads.master-account.status');
+    Route::post('/google-ads/master-account/delete',[MasterAccountController::class,'delete'])->name('google-ads.master-account.delete');
+
+//Google OAuth2 Login
+    Route::get('/login/google',[GoogleLoginController::class,'loginWithGoogle'])->name('login.google');
+
+//});
+Route::get('/login/google/callback',[GoogleLoginController::class,'callBackHandler'])->name('login.google.callback');
+
