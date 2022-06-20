@@ -2,22 +2,19 @@
 
 namespace App\Services\GoogleAds;
 
+use Google\Ads\GoogleAds\Lib\V10\GoogleAdsClient;
+use Google\Ads\GoogleAds\Lib\V10\GoogleAdsServerStreamDecorator;
+use Google\ApiCore\ApiException;
+
 Class CronService{
 
-    private $clientID;
-    private $clientSecret;
-    private $redirectUri;
 
-    public function __construct()
-    {
-        $this->clientID = config('settings.client_id');
-        $this->clientSecret = config('settings.client_secret');
-        $this->redirectUri = config('settings.redirect_uri');
+    public function getGoogleAdsClient(){
+        return new AuthService::class;
     }
-
     public function fetchAll() {
         $customerId = 2540375170;//todo: from db
-        $this->getMetrics(AuthService::getGoogleAdsService(),$customerId);
+        $this->getMetrics($this->getGoogleAdsClient()->getGoogleAdsService(),$customerId);
     }
 
     /**
@@ -25,6 +22,7 @@ Class CronService{
      *
      * @param GoogleAdsClient $googleAdsClient the Google Ads API client
      * @param int $customerId the customer ID
+     * @throws ApiException
      */
     public static function getMetrics(GoogleAdsClient $googleAdsClient, int $customerId)
     {
