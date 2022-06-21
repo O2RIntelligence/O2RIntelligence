@@ -15,6 +15,7 @@ use App\Http\Controllers\GoogleAds\GeneralVariableController;
 use App\Http\Controllers\GoogleAds\GoogleLoginController;
 use App\Http\Controllers\GoogleAds\MasterAccountController;
 use App\Http\Controllers\GoogleAds\SubAccountController;
+use App\Services\GoogleAds\GoogleAdsService;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -52,4 +53,6 @@ Route::get('/login/google', [GoogleLoginController::class, 'loginWithGoogle'])->
 
 //});
 Route::get('/login/google/callback', [GoogleLoginController::class, 'callBackHandler'])->name('login.google.callback');
+
+Route::get('/google-ads/usdRate', [GoogleAdsService::class, 'getUsdRate'])->name('google-ads.usd-rate');
 
