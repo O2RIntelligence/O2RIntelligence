@@ -13,6 +13,9 @@ use Google\Ads\GoogleAds\V10\Services\GoogleAdsRow;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\ValidationException;
 use GPBMetadata\Google\Api\Auth;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Response;
 
 class GoogleAdsService
 {
@@ -53,22 +56,24 @@ class GoogleAdsService
     }
 
     /**
-     * Runs the example.
+     * Gets Total Cost of a sub account
      *
      * @param GoogleAdsClient $googleAdsClient the Google Ads API client
-     * @param int $customerId the customer ID
+     * @param $subAccount
+     * @param $dateRange
+     * @return array
+     * @throws ApiException
      */
-    public static function getTotalCost(GoogleAdsClient $googleAdsClient, int $customerId,$subAccount,$dateRange)
+    public static function getTotalCost(GoogleAdsClient $googleAdsClient, $subAccount, $dateRange)
     {
-        $masterAccountId =
+        $customerId = $subAccount->account_id;
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
         // Creates a query that retrieves all keyword statistics.
-        $query = "SELECT metrics.cost_micros, segments.hour FROM campaign WHERE segments.date BETWEEN '" . date('Y-m-d') . "' AND '" . date('Y-m-d') . "' AND customer.id = 2540375170 AND metrics.cost_micros > 0";
+        $query = "SELECT metrics.cost_micros, segments.date FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" .  $dateRange['endDate']  . "' AND customer.id = ".$customerId;//." AND metrics.cost_micros > 0";
         // Issues a search stream request.
         /** @var GoogleAdsServerStreamDecorator $stream */
         $stream = $googleAdsServiceClient->searchStream($customerId, $query);
-        // Iterates over all rows in all messages and prints the requested field values for
-        // the keyword in each row.
+        // Iterates over all rows in all messages and prints the requested field values for the keyword in each row.
         $results = [];
         $totalCost = 0;
         foreach ($stream->iterateAllElements() as $key => $googleAdsRow) {
@@ -76,16 +81,17 @@ class GoogleAdsService
             $totalCost += $results[$key]['metrics']['costMicros'];
             /** @var GoogleAdsRow $googleAdsRow */
         }
-        print_r(json_encode(array($results, $totalCost / 1000000)));
+        return array('subAccountId' => $customerId ,'subAccountName' => $subAccount->name , 'totalCost' => $totalCost/1000000, 'data'=> $results );
     }
 
     /**
      * Details of Sub Accounts of Provided Master Account.
      *
      * @param $masterAccount
+     * @param GoogleAdsClient $googleAdsClient
+     * @return array|Application|ResponseFactory|Response
      * @throws ApiException
      * @throws ValidationException
-     * @throws Exception
      */
     public function getAccountTree($masterAccount, GoogleAdsClient $googleAdsClient)
     {

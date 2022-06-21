@@ -103,12 +103,16 @@ class SubAccountController extends Controller
 
   public function totalCost(){
       try {
-          $subAccounts = SubAccount::with('masterAccount')->get()->all(); dd($subAccounts);
           $dateRange['startDate'] = date('Y-m-01');
           $dateRange['endDate'] = date('Y-m-d');
           $cost = [];
-          foreach ($subAccounts as $subAccount) {
-              $cost [] = $this->getGoogleAdsService()->getTotalCost($subAccount, $dateRange);
+          $masterAccounts =  MasterAccountResource::collection(MasterAccount::all());
+          foreach ($masterAccounts as $key => $masterAccount) {
+              $googleAdsClient = $this->getGoogleAdsAuthService()->getGoogleAdsService($masterAccount);
+              $subAccounts = SubAccountResource::collection(SubAccount::all());
+              foreach ($subAccounts as $subAccount) {
+                  $cost [] = $this->getGoogleAdsService()->getTotalCost($googleAdsClient,$subAccount, $dateRange);
+              }
           }
           return response()->json(['success' => true, 'data' => $cost]);
       } catch (Exception $exception) {
