@@ -25,8 +25,8 @@ class StoreGeneralVariableRequest extends FormRequest
     {
         return [
             'official_dollar'=>'required|numeric',
-            'blue_dollar'=>'required|numeric',
-            'plus_m_discount'=>'sometimes|numeric',
+            'blue_dollar'=>'required|numeric|min:0.000001',
+            'plus_m_discount'=>'sometimes|numeric|min:0.000001',
         ];
     }
 }
