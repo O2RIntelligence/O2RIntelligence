@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\GoogleAds\GeneralVariableController;
 use App\Http\Controllers\GoogleAds\GoogleLoginController;
 use App\Http\Controllers\GoogleAds\MasterAccountController;
 use App\Http\Controllers\GoogleAds\SubAccountController;
@@ -37,6 +38,14 @@ Route::get('/google-ads/sub-accounts', [SubAccountController::class, 'showAll'])
 
 //Cost Operation
 Route::get('/google-ads/sub-accounts/cost', [SubAccountController::class, 'totalCost'])->name('google-ads.sub-accounts.cost');
+
+//General Variables Operation
+Route::post('/google-ads/general-variable/store', [GeneralVariableController::class, 'store'])->name('google-ads.general-variable.store');
+Route::post('/google-ads/general-variable/show', [GeneralVariableController::class, 'show'])->name('google-ads.general-variable.show');
+Route::get('/google-ads/general-variables', [GeneralVariableController::class, 'getAll'])->name('google-ads.general-variables.get');
+Route::post('/google-ads/general-variable/update', [GeneralVariableController::class, 'update'])->name('google-ads.general-variable.update');
+Route::post('/google-ads/general-variable/status', [GeneralVariableController::class, 'switchStatus'])->name('google-ads.general-variable.status');
+Route::post('/google-ads/general-variable/delete', [GeneralVariableController::class, 'delete'])->name('google-ads.general-variable.delete');
 
 //Google OAuth2 Login
 Route::get('/login/google', [GoogleLoginController::class, 'loginWithGoogle'])->name('login.google');
