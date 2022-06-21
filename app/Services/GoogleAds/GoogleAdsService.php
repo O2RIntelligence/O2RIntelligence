@@ -64,21 +64,70 @@ class GoogleAdsService
      * @return array
      * @throws ApiException
      */
-    public static function getTotalCost(GoogleAdsClient $googleAdsClient, $subAccount, $dateRange)
+    public function getTotalCost(GoogleAdsClient $googleAdsClient, $masterAccount, $subAccount, $dateRange, $generalVariable)
     {
         $customerId = $subAccount->account_id;
+        $discount = intval($masterAccount->discount);
+        $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate();
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
+        $official_dollar = intval($generalVariable->official_dollar);
+        $plusMDiscount = intval($generalVariable->plus_m_discount);
         // Creates a query that retrieves all keyword statistics.
-        $query = "SELECT metrics.cost_micros, segments.date FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" .  $dateRange['endDate']  . "' AND customer.id = ".$customerId;//." AND metrics.cost_micros > 0";
+        $query = "SELECT metrics.cost_micros, segments.date,campaign_budget.amount_micros FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" . $dateRange['endDate'] . "' AND customer.id = " . $customerId;//." AND metrics.cost_micros > 0";
         // Issues a search stream request.
         /** @var GoogleAdsServerStreamDecorator $stream */
         $stream = $googleAdsServiceClient->searchStream($customerId, $query);
         // Iterates over all rows in all messages and prints the requested field values for the keyword in each row.
         $results = [];
-        $totalCost = 0;
+        $formattedData = [];
+        $costThisMonth = 0;
         foreach ($stream->iterateAllElements() as $key => $googleAdsRow) {
             $results[] = json_decode($googleAdsRow->serializeToJsonString(), true);
-            $totalCost += $results[$key]['metrics']['costMicros'];
+
+            $cost = $results[$key]['metrics']['costMicros'] / config('googleAds.micro_cost');
+            $date = $results[$key]['segments']['date'];
+            $costInUsd = $cost / $usdToArs;
+            $googleMediaCost = ($cost + ($cost * config('googleAds.google_media_cost_constant'))); //[SPENT in ARS+(SPENT in ARS x 0.21)]/Blue Dollar
+            if (intval($generalVariable->blue_dollar) > 0) {
+                $googleMediaCost = $googleMediaCost/ $generalVariable->blue_dollar;
+            }
+            //$plusMShare = ((($googleMediaCost - ($googleMediaCost * $plusMDiscount)) / $official_dollar) - $googleMediaCost) / 2; //[((Google Media Cost-(Google Media Cost*PLUSM Discount))/Official Dollar)-(Google Media Cost)]/2
+            $plusMShare = $googleMediaCost;
+            if($plusMDiscount>0)$plusMShare = $plusMShare - ($googleMediaCost * $plusMDiscount);
+            if($official_dollar>0) $plusMShare = $plusMShare/$official_dollar;
+            $plusMShare = $plusMShare - $googleMediaCost;
+            $revenue = $costInUsd ; //Spent in USD - (Spent in USD X Discount)
+            if($discount>0){
+                $revenue = $revenue - ($costInUsd * $discount);
+            }
+
+            $currentMonth = intval(date('m',strtotime($date)));
+            $currentMonthCurrentDay = intval(date('d',strtotime($date)));
+            $currentMonthAllDayCount = intval(date('t',strtotime($date)));
+//            $prevMonth = $currentMonth;
+//            if($currentMonth > $prevMonth){
+//                $costThisMonth = 0;
+//                $prevMonth = $currentMonth;
+//            }
+            $total_cost = $googleMediaCost + $plusMShare;
+            $costThisMonth = $cost;//todo:for multiple month add all cost<=>reset cost
+            $account_budget = $results[$key]['campaignBudget']['amountMicros']/config('googleAds.micro_cost');
+            $formattedData[] = [
+                'date' => $date,
+                'sub_account_id ' => $customerId,
+                'cost' => $cost,
+                'cost_usd' => $costInUsd,
+                'discount' => $discount,
+                'revenue' => $revenue,
+                'google_media_cost' => $googleMediaCost,
+                'plus_m_share' => $plusMShare,
+                'total_cost' => $total_cost,
+                'net_income' => $revenue - $total_cost,
+                'net_income_percent' => (($revenue - $total_cost) / $costInUsd)*100,
+                'account_budget' => $account_budget,
+                'budget_usage_percent' => ($costThisMonth / $account_budget)*100,
+                'monthly_run_rate'=>($cost/$currentMonthCurrentDay)*$currentMonthAllDayCount,
+            ];
             /** @var GoogleAdsRow $googleAdsRow */
         }
 //        return $results;
@@ -307,14 +356,18 @@ class GoogleAdsService
         // Recursively call this function for all child accounts of $customerClient.
         if (array_key_exists($customerId, $customerIdsToChildAccounts)) {
             foreach ($customerIdsToChildAccounts[$customerId] as $childAccount) {
-               self::printAccountHierarchy($childAccount, $customerIdsToChildAccounts, $depth + 1);
+                self::printAccountHierarchy($childAccount, $customerIdsToChildAccounts, $depth + 1);
             }
         }
     }
-    private function setHierarchy($data){
+
+    private function setHierarchy($data)
+    {
         $this->hierarchy [] = $data;
     }
-    private function getHierarchy(){
+
+    private function getHierarchy()
+    {
         return $this->hierarchy;
     }
 
