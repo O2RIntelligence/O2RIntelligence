@@ -5,6 +5,8 @@ namespace App\Http\Controllers\GoogleAds;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GoogleAds\MasterAccountResource;
 use App\Http\Resources\GoogleAds\SubAccountResource;
+use App\Model\GoogleAds\DailyData;
+use App\Model\GoogleAds\GeneralVariable;
 use App\Model\GoogleAds\MasterAccount;
 use App\Model\GoogleAds\SubAccount;
 use App\Services\GoogleAds\AuthService;
@@ -103,18 +105,21 @@ class SubAccountController extends Controller
 
   public function totalCost(){
       try {
-          $dateRange['startDate'] = date('Y-m-01');
+          $dateRange['startDate'] = date('2022-01-01');
           $dateRange['endDate'] = date('Y-m-d');
           $cost = [];
           $masterAccounts =  MasterAccountResource::collection(MasterAccount::all());
+          $generalVariable = GeneralVariable::get()->first();
           foreach ($masterAccounts as $key => $masterAccount) {
               $googleAdsClient = $this->getGoogleAdsAuthService()->getGoogleAdsService($masterAccount);
               $subAccounts = SubAccountResource::collection(SubAccount::all());
               foreach ($subAccounts as $subAccount) {
-                  $cost [] = $this->getGoogleAdsService()->getTotalCost($googleAdsClient,$subAccount, $dateRange);
+                  $cost [] = $this->getGoogleAdsService()->getTotalCost($googleAdsClient,$masterAccount, $subAccount, $dateRange, $generalVariable);
               }
           }
-          return response()->json(['success' => true, 'data' => $cost]);
+          $dailyData = DailyData::create($cost);
+          if($dailyData) return response()->json(['success' => true]);
+//          return response()->json(['success' => true, 'data' => $cost]);
       } catch (Exception $exception) {
           dd($exception);
       }
