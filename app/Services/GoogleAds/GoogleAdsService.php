@@ -89,6 +89,8 @@ class GoogleAdsService
         $formattedData = [];
         $costThisMonth = 0;
 
+//        DailyData::query()->forceDelete();
+
         foreach ($stream->iterateAllElements() as $key => $googleAdsRow) {
             $results[] = json_decode($googleAdsRow->serializeToJsonString(), true);
 
@@ -122,6 +124,7 @@ class GoogleAdsService
             $account_budget = $results[$key]['campaignBudget']['amountMicros']/config('googleAds.micro_cost');
             $newData = [
                 'date' => $date,
+                'master_account_id' => $masterAccount->id,
                 'sub_account_id' => $subAccount->id,
                 'cost' => $cost,
                 'cost_usd' => $costInUsd,
@@ -161,6 +164,7 @@ class GoogleAdsService
         $stream = $googleAdsServiceClient->searchStream($customerId, $query);
         $results = [];
         $formattedData = [];
+//        HourlyData::query()->forceDelete();
         // Iterates over all rows in all messages and prints the requested field values for the keyword in each row.
         foreach ($stream->iterateAllElements() as $key => $googleAdsRow) {
             $results[] = json_decode($googleAdsRow->serializeToJsonString(), true);
@@ -172,6 +176,7 @@ class GoogleAdsService
             $newData = [
                 'date' => $date,
                 'hour' => $hour,
+                'master_account_id' => $masterAccount->id,
                 'sub_account_id' => $subAccount->id,
                 'cost' => $cost,
                 'cost_usd' => $costInUsd,

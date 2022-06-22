@@ -13,6 +13,7 @@ class HourlyData extends Model
         'id',
         'date',
         'hour',
+        'master_account_id',
         'sub_account_id',
         'cost',
         'cost_usd',

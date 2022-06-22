@@ -12,6 +12,7 @@ class DailyData extends Model
     protected $fillable=[
         'id',
         'date',
+        'master_account_id',
         'sub_account_id',
         'cost',
         'cost_usd',

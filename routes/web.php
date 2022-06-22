@@ -53,7 +53,7 @@ Route::post('/google-ads/general-variable/status', [GeneralVariableController::c
 Route::post('/google-ads/general-variable/delete', [GeneralVariableController::class, 'delete'])->name('google-ads.general-variable.delete');
 
 //Dashboard API's
-Route::post('/google-ads/general-variable/delete', [DashboardController::class, 'delete'])->name('google-ads.general-variable.delete');
+Route::post('/google-ads/dashboard/data', [DashboardController::class, 'getAllDashboardData'])->name('google-ads.dashboard.data');
 
 
 //Google OAuth2 Login
