@@ -9,11 +9,16 @@ use App\Model\GoogleAds\HourlyData;
 use App\Model\GoogleAds\MasterAccount;
 use App\Model\GoogleAds\SubAccount;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
+    /** Gets all Dashboard Data, grouped as All, MasterAccount->correspondingData, MasterAccount->subAccount->correspondingData
+     * @param Request $request
+     * @return JsonResponse|void
+     */
     public function getAllDashboardData(Request $request)
     {
         try {
@@ -38,6 +43,10 @@ class DashboardController extends Controller
 
     }
 
+    /** Gets All Master and Respected Sub Account Information
+     * For General/Master/Sub Account wise Selection Field
+     * @return array|void
+     */
     public function getAccountInformation()
     {
         try {
@@ -49,6 +58,14 @@ class DashboardController extends Controller
         }
     }
 
+    /**Daily Projection Card (Total Cost + Run Rate)
+     * Daily Total Cost: Sum of Total Cost Today/Till Today
+     * Daily Run Rate:  Today Spent/ today Hours * 24
+     * @param $date
+     * @param $masterAccounts
+     * @param $subAccounts
+     * @return array|void
+     */
     public function getDailyCostRunRateData($date, $masterAccounts, $subAccounts)
     { //Sum of Total Cost Today/Till Today
         try {
@@ -92,6 +109,15 @@ class DashboardController extends Controller
         }
     }
 
+    /**Monthly Projection Card (Total Cost + Run Rate)
+     * Monthly Total Cost: Sum of Total Cost This Month
+     * Monthly Run Rate: Spent(cost)/ thisMonth.days.count* Months Days
+     * @param $start_date
+     * @param $end_date
+     * @param $masterAccounts
+     * @param $subAccounts
+     * @return array|void
+     */
     public function getMonthlyCostAndRunRateData($start_date, $end_date, $masterAccounts, $subAccounts)
     { //Sum of Total Cost This Month, //Spent(cost)/ thisMonth.days.count* Months Days
         try {
@@ -133,6 +159,15 @@ class DashboardController extends Controller
         }
     }
 
+    /**Graph:: Daily Total Cost vs days
+     * Daily Total Cost: Sum of Total Cost Today/Till Today
+     * Daily Run Rate:  Today Spent/ today Hours * 24
+     * @param $start_date
+     * @param $end_date
+     * @param $masterAccounts
+     * @param $subAccounts
+     * @return array|void
+     */
     public function getDailyCostGraphData($start_date, $end_date, $masterAccounts, $subAccounts)
     { //Graph:: Daily Total Cost vs days
         try {
@@ -183,6 +218,14 @@ class DashboardController extends Controller
         }
     }
 
+    /**Graph:: Hourly Total Cost vs Hours
+     * Hourly Cost: Sum of Total Cost Till Current Hour
+     * @param $start_date
+     * @param $end_date
+     * @param $masterAccounts
+     * @param $subAccounts
+     * @return array|void
+     */
     public function getHourlyCostGraphData($start_date, $end_date, $masterAccounts, $subAccounts)
     {   //Graph:: Hourly Total Cost vs Hours
         //Sum of Total Cost Till Current Hour
