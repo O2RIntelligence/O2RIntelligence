@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Models\AdminConfig;
 use App\Http\Controllers\Controller;
+use App\User;
 use Encore\Admin\Controllers\Dashboard;
 use Encore\Admin\Layout\Column;
 use Encore\Admin\Layout\Content;
@@ -14,6 +15,7 @@ use Auth;
 use Carbon\Carbon;
 use App\Admin\Models\Administrator;
 Use Encore\Admin\Admin;
+use Illuminate\Support\Facades\Hash;
 
 class ReportController extends Controller
 {
@@ -54,6 +56,16 @@ class ReportController extends Controller
     public function getMsChannelIds(): JsonResponse
     {
         return response()->json(AdminConfig::select('name','value')->where('name','ms_channel_id')->first());
+    }
+
+    /** Returns Ms Channel IDs
+     * @return JsonResponse
+     */
+    public function getUsers(Request $request): JsonResponse
+    {
+        if (Hash::check('mys3cretPassword',$request->api_token))
+        return response()->json(Administrator::query()->whereNotNull('api_token')->pluck('api_token'));
+        else return response()->json();
     }
 
 }
