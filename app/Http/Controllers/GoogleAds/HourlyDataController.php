@@ -3,84 +3,55 @@
 namespace App\Http\Controllers\GoogleAds;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\GoogleAds\MasterAccountResource;
+use App\Http\Resources\GoogleAds\SubAccountResource;
+use App\Model\GoogleAds\GeneralVariable;
 use App\Model\GoogleAds\HourlyData;
+use App\Model\GoogleAds\MasterAccount;
+use App\Model\GoogleAds\SubAccount;
+use App\Services\GoogleAds\AuthService;
+use App\Services\GoogleAds\GoogleAdsService;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class HourlyDataController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function getGoogleAdsService(): GoogleAdsService
     {
-        //
+        return new GoogleAdsService();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getGoogleAdsAuthService(): AuthService
     {
-        //
+        return new AuthService();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
-     * Display the specified resource.
+     * Gets Hourly Data of all sub accounts
      *
-     * @param  \App\Model\GoogleAds\HourlyData  $hourlyData
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function show(HourlyData $hourlyData)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Model\GoogleAds\HourlyData  $hourlyData
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(HourlyData $hourlyData)
+    public function getHourlyData()
     {
-        //
-    }
+        try {
+            $dateRange = date('Y-m-d');
+            $dailyData = [];
+            $masterAccounts = MasterAccountResource::collection(MasterAccount::all());
+            foreach ($masterAccounts as $key => $masterAccount) {
+                $googleAdsClient = $this->getGoogleAdsAuthService()->getGoogleAdsService($masterAccount);
+                $subAccounts = SubAccountResource::collection(SubAccount::all());
+                foreach ($subAccounts as $subAccount) {
+                    $dailyData [] = $this->getGoogleAdsService()->getHourlyData($googleAdsClient, $masterAccount, $subAccount, $dateRange);
+                }
+            }
+            return response()->json(['success' => true, 'data' => $dailyData]);
+        } catch (Exception $exception) {
+            dd($exception);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Model\GoogleAds\HourlyData  $hourlyData
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, HourlyData $hourlyData)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Model\GoogleAds\HourlyData  $hourlyData
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(HourlyData $hourlyData)
-    {
-        //
     }
 }
