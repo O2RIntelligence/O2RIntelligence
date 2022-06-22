@@ -30,7 +30,7 @@ class DashboardController extends Controller
                 'dailyProjection' => $dailyProjection,
                 'monthlyProjection' => $monthlyProjection,
                 'dailyCostGraphData' => $dailyCostGraphData,
-//                'hourlyCostGraphData' => $hourlyCostGraphData,
+                'hourlyCostGraphData' => $hourlyCostGraphData,
             ]);
         } catch (Exception $exception) {
             dd($exception);
@@ -41,7 +41,7 @@ class DashboardController extends Controller
     public function getAccountInformation()
     {
         try {
-            $masterAccounts = MasterAccountResource::collection(MasterAccount::where('is_active', true)->where('is_online', true)->get());
+            $masterAccounts = MasterAccount::select('id','name','account_id','discount','revenue_conversion_rate')->where('is_active', true)->where('is_online', true)->get();
             $subAccounts = SubAccountResource::collection(SubAccount::where('is_active', true)->where('is_online', true)->get());
             return array('masterAccounts' => $masterAccounts, 'subAccounts' => $subAccounts);
         } catch (Exception $exception) {
@@ -182,5 +182,57 @@ class DashboardController extends Controller
             dd($exception);
         }
     }
+
+    public function getHourlyCostGraphData($start_date, $end_date, $masterAccounts, $subAccounts)
+    {   //Graph:: Hourly Total Cost vs Hours
+        //Sum of Total Cost Till Current Hour
+        try {
+            $startDate = date('Y-m-d', strtotime($start_date));
+            $endDate = date('Y-m-d', strtotime('today'));//$end_date));
+            $masterAccountData = [];
+            $subAccountData = [];
+            $hours = [];
+            $hourlyCosts = [];
+            foreach ($masterAccounts as $key1 => $masterAccount) {
+                $masterAccountData[$key1]['id'] = $masterAccount->id;
+                $masterAccountData[$key1]['account_id'] = $masterAccount->account_id;
+                $masterAccountData[$key1]['name'] = $masterAccount->name;
+
+                foreach ($subAccounts as $key2 => $subAccount) {
+                    if ($subAccount->master_account_id == $masterAccount->id) {
+                        $subAccountData[$key2]['id'] = $subAccount->id;
+                        $subAccountData[$key2]['account_id'] = $subAccount->account_id;
+                        $subAccountData[$key2]['name'] = $subAccount->name;
+
+                        $hourlyCost = HourlyData::where('sub_account_id', $subAccount->id)->where('date', $endDate)->orderBy('hour', 'asc')->get();
+                        foreach ($hourlyCost as $key => $currentHourCost) {
+                            $hours [] = $currentHourCost->hour;
+                            $hourlyCosts [] = $currentHourCost->cost;
+                        }
+                        $subAccountData[$key2]['hourlyCostGraphLabel'] = $hours;
+                        $subAccountData[$key2]['hourlyCostGraphData'] = $hourlyCosts;
+                        $hourlyCosts = [];
+                    }
+                }
+                $hourlyCost = HourlyData::where('master_account_id', $masterAccount->id)->where('date', $endDate)->orderBy('hour', 'asc')->get();
+                foreach ($hourlyCost as $key => $currentHourCost) {
+                    $hourlyCosts [] = $currentHourCost->cost;
+                }
+                $masterAccountData[$key1]['hourlyCostGraphLabel'] = $hours;
+                $masterAccountData[$key1]['hourlyCostGraphData'] = $hourlyCosts;
+                $hourlyCosts = [];
+
+            }
+            $hourlyCost = HourlyData::where('date', $endDate)->orderBy('hour', 'asc')->get();
+            foreach ($hourlyCost as $key => $currentHourCost) {
+                $hourlyCosts [] = $currentHourCost->cost;
+            }
+
+            return array('totalHourlyCostGraphLabel' => $hours, 'totalHourlyCostGraphData' => $hourlyCosts, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
+        } catch (Exception $exception) {
+            dd($exception);
+        }
+    }
+
 
 }
