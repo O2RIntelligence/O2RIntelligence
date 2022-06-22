@@ -70,6 +70,7 @@ class GoogleAdsService
      * @param $generalVariable
      * @return array
      * @throws ApiException
+     * @throws Exception
      */
     public function getDailyData(GoogleAdsClient $googleAdsClient, $masterAccount, $subAccount, $dateRange, $generalVariable)
     {
@@ -80,7 +81,7 @@ class GoogleAdsService
         $official_dollar = intval($generalVariable->official_dollar);
         $plusMDiscount = intval($generalVariable->plus_m_discount);
         // Creates a query that retrieves all keyword statistics.
-        $query = "SELECT metrics.cost_micros, segments.date,campaign_budget.amount_micros FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" . $dateRange['endDate'] . "' AND customer.id = " . $customerId;//." AND metrics.cost_micros > 0";
+        $query = "SELECT metrics.cost_micros, segments.date,campaign_budget.amount_micros FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" . $dateRange['endDate'] . "' AND customer.id = " . $customerId." ORDER BY segments.date";//AND metrics.cost_micros > 0";
         // Issues a search stream request.
         /** @var GoogleAdsServerStreamDecorator $stream */
         $stream = $googleAdsServiceClient->searchStream($customerId, $query);
@@ -88,6 +89,7 @@ class GoogleAdsService
         $results = [];
         $formattedData = [];
         $costThisMonth = 0;
+        $newData = [];
 
 //        DailyData::query()->forceDelete();
 
@@ -111,6 +113,7 @@ class GoogleAdsService
                 $revenue = $revenue - ($costInUsd * $discount);
             }
 
+
             $currentMonth = intval(date('m',strtotime($date)));
             $currentMonthCurrentDay = intval(date('d',strtotime($date)));
             $currentMonthAllDayCount = intval(date('t',strtotime($date)));
@@ -122,29 +125,73 @@ class GoogleAdsService
             $total_cost = $googleMediaCost + $plusMShare;
             $costThisMonth = $cost;//todo:for multiple month add all cost<=>reset cost
             $account_budget = $results[$key]['campaignBudget']['amountMicros']/config('googleAds.micro_cost');
-            $newData = [
-                'date' => $date,
-                'master_account_id' => $masterAccount->id,
-                'sub_account_id' => $subAccount->id,
-                'cost' => $cost,
-                'cost_usd' => $costInUsd,
-                'discount' => $discount,
-                'revenue' => $revenue,
-                'google_media_cost' => $googleMediaCost,
-                'plus_m_share' => $plusMShare,
-                'total_cost' => $total_cost,
-                'net_income' => $revenue - $total_cost,
-                'net_income_percent' => (($revenue - $total_cost) / $costInUsd)*100,
-                'account_budget' => $account_budget,
-                'budget_usage_percent' => ($costThisMonth / $account_budget)*100,
-                'monthly_run_rate'=>($cost/$currentMonthCurrentDay)*$currentMonthAllDayCount,
-            ];
-            $dailyData = DailyData::create($newData);
-            if(!$dailyData) throw new Exception('Could not create daily data');
-            $formattedData[] = $newData;
+            $netIncome = $revenue - $total_cost;
+            $netIncomePercent = (($revenue - $total_cost) / $costInUsd)*100;
+            $accountBudgetPercent = ($costThisMonth / $account_budget)*100;
+            $monthlyRunRate = ($cost/$currentMonthCurrentDay)*$currentMonthAllDayCount;
+            if(!empty($newData['date']) && $newData['date']==$date && $newData['sub_account_id'] == $subAccount->id){
+                $newData = [
+                    'date' => $date,
+                    'master_account_id' => $masterAccount->id,
+                    'sub_account_id' => $subAccount->id,
+                    'cost' => $cost+$newData['cost'],
+                    'cost_usd' => $costInUsd+$newData['cost_usd'],
+                    'discount' => $discount+$newData['discount'],
+                    'revenue' => $revenue+$newData['revenue'],
+                    'google_media_cost' => $googleMediaCost+$newData['google_media_cost'],
+                    'plus_m_share' => $plusMShare+$newData['plus_m_share'],
+                    'total_cost' => $total_cost+$newData['total_cost'],
+                    'net_income' => $netIncome+$newData['net_income'],
+                    'net_income_percent' => $netIncomePercent+$newData['net_income_percent'],
+                    'account_budget' => $account_budget+$newData['account_budget'],
+                    'budget_usage_percent' => $accountBudgetPercent+$newData['budget_usage_percent'],
+                    'monthly_run_rate'=>$monthlyRunRate+$newData['monthly_run_rate'],
+                ];
+                array_pop($formattedData);
+                $formattedData[] = $newData;
+            }else {
+                $newData = [
+                    'date' => $date,
+                    'master_account_id' => $masterAccount->id,
+                    'sub_account_id' => $subAccount->id,
+                    'cost' => $cost,
+                    'cost_usd' => $costInUsd,
+                    'discount' => $discount,
+                    'revenue' => $revenue,
+                    'google_media_cost' => $googleMediaCost,
+                    'plus_m_share' => $plusMShare,
+                    'total_cost' => $total_cost,
+                    'net_income' => $revenue - $total_cost,
+                    'net_income_percent' => (($revenue - $total_cost) / $costInUsd) * 100,
+                    'account_budget' => $account_budget,
+                    'budget_usage_percent' => ($costThisMonth / $account_budget) * 100,
+                    'monthly_run_rate' => ($cost / $currentMonthCurrentDay) * $currentMonthAllDayCount,
+                ];
+                $formattedData[] = $newData;
+            }
         }
 //        return $results;
+        $this->storeDailyData($formattedData);
         return $formattedData;
+    }
+
+    /**Stores Daily Data to Database
+     * @throws Exception
+     */
+    public function storeDailyData($dailyData){
+        foreach($dailyData as $singleData){
+            $dailyData = DailyData::create($singleData);
+            if(!$dailyData) throw new Exception('Could not create daily data');
+        }
+    }
+    /**Stores Hourly Data to Database
+     * @throws Exception
+     */
+    public function storeHourlyData($hourlyData){
+        foreach($hourlyData as $singleData){
+            $hourlyData = HourlyData::create($singleData);
+            if(!$hourlyData) throw new Exception('Could not create hourly data');
+        }
     }
 
 
@@ -173,18 +220,31 @@ class GoogleAdsService
             $hour = $results[$key]['segments']['hour'];
             $costInUsd = $cost / $usdToArs;
 
-            $newData = [
-                'date' => $date,
-                'hour' => $hour,
-                'master_account_id' => $masterAccount->id,
-                'sub_account_id' => $subAccount->id,
-                'cost' => $cost,
-                'cost_usd' => $costInUsd,
-            ];
-            $dailyData = HourlyData::create($newData);
-            if(!$dailyData) throw new Exception('Could not create hourly data');
-            $formattedData[] = $newData;
+            if(!empty($newData['hour']) && $newData['hour']==$hour && $newData['sub_account_id'] == $subAccount->id){
+                $newData = [
+                    'date' => $date,
+                    'hour' => $hour,
+                    'master_account_id' => $masterAccount->id,
+                    'sub_account_id' => $subAccount->id,
+                    'cost' => $cost+$newData['cost'],
+                    'cost_usd' => $costInUsd+$newData['cost_usd'],
+                ];
+                array_pop($formattedData);
+                $formattedData[] = $newData;
+            }else {
+                $newData = [
+                    'date' => $date,
+                    'hour' => $hour,
+                    'master_account_id' => $masterAccount->id,
+                    'sub_account_id' => $subAccount->id,
+                    'cost' => $cost,
+                    'cost_usd' => $costInUsd,
+                ];
+                $formattedData[] = $newData;
+            }
+
         }
+        $this->storeHourlyData($formattedData);
         return $formattedData;
     }
 

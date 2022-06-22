@@ -32,10 +32,10 @@ class DailyDataController extends Controller
      *
      * @return JsonResponse
      */
-    public function getDailyData(){
+    public function getDailyData(Request $request){
         try {
-            $dateRange['startDate'] = date('Y-m-01');
-            $dateRange['endDate'] = date('Y-m-d');
+            $dateRange['startDate'] = date('Y-m-01',strtotime($request->startDate??'today'));
+            $dateRange['endDate'] = date('Y-m-d',strtotime($request->endDate??'today'));
             $dailyData = [];
             $masterAccounts =  MasterAccountResource::collection(MasterAccount::all());
             $generalVariable = GeneralVariable::get()->first();

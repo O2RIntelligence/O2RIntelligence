@@ -35,10 +35,10 @@ class HourlyDataController extends Controller
      * @return JsonResponse
      */
 
-    public function getHourlyData()
+    public function getHourlyData(Request $request)
     {
         try {
-            $dateRange = date('Y-m-d');
+            $dateRange = date('Y-m-d',strtotime($request->date??'today'));
             $dailyData = [];
             $masterAccounts = MasterAccountResource::collection(MasterAccount::all());
             foreach ($masterAccounts as $key => $masterAccount) {
