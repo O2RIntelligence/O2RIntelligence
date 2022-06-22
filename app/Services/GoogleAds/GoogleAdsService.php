@@ -2,6 +2,8 @@
 
 namespace App\Services\GoogleAds;
 
+use App\Model\GoogleAds\DailyData;
+use App\Model\GoogleAds\HourlyData;
 use Exception;
 use Google\Ads\GoogleAds\Lib\V10\GoogleAdsClient;
 use Google\Ads\GoogleAds\Lib\V10\GoogleAdsServerStreamDecorator;
@@ -22,6 +24,9 @@ class GoogleAdsService
     private static $rootCustomerClients;
     private $hierarchy = [];
 
+    /**
+     * @return AuthService
+     */
     public function getGoogleAdsClient()
     {
         return new AuthService();
@@ -56,15 +61,17 @@ class GoogleAdsService
     }
 
     /**
-     * Gets Total Cost of a sub account
+     * Gets Daily Data of all sub accounts
      *
      * @param GoogleAdsClient $googleAdsClient the Google Ads API client
+     * @param $masterAccount
      * @param $subAccount
      * @param $dateRange
+     * @param $generalVariable
      * @return array
      * @throws ApiException
      */
-    public function getTotalCost(GoogleAdsClient $googleAdsClient, $masterAccount, $subAccount, $dateRange, $generalVariable)
+    public function getDailyData(GoogleAdsClient $googleAdsClient, $masterAccount, $subAccount, $dateRange, $generalVariable)
     {
         $customerId = $subAccount->account_id;
         $discount = intval($masterAccount->discount);
@@ -81,6 +88,7 @@ class GoogleAdsService
         $results = [];
         $formattedData = [];
         $costThisMonth = 0;
+
         foreach ($stream->iterateAllElements() as $key => $googleAdsRow) {
             $results[] = json_decode($googleAdsRow->serializeToJsonString(), true);
 
@@ -112,9 +120,9 @@ class GoogleAdsService
             $total_cost = $googleMediaCost + $plusMShare;
             $costThisMonth = $cost;//todo:for multiple month add all cost<=>reset cost
             $account_budget = $results[$key]['campaignBudget']['amountMicros']/config('googleAds.micro_cost');
-            $formattedData[] = [
+            $newData = [
                 'date' => $date,
-                'sub_account_id ' => $customerId,
+                'sub_account_id' => $subAccount->id,
                 'cost' => $cost,
                 'cost_usd' => $costInUsd,
                 'discount' => $discount,
@@ -128,12 +136,57 @@ class GoogleAdsService
                 'budget_usage_percent' => ($costThisMonth / $account_budget)*100,
                 'monthly_run_rate'=>($cost/$currentMonthCurrentDay)*$currentMonthAllDayCount,
             ];
-            /** @var GoogleAdsRow $googleAdsRow */
+            $dailyData = DailyData::create($newData);
+            if(!$dailyData) throw new Exception('Could not create daily data');
+            $formattedData[] = $newData;
         }
 //        return $results;
         return $formattedData;
     }
 
+
+    /** Gets Hourly Data of all sub accounts
+     * @throws ApiException
+     * @throws Exception
+     */
+    public function getHourlyData(GoogleAdsClient $googleAdsClient, $masterAccount, $subAccount, $dateRange)
+    {
+        $customerId = $subAccount->account_id;
+        $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate();
+        $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
+
+        // Creates a query that retrieves all keyword statistics.
+        $query = "SELECT metrics.cost_micros, segments.date, segments.hour FROM campaign WHERE segments.date BETWEEN '" . $dateRange. "' AND '" . $dateRange. "' AND customer.id = " . $customerId;//." AND metrics.cost_micros > 0";
+        // Issues a search stream request.
+        $stream = $googleAdsServiceClient->searchStream($customerId, $query);
+        $results = [];
+        $formattedData = [];
+        // Iterates over all rows in all messages and prints the requested field values for the keyword in each row.
+        foreach ($stream->iterateAllElements() as $key => $googleAdsRow) {
+            $results[] = json_decode($googleAdsRow->serializeToJsonString(), true);
+            $cost = $results[$key]['metrics']['costMicros'] / config('googleAds.micro_cost');
+            $date = $results[$key]['segments']['date'];
+            $hour = $results[$key]['segments']['hour'];
+            $costInUsd = $cost / $usdToArs;
+
+            $newData = [
+                'date' => $date,
+                'hour' => $hour,
+                'sub_account_id' => $subAccount->id,
+                'cost' => $cost,
+                'cost_usd' => $costInUsd,
+            ];
+            $dailyData = HourlyData::create($newData);
+            if(!$dailyData) throw new Exception('Could not create hourly data');
+            $formattedData[] = $newData;
+        }
+        return $formattedData;
+    }
+
+
+    /**
+     * @return mixed|void
+     */
     public function getUsdRate()
     {
         $curl = curl_init();
