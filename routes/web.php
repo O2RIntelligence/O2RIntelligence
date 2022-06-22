@@ -11,8 +11,11 @@
 |
 */
 
+use App\Http\Controllers\GoogleAds\DailyDataController;
+use App\Http\Controllers\GoogleAds\DashboardController;
 use App\Http\Controllers\GoogleAds\GeneralVariableController;
 use App\Http\Controllers\GoogleAds\GoogleLoginController;
+use App\Http\Controllers\GoogleAds\HourlyDataController;
 use App\Http\Controllers\GoogleAds\MasterAccountController;
 use App\Http\Controllers\GoogleAds\SubAccountController;
 use App\Services\GoogleAds\GoogleAdsService;
@@ -38,7 +41,8 @@ Route::get('/google-ads/sub-accounts/online', [SubAccountController::class, 'get
 Route::get('/google-ads/sub-accounts', [SubAccountController::class, 'showAll'])->name('google-ads.sub-accounts.get');
 
 //Cost Operation
-Route::get('/google-ads/sub-accounts/cost', [SubAccountController::class, 'totalCost'])->name('google-ads.sub-accounts.cost');
+Route::get('/google-ads/sub-accounts/daily-data', [DailyDataController::class, 'getDailyData'])->name('google-ads.sub-accounts.daily-data');
+Route::get('/google-ads/sub-accounts/hourly-data', [HourlyDataController::class, 'getHourlyData'])->name('google-ads.sub-accounts.hourly-data');
 
 //General Variables Operation
 Route::post('/google-ads/general-variable/store', [GeneralVariableController::class, 'store'])->name('google-ads.general-variable.store');
@@ -47,6 +51,10 @@ Route::get('/google-ads/general-variables', [GeneralVariableController::class, '
 Route::post('/google-ads/general-variable/update', [GeneralVariableController::class, 'update'])->name('google-ads.general-variable.update');
 Route::post('/google-ads/general-variable/status', [GeneralVariableController::class, 'switchStatus'])->name('google-ads.general-variable.status');
 Route::post('/google-ads/general-variable/delete', [GeneralVariableController::class, 'delete'])->name('google-ads.general-variable.delete');
+
+//Dashboard API's
+Route::post('/google-ads/general-variable/delete', [DashboardController::class, 'delete'])->name('google-ads.general-variable.delete');
+
 
 //Google OAuth2 Login
 Route::get('/login/google', [GoogleLoginController::class, 'loginWithGoogle'])->name('login.google');
