@@ -19,14 +19,13 @@ class DashboardController extends Controller
         try {
             $startDate = date('Y-m-d', strtotime($request->startDate??'today'));
             $endDate = date('Y-m-d', strtotime($request->endDate??'today'));
-
             $accountInformation = $this->getAccountInformation();
-            $dailyProjection = $this->getDailyProjectionData($startDate, $accountInformation['masterAccounts'],$accountInformation['subAccounts']);
-//            $monthlyProjection = $this->getMonthlyProjectionData($startDate, $endDate);
+            $dailyProjection = $this->getDailyProjectionData($startDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
+            $monthlyProjection = $this->getMonthlyCostAndRunRateData($startDate,$endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
 //            $hourlyProjection = $this->getHourlyProjectionData($startDate, $endDate);
 
             return response()->json([
-                'accountInformation' => $accountInformation,
+//                'accountInformation' => $accountInformation,
                 'dailyProjection' => $dailyProjection,
 //                'monthlyProjection' => $monthlyProjection,
 //                'hourlyProjection' => $hourlyProjection,
@@ -60,17 +59,45 @@ class DashboardController extends Controller
     }
 
 
-    public function getMonthlyProjectionData($startDate, $endDate)
-    {
+    public function getMonthlyCostAndRunRateData($start_date,$end_date,$masterAccounts,$subAccounts){ //Sum of Total Cost This Month, //Spent(cost)/ thisMonth.days.count* Months Days
         try {
-            $monthlyCost = $this->getMonthlyCostData($startDate);
-            $monthlyRunRate = $this->getMonthlyRunRateData($startDate);
-            return array('monthlyCost' => $monthlyCost, 'monthlyRunRate' => $monthlyRunRate);
+            $startDate = date('Y-m-01', strtotime($start_date));
+            $endDate = date('Y-m-t', strtotime($end_date));
+            $totalDaysThisMonth = date('d', strtotime($endDate));
+            $currentDayCount = $start_date==$end_date?date('d', strtotime($start_date)):date_diff(date_create($start_date),date_create($end_date))->format("%a");
+            $totalMonthlyCost = 0;
+            $totalMonthlyRunRate = 0;
+            $masterAccountData = [];
+            $subAccountData = [];
+            foreach($masterAccounts as $key1=>$masterAccount){
+                $masterAccountData[$key1]['id'] = $masterAccount->id;
+                $masterAccountData[$key1]['account_id'] = $masterAccount->account_id;
+                $masterAccountData[$key1]['name'] = $masterAccount->name;
+
+                foreach($subAccounts as $key2=>$subAccount){
+                    if ($subAccount->master_account_id == $masterAccount->id) {
+                        $subAccountData[$key2]['id'] = $subAccount->id;
+                        $subAccountData[$key2]['account_id'] = $subAccount->account_id;
+                        $subAccountData[$key2]['name'] = $subAccount->name;
+
+                        $monthlyCost = DailyData::where('sub_account_id', $subAccount->id)->whereBetween('date', [$startDate, $endDate])->sum('cost');
+                        $totalMonthlyCost+=$monthlyCost;
+                        $monthlyRunRate = ($monthlyCost/$currentDayCount)*$totalDaysThisMonth;
+                        $totalMonthlyRunRate+=$monthlyRunRate;
+
+                        $subAccountData[$key2]['monthlyCost'] = empty($subAccountData[$key2]['monthlyCost'])?$monthlyCost:$subAccountData[$key2]['monthlyCost']+$monthlyCost;
+                        $subAccountData[$key2]['monthlyRunRate'] = empty($subAccountData[$key2]['monthlyRunRate'])?$monthlyRunRate:$subAccountData[$key2]['monthlyRunRate']+$monthlyRunRate;
+                    }
+                }
+                $masterAccountData[$key1]['monthlyCost'] = empty( $masterAccountData[$key1]['monthlyCost'])?$totalMonthlyCost: $masterAccountData[$key1]['monthlyCost']+$totalMonthlyCost;
+                $masterAccountData[$key1]['monthlyRunRate'] = empty( $masterAccountData[$key1]['monthlyRunRate'])?$totalMonthlyRunRate: $masterAccountData[$key1]['monthlyRunRate']+$totalMonthlyRunRate;
+
+            }
+            return array('totalMonthlyCost'=>$totalMonthlyCost, 'totalMonthlyRunRate'=>$totalMonthlyRunRate, 'masterAccountData'=>$masterAccountData ,'subAccountData'=>$subAccountData);
         } catch (Exception $exception) {
             dd($exception);
         }
     }
-
 
     public function getHourlyProjectionData($startDate, $endDate)
     {
@@ -103,7 +130,7 @@ class DashboardController extends Controller
                             $dailyCost = HourlyData::where('sub_account_id', $subAccount->id)->sum('cost') / $dayCount;
                         } else {
                             $dataFromDate = DailyData::where('sub_account_id', $subAccount->id)->where('date', $date)->sum('cost');
-                            $dailyCost = $dataFromDate->cost / $dayCount;
+                            $dailyCost = $dataFromDate / $dayCount;
                         }
                         $totalDailyCost+=$dailyCost;
                         $subAccountData[$key2]['cost'] = empty($subAccountData[$key2]['cost'])?$dailyCost:$subAccountData[$key2]['cost']+$dailyCost;
@@ -139,7 +166,7 @@ class DashboardController extends Controller
                             $dailyRunRate = (HourlyData::where('sub_account_id', $subAccount->id)->sum('cost')/HourlyData::count())*24;
                         }else{
                             $dataFromDate = DailyData::where('sub_account_id', $subAccount->id)->where('date', $date)->sum('cost');
-                            $dailyRunRate = ($dataFromDate->cost/24)*24;
+                            $dailyRunRate = $dataFromDate;
                         }
                         $totalDailyRunRate+=$dailyRunRate;
                         $subAccountData[$key2]['runRate'] = empty($subAccountData[$key2]['runRate'])?$dailyRunRate:$subAccountData[$key2]['runRate']+$dailyRunRate;
