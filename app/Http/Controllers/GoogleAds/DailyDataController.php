@@ -3,84 +3,54 @@
 namespace App\Http\Controllers\GoogleAds;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\GoogleAds\MasterAccountResource;
+use App\Http\Resources\GoogleAds\SubAccountResource;
 use App\Model\GoogleAds\DailyData;
+use App\Model\GoogleAds\GeneralVariable;
+use App\Model\GoogleAds\MasterAccount;
+use App\Model\GoogleAds\SubAccount;
+use App\Services\GoogleAds\AuthService;
+use App\Services\GoogleAds\GoogleAdsService;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class DailyDataController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function getGoogleAdsService(): GoogleAdsService
     {
-        //
+        return new GoogleAdsService();
+    }
+    public function getGoogleAdsAuthService(): AuthService
+    {
+        return new AuthService();
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Gets Daily Data of all sub accounts
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function create()
-    {
-        //
+    public function getDailyData(){
+        try {
+            $dateRange['startDate'] = date('Y-m-01');
+            $dateRange['endDate'] = date('Y-m-d');
+            $dailyData = [];
+            $masterAccounts =  MasterAccountResource::collection(MasterAccount::all());
+            $generalVariable = GeneralVariable::get()->first();
+            foreach ($masterAccounts as $key => $masterAccount) {
+                $googleAdsClient = $this->getGoogleAdsAuthService()->getGoogleAdsService($masterAccount);
+                $subAccounts = SubAccountResource::collection(SubAccount::all());
+                foreach ($subAccounts as $subAccount) {
+                    $dailyData [] = $this->getGoogleAdsService()->getDailyData($googleAdsClient,$masterAccount, $subAccount, $dateRange, $generalVariable);
+                }
+            }
+            return response()->json(['success' => true, 'data' => $dailyData]);
+        } catch (Exception $exception) {
+            dd($exception);
+        }
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Model\GoogleAds\DailyData  $dailyData
-     * @return \Illuminate\Http\Response
-     */
-    public function show(DailyData $dailyData)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Model\GoogleAds\DailyData  $dailyData
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(DailyData $dailyData)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Model\GoogleAds\DailyData  $dailyData
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, DailyData $dailyData)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Model\GoogleAds\DailyData  $dailyData
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(DailyData $dailyData)
-    {
-        //
-    }
 }
