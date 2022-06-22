@@ -234,7 +234,7 @@ class GoogleAdsService
             }else {
                 $newData = [
                     'date' => $date,
-                    'hour' => $hour,
+                    'hour' => intval($hour),
                     'master_account_id' => $masterAccount->id,
                     'sub_account_id' => $subAccount->id,
                     'cost' => $cost,

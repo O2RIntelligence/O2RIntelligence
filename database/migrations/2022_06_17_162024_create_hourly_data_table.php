@@ -17,7 +17,7 @@ class CreateHourlyDataTable extends Migration
             $table->uuid('id')->primary();
 
             $table->date('date');
-            $table->string('hour');
+            $table->integer('hour');
 
             $table->uuid('master_account_id');
             $table->foreign('master_account_id')->references('id')->on('master_accounts')->onDelete('cascade');
