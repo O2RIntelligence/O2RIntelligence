@@ -9,12 +9,22 @@ use App\Model\GoogleAds\HourlyData;
 use App\Model\GoogleAds\MasterAccount;
 use App\Model\GoogleAds\SubAccount;
 use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
+    /** Returns Google Ads Dashboard View
+     * @return Application|Factory|View
+     */
+    public function index(){
+        return view('googleAds.dashboard');
+    }
+
     /** Gets all Dashboard Data, grouped as All, MasterAccount->correspondingData, MasterAccount->subAccount->correspondingData
      * @param Request $request
      * @return JsonResponse|void
