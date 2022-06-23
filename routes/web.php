@@ -64,3 +64,7 @@ Route::get('/login/google/callback', [GoogleLoginController::class, 'callBackHan
 
 Route::get('/google-ads/usdRate', [GoogleAdsService::class, 'getUsdRate'])->name('google-ads.usd-rate');
 
+//googleAds Web Paths
+Route::get('/google-ads/dashboard', [DashboardController::class, 'index'])->name('google-ads.dashboard.index');
+
+
