@@ -24,6 +24,41 @@ class ActivityReportController extends Controller
         return view('googleAds.activity-report');
     }
 
+    /**Returns DashboardController
+     * @return DashboardController
+     */
+    public function getDashboard(): DashboardController
+    {
+        return new DashboardController();
+    }
+
+    /** Gets all Activity Report Data, grouped as All, MasterAccount->correspondingData, MasterAccount->subAccount->correspondingData
+     * @param Request $request
+     * @return JsonResponse|void
+     */
+    public function getAllActivityReportData(Request $request)
+    {
+        try {
+            $startDate = date('Y-m-d', strtotime($request->startDate ?? 'today'));
+            $endDate = date('Y-m-d', strtotime($request->endDate ?? 'today'));
+            $accountInformation = $this->getDashboard()->getAccountInformation();
+            $hourlyCostChartData = $this->getHourlyCostGraphData($accountInformation['masterAccounts'], $accountInformation['subAccounts']);
+            $donutChartData = $this->getDashboard()->getMonthlyCostAndRunRateData($startDate, $endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
+            $monthlyForecastDatatableData = $this->getMonthlyForecastDatatableData($startDate, $endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
+
+            return response()->json([
+                'accountInformation' => $accountInformation,
+                'hourlyCostChartData' => $hourlyCostChartData,
+                'donutChartData' => $donutChartData,
+                'monthlyForecastData' => $monthlyForecastDatatableData,
+            ]);
+        } catch (Exception $exception) {
+            dd($exception);
+        }
+
+    }
+
+
 
 
 
