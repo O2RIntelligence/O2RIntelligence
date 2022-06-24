@@ -131,10 +131,6 @@ class ActivityReportController extends Controller
         try {
             $startDate = date('Y-m-01', strtotime($start_date));
             $endDate = date('Y-m-t', strtotime($end_date));
-            $totalDaysThisMonth = date('d', strtotime($endDate));
-            $currentDayCount = $start_date == $end_date ? date('d', strtotime($start_date)) : date_diff(date_create($start_date), date_create($end_date))->format("%a");
-            $totalMonthlyCost = 0;
-            $totalMonthlyRunRate = 0;
             $masterAccountData = [];
             $subAccountData = [];
             $totalData = [];
@@ -150,51 +146,41 @@ class ActivityReportController extends Controller
                         $subAccountData[$key2]['name'] = $subAccount->name;
 
                         $monthlyData = DailyData::where('sub_account_id', $subAccount->id)->whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-                        foreach ($monthlyData as $key => $dailyData) {
-                            $totalData [] = array(
-                                'date'=> $dailyData->date,
-                                'account_name'=> $subAccount->name,
-                                'cost'=> $dailyData->cost,
-                                'account_budget'=> $dailyData->account_budget,
-                                'budget_usage_percent'=> $dailyData->budget_usage_percent,
-                                'monthly_run_rate'=> $dailyData->monthly_run_rate,
-                            );
-                        }
+                        $totalData = $this->processMonthlyData($monthlyData, $totalData);
+
                         $subAccountData[$key2]['dataTableData'] = $totalData;
                         $totalData = [];
                     }
                 }
 
                 $monthlyData = DailyData::where('master_account_id', $masterAccount->id)->whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-                foreach ($monthlyData as $key => $dailyData) {
-                    $totalData [] = array(
-                        'date' => $dailyData->date,
-                        'account_name'=> $masterAccount->name,
-                        'cost'=> $dailyData->cost,
-                        'account_budget'=> $dailyData->account_budget,
-                        'budget_usage_percent'=> $dailyData->budget_usage_percent,
-                        'monthly_run_rate'=> $dailyData->monthly_run_rate,
-                    );
-                }
+                $totalData = $this->processMonthlyData($monthlyData, $totalData);
+
                 $masterAccountData[$key1]['dataTableData'] = $totalData;
                 $totalData = [];
 
             }
             $monthlyData = DailyData::whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-            foreach ($monthlyData as $key => $dailyData) {
-                $totalData [] = array(
-                    'date'=> $dailyData->date,
-                    'cost'=> $dailyData->cost,
-                    'account_budget'=> $dailyData->account_budget,
-                    'budget_usage_percent'=> $dailyData->budget_usage_percent,
-                    'monthly_run_rate'=> $dailyData->monthly_run_rate,
-                );
-            }
+            $totalData = $this->processMonthlyData($monthlyData, $totalData);
+
 
             return array('totalData' => $totalData, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
             dd($exception);
         }
+    }
+
+    private function processMonthlyData($monthlyData, $totalData){
+        foreach ($monthlyData as $key => $dailyData) {
+            $totalData [] = array(
+                'date'=> $dailyData->date,
+                'cost'=> $dailyData->cost,
+                'account_budget'=> $dailyData->account_budget,
+                'budget_usage_percent'=> $dailyData->budget_usage_percent,
+                'monthly_run_rate'=> $dailyData->monthly_run_rate,
+            );
+        }
+        return $totalData;
     }
 
 
