@@ -27,6 +27,7 @@ class CreateDailyDataTable extends Migration
             $table->string('cost');
             $table->string('cost_usd')->nullable();
             $table->string('discount')->default(0);
+            $table->string('revenue')->default(0);
             $table->string('google_media_cost')->default(0);
             $table->string('plus_m_share')->nullable();
             $table->string('total_cost')->nullable();

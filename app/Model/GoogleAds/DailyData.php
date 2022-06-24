@@ -17,6 +17,7 @@ class DailyData extends Model
         'cost',
         'cost_usd',
         'discount',
+        'revenue',
         'google_media_cost',
         'plus_m_share',
         'total_cost',
