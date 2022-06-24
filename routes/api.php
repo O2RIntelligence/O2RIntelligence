@@ -1,6 +1,7 @@
 <?php
 
 use App\Admin\Controllers\ReportController;
+use App\Http\Controllers\GoogleAds\ActivityReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +20,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/get-ms-channel-ids',[ReportController::class,'getMsChannelIds'])->name('get.ms-channel-ids');
+
+//Activity Report operations
+Route::post('/google-ads/activity-report/data', [ActivityReportController::class, 'getAllActivityReportData'])->name('google-ads.activity-report.data');
+Route::get('/google-ads/activity-report', [ActivityReportController::class, 'index'])->name('google-ads.activity-report.index');
+
 
