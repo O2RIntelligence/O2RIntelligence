@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\GoogleAds;
 
-use App\Http\Resources\GoogleAds\MasterAccountResource;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\GoogleAds\SubAccountResource;
 use App\Model\GoogleAds\DailyData;
 use App\Model\GoogleAds\HourlyData;
@@ -13,7 +13,6 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -38,7 +37,7 @@ class DashboardController extends Controller
             $dailyProjection = $this->getDailyCostRunRateData($startDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
             $monthlyProjection = $this->getMonthlyCostAndRunRateData($startDate, $endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
             $dailyCostGraphData = $this->getDailyCostGraphData($startDate, $endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
-            $hourlyCostGraphData = $this->getHourlyCostGraphData($startDate, $endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
+            $hourlyCostGraphData = $this->getHourlyCostGraphData($accountInformation['masterAccounts'], $accountInformation['subAccounts']);
 
             return response()->json([
                 'accountInformation' => $accountInformation,
@@ -230,18 +229,15 @@ class DashboardController extends Controller
 
     /**Graph:: Hourly Total Cost vs Hours
      * Hourly Cost: Sum of Total Cost Till Current Hour
-     * @param $start_date
-     * @param $end_date
      * @param $masterAccounts
      * @param $subAccounts
      * @return array|void
      */
-    public function getHourlyCostGraphData($start_date, $end_date, $masterAccounts, $subAccounts)
+    public function getHourlyCostGraphData($masterAccounts, $subAccounts)
     {   //Graph:: Hourly Total Cost vs Hours
         //Sum of Total Cost Till Current Hour
         try {
-            $startDate = date('Y-m-d', strtotime($start_date));
-            $endDate = date('Y-m-d', strtotime('today'));//$end_date));
+            $date = date('Y-m-d');
             $masterAccountData = [];
             $subAccountData = [];
             $hours = [];
@@ -257,7 +253,7 @@ class DashboardController extends Controller
                         $subAccountData[$key2]['account_id'] = $subAccount->account_id;
                         $subAccountData[$key2]['name'] = $subAccount->name;
 
-                        $hourlyCost = HourlyData::where('sub_account_id', $subAccount->id)->where('date', $endDate)->orderBy('hour', 'asc')->get();
+                        $hourlyCost = HourlyData::where('sub_account_id', $subAccount->id)->where('date', $date)->orderBy('hour', 'asc')->get();
                         foreach ($hourlyCost as $key => $currentHourCost) {
                             $hours [] = $currentHourCost->hour;
                             $hourlyCosts [] = $currentHourCost->cost;
@@ -267,7 +263,7 @@ class DashboardController extends Controller
                         $hourlyCosts = [];
                     }
                 }
-                $hourlyCost = HourlyData::where('master_account_id', $masterAccount->id)->where('date', $endDate)->orderBy('hour', 'asc')->get();
+                $hourlyCost = HourlyData::where('master_account_id', $masterAccount->id)->where('date', $date)->orderBy('hour', 'asc')->get();
                 foreach ($hourlyCost as $key => $currentHourCost) {
                     $hourlyCosts [] = $currentHourCost->cost;
                 }
@@ -276,7 +272,7 @@ class DashboardController extends Controller
                 $hourlyCosts = [];
 
             }
-            $hourlyCost = HourlyData::where('date', $endDate)->orderBy('hour', 'asc')->get();
+            $hourlyCost = HourlyData::where('date', $date)->orderBy('hour', 'asc')->get();
             foreach ($hourlyCost as $key => $currentHourCost) {
                 $hourlyCosts [] = $currentHourCost->cost;
             }
