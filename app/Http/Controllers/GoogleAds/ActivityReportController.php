@@ -115,6 +115,87 @@ class ActivityReportController extends Controller
     }
 
 
+    /**Datatable:: Monthly Spent Forecast Data
+     * Sum of total Cost in USD Till Current Hour
+     * @param $masterAccounts
+     * @param $subAccounts
+     * @return array|void
+     * @return 'Account Name,
+     * Total Cost -- Sum of Total Cost This Month
+     * Account Budget -- From API
+     * Budget Usage % -- =Total Cost  / Account Budget
+     * Monthly Run Rate -- Spent(cost)/ thisMonth.days.count* Months Days
+     */
+    public function getMonthlyForecastDatatableData($start_date, $end_date,$masterAccounts, $subAccounts)
+    {
+        try {
+            $startDate = date('Y-m-01', strtotime($start_date));
+            $endDate = date('Y-m-t', strtotime($end_date));
+            $totalDaysThisMonth = date('d', strtotime($endDate));
+            $currentDayCount = $start_date == $end_date ? date('d', strtotime($start_date)) : date_diff(date_create($start_date), date_create($end_date))->format("%a");
+            $totalMonthlyCost = 0;
+            $totalMonthlyRunRate = 0;
+            $masterAccountData = [];
+            $subAccountData = [];
+            $totalData = [];
+            foreach ($masterAccounts as $key1 => $masterAccount) {
+                $masterAccountData[$key1]['id'] = $masterAccount->id;
+                $masterAccountData[$key1]['account_id'] = $masterAccount->account_id;
+                $masterAccountData[$key1]['name'] = $masterAccount->name;
+
+                foreach ($subAccounts as $key2 => $subAccount) {
+                    if ($subAccount->master_account_id == $masterAccount->id) {
+                        $subAccountData[$key2]['id'] = $subAccount->id;
+                        $subAccountData[$key2]['account_id'] = $subAccount->account_id;
+                        $subAccountData[$key2]['name'] = $subAccount->name;
+
+                        $monthlyData = DailyData::where('sub_account_id', $subAccount->id)->whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
+                        foreach ($monthlyData as $key => $dailyData) {
+                            $totalData [] = array(
+                                'date'=> $dailyData->date,
+                                'account_name'=> $subAccount->name,
+                                'cost'=> $dailyData->cost,
+                                'account_budget'=> $dailyData->account_budget,
+                                'budget_usage_percent'=> $dailyData->budget_usage_percent,
+                                'monthly_run_rate'=> $dailyData->monthly_run_rate,
+                            );
+                        }
+                        $subAccountData[$key2]['dataTableData'] = $totalData;
+                        $totalData = [];
+                    }
+                }
+
+                $monthlyData = DailyData::where('master_account_id', $masterAccount->id)->whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
+                foreach ($monthlyData as $key => $dailyData) {
+                    $totalData [] = array(
+                        'date' => $dailyData->date,
+                        'account_name'=> $masterAccount->name,
+                        'cost'=> $dailyData->cost,
+                        'account_budget'=> $dailyData->account_budget,
+                        'budget_usage_percent'=> $dailyData->budget_usage_percent,
+                        'monthly_run_rate'=> $dailyData->monthly_run_rate,
+                    );
+                }
+                $masterAccountData[$key1]['dataTableData'] = $totalData;
+                $totalData = [];
+
+            }
+            $monthlyData = DailyData::whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
+            foreach ($monthlyData as $key => $dailyData) {
+                $totalData [] = array(
+                    'date'=> $dailyData->date,
+                    'cost'=> $dailyData->cost,
+                    'account_budget'=> $dailyData->account_budget,
+                    'budget_usage_percent'=> $dailyData->budget_usage_percent,
+                    'monthly_run_rate'=> $dailyData->monthly_run_rate,
+                );
+            }
+
+            return array('totalData' => $totalData, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
+        } catch (Exception $exception) {
+            dd($exception);
+        }
+    }
 
 
 
