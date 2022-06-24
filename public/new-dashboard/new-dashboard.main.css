@@ -1,0 +1,29 @@
+ /* no css yet  */
+ body{
+    font-style: normal;
+ }
+
+ 
+ .dt-bootstrap .dataTable thead th{
+    border-top: 1px solid #f4f4f4 !important;
+    border-bottom: 1px solid #f4f4f4 !important
+}
+.dt-bootstrap .dataTable tbody tr:last-child td{ 
+    border-bottom: 1px solid #f4f4f4 !important
+}
+.dt-bootstrap .dataTables_info,
+.dt-bootstrap .dataTables_length
+ { 
+    padding-left: 10px !important; 
+}
+.dt-bootstrap .dataTables_paginate,
+.dt-bootstrap .dataTables_filter
+{ 
+    padding-right: 10px !important; 
+}
+
+.dataTables_filter, 
+.dataTables_length{
+    margin-top: 10px
+} 
+.column-selector { margin-right: 10px; } .column-selector .dropdown-menu { padding: 10px; height: auto; max-height: 500px; overflow-x: hidden; } .column-selector .dropdown-menu ul { padding: 0; } .column-selector .dropdown-menu ul li { margin: 0; } .column-selector .dropdown-menu label { width: 100%; padding: 3px; }

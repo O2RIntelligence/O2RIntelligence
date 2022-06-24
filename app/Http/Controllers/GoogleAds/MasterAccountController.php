@@ -12,6 +12,9 @@ use Illuminate\Http\JsonResponse;
 
 class MasterAccountController extends Controller
 {
+    public function index(){
+        return view('googleAds.account-setting.index');
+    }
     public function subAccountController(){
         return new SubAccountController();
     }

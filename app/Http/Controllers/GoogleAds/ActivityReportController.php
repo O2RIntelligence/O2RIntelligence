@@ -21,7 +21,7 @@ class ActivityReportController extends Controller
      */
     public function index()
     {
-        return view('googleAds.activity-report');
+        return view('googleAds.activity-report.index');
     }
 
     /**Returns DashboardController

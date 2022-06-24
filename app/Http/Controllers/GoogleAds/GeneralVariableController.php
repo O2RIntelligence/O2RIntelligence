@@ -14,6 +14,11 @@ use Illuminate\Http\Response;
 
 class GeneralVariableController extends Controller
 {
+    public function index()
+    {
+        return view('googleAds.general-variable.index');
+    }
+
     /**Stores a General Variable
      * @param StoreGeneralVariableRequest $request
      * @return JsonResponse

@@ -18,7 +18,7 @@ class FinancialReportController extends Controller
      */
     public function index()
     {
-        return view('googleAds.financial-report');
+        return view('googleAds.financial-report.index');
     }
 
     /**Returns DashboardController

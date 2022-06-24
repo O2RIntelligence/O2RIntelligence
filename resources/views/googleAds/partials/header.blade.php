@@ -49,10 +49,10 @@
                         </li>
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="http://localhost/o2r/public/admin/auth/setting" class="btn btn-default btn-flat">Setting</a>
+                                <a href="{{url('/google-ads/dashboard')}}" class="btn btn-default btn-flat">Setting</a>
                             </div>
                             <div class="pull-right">
-                                <a href="http://localhost/o2r/public/admin/auth/logout" class="btn btn-default btn-flat">Logout</a>
+                                <a href="{{url('/google-ads/dashboard')}}" class="btn btn-default btn-flat">Logout</a>
                             </div>
                         </li>
                     </ul>

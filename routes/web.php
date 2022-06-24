@@ -11,8 +11,10 @@
 |
 */
 
+use App\Http\Controllers\GoogleAds\ActivityReportController;
 use App\Http\Controllers\GoogleAds\DailyDataController;
 use App\Http\Controllers\GoogleAds\DashboardController;
+use App\Http\Controllers\GoogleAds\FinancialReportController;
 use App\Http\Controllers\GoogleAds\GeneralVariableController;
 use App\Http\Controllers\GoogleAds\GoogleLoginController;
 use App\Http\Controllers\GoogleAds\HourlyDataController;
@@ -64,7 +66,12 @@ Route::get('/login/google/callback', [GoogleLoginController::class, 'callBackHan
 
 Route::get('/google-ads/usdRate', [GoogleAdsService::class, 'getUsdRate'])->name('google-ads.usd-rate');
 
+
 //googleAds Web Paths
-Route::get('/google-ads/dashboard', [DashboardController::class, 'index'])->name('google-ads.dashboard.index');
+Route::get('admin/google-ads/dashboard', [DashboardController::class, 'index'])->name('google-ads.dashboard.index');
+Route::get('admin/google-ads/activity-report', [ActivityReportController::class, 'index'])->name('googleAds.activity-report.index');// 'googleAds.activity-report.index');
+Route::get('admin/google-ads/financial-report',  [FinancialReportController::class, 'index'])->name('googleAds.financial-report.index');//'googleAds.financial-report.index');
+Route::get('admin/google-ads/account-setting',  [MasterAccountController::class, 'index'])->name('googleAds.account-setting.index');//'googleAds.account-setting.index');
+Route::get('admin/google-ads/general-variable', [GeneralVariableController::class, 'index'])->name('googleAds.general-variable.index');// 'googleAds.general-variable.index');
 
 
