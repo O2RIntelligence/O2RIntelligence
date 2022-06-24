@@ -2,6 +2,7 @@
 
 use App\Admin\Controllers\ReportController;
 use App\Http\Controllers\GoogleAds\ActivityReportController;
+use App\Http\Controllers\GoogleAds\FinancialReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +25,9 @@ Route::get('/get-ms-channel-ids',[ReportController::class,'getMsChannelIds'])->n
 //Activity Report operations
 Route::post('/google-ads/activity-report/data', [ActivityReportController::class, 'getAllActivityReportData'])->name('google-ads.activity-report.data');
 Route::get('/google-ads/activity-report', [ActivityReportController::class, 'index'])->name('google-ads.activity-report.index');
+
+//Financial Report operations
+Route::post('/google-ads/financial-report/data', [FinancialReportController::class, 'getAllFinancialReportData'])->name('google-ads.financial-report.data');
+Route::get('/google-ads/financial-report', [FinancialReportController::class, 'index'])->name('google-ads.financial-report.index');
 
 
