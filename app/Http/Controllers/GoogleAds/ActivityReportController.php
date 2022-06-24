@@ -170,6 +170,11 @@ class ActivityReportController extends Controller
         }
     }
 
+    /** Processes passed monthly data, formats for frontend response
+     * @param $monthlyData
+     * @param $totalData
+     * @return mixed
+     */
     private function processMonthlyData($monthlyData, $totalData){
         foreach ($monthlyData as $key => $dailyData) {
             $totalData [] = array(
