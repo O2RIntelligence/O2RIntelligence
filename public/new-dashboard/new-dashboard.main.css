@@ -72,3 +72,8 @@
     padding-left: 0;
     text-align: center;
 }
+
+.time-periods .btn{
+    border: 1px solid #d2d6de;
+    background-color: #fff;
+}
