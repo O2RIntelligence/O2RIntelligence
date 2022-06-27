@@ -37,3 +37,38 @@
     margin-top: 10px
 } 
 .column-selector { margin-right: 10px; } .column-selector .dropdown-menu { padding: 10px; height: auto; max-height: 500px; overflow-x: hidden; } .column-selector .dropdown-menu ul { padding: 0; } .column-selector .dropdown-menu ul li { margin: 0; } .column-selector .dropdown-menu label { width: 100%; padding: 3px; }
+
+
+.date-range-area{
+    display: none;
+}
+.date-range-area > div{
+    margin-top: 10px;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #f4f4f4;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-range-area .col-md-5.left{
+    width: calc(50% - 65px);
+    padding-left: 0;
+}
+
+.date-range-area .col-md-5.right{
+    width: calc(50% - 65px); 
+}
+.date-range-area .col-md-1{
+    width: 40px;
+    text-align: center;
+}
+.date-range-area .col-md-2{
+    width: 120px;
+    padding-right: 0;
+    padding-left: 0;
+    text-align: center;
+}
