@@ -8,6 +8,16 @@
     border-top: 1px solid #f4f4f4 !important;
     border-bottom: 1px solid #f4f4f4 !important
 }
+.dt-bootstrap .dataTable tbody tr td,
+.dt-bootstrap .dataTable thead tr th
+{ 
+    border-right: 1px solid #f4f4f4 !important;
+}
+.dt-bootstrap .dataTable tbody tr td:last-child,
+.dt-bootstrap .dataTable thead tr th:last-child
+{ 
+    border-right: 0 !important;
+}
 .dt-bootstrap .dataTable tbody tr:last-child td{ 
     border-bottom: 1px solid #f4f4f4 !important
 }
