@@ -49,40 +49,40 @@
                     <div class="col-md-3">
                         <div class="box grid-box with-border">
                             <div class="box-header with-border text-center">
-                                <b>Card one title</b>
+                                <b>Daily Total Cost</b>
                             </div>
                             <div class="box-body text-center">
-                                <h2 id="DNI_Projection">38,426.702$</h2>
+                                <h2 id="daily_total_cost"></h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="box grid-box with-border">
                             <div class="box-header with-border text-center">
-                                <b>Card two title</b>
+                                <b>Daily Run Rate</b>
                             </div>
                             <div class="box-body text-center">
-                                <h2 id="DNI_Projection">38,426.702$</h2>
+                                <h2 id="daily_run_rate"></h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="box grid-box with-border">
                             <div class="box-header with-border text-center">
-                                <b>Card three title</b>
+                                <b>Monthly Total Cost</b>
                             </div>
                             <div class="box-body text-center">
-                                <h2 id="DNI_Projection">38,426.702$</h2>
+                                <h2 id="monthly_total_cost"></h2>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="box grid-box with-border">
                             <div class="box-header with-border text-center">
-                                <b>Card four title</b>
+                                <b>Monthly Run Rate</b>
                             </div>
                             <div class="box-body text-center">
-                                <h2 id="MNI_Projection">1,044,467.227$</h2>
+                                <h2 id="monthly_run_rate"></h2>
                             </div>
                         </div>
                     </div>
