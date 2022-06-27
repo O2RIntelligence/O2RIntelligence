@@ -85,13 +85,13 @@
                                  <div class="date-range-area" id="date-range-area">
                                     <div>
                                          <div class="col-md-5 left">
-                                            <input type="text" class="form-control" name="start_date" id="start_date"> 
+                                            <input autocomplete="off" type="text" class="form-control" name="start_date" id="start_date"> 
                                          </div>
                                          <div class="col-md-1">
                                             to
                                          </div>
                                          <div class="col-md-5 right"> 
-                                            <input type="text" class="form-control" name="send_date" id="end_date">
+                                            <input autocomplete="off" type="text" class="form-control" name="send_date" id="end_date">
                                          </div>
                                          <div class="col-md-2"> 
                                             <button type="button" class="filter-dates btn btn-block btn-primary">Filter</button>

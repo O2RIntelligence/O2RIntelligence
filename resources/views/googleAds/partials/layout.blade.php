@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{asset('vendor/laravel-admin/AdminLTE/plugins/iCheck/all.css')}}">
     <link rel="stylesheet" href="{{asset('vendor/laravel-admin/AdminLTE/plugins/colorpicker/bootstrap-colorpicker.min.css')}}">
     <link rel="stylesheet" href="{{asset('vendor/laravel-admin/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css')}}">
+    <link rel="stylesheet" href="{{asset('new-dashboard/plugin/datepicker/bootstrap-datepicker.css')}}">
     <link rel="stylesheet" href="{{asset('//cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css')}}">
     <link rel="stylesheet" href="{{asset('//cdn.jsdelivr.net/npm/shortcut-buttons-flatpickr@0.3.0/dist/themes/light.min.css')}}">
     <link rel="stylesheet" href="{{asset('vendor/laravel-admin/bootstrap-fileinput/css/fileinput.min.css?v=4.5.2')}}">
@@ -89,6 +90,7 @@
 <script src="{{asset('vendor/laravel-admin/AdminLTE/plugins/input-mask/jquery.inputmask.bundle.min.js')}}"></script>
 <script src="{{asset('vendor/laravel-admin/moment/min/moment-with-locales.min.js')}}"></script>
 <script src="{{asset('vendor/laravel-admin/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')}}"></script>
+<script src="{{asset('new-dashboard/plugin/datepicker/bootstrap-datepicker.js')}}"></script>
 <script src="//cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="//cdn.jsdelivr.net/npm/shortcut-buttons-flatpickr@0.1.0/dist/shortcut-buttons-flatpickr.min.js"></script>
 <script src="//npmcdn.com/flatpickr@4.6.6/dist/l10n/zh.js"></script>
