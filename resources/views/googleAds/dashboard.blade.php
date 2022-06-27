@@ -1,8 +1,8 @@
 @section('css')
-    {{-- page css link here  --}} 
+    {{-- page css link here  --}}
 @endsection
 @extends('googleAds.partials.layout')
-@section('content') 
+@section('content')
     <div id="app">
         <section class="content-header">
             <h1>
@@ -22,7 +22,7 @@
 
         </section>
 
-        <section class="content"> 
+        <section class="content">
             <div class="dashboard-report">
                 <div class="loader" style="display: none;">
                     <div class="lds-hourglass"></div>
@@ -120,14 +120,17 @@
                             </div>
                         </div>
                     </div>
-                </div> 
-            </div> 
+                </div>
+            </div>
         </section>
-    </div> 
+    </div>
 @endsection
 @section('js')
     {{-- page js link here  --}}
     <script>
-        var current_page = "GoogleAds dashboard";
+      var current_page = "GoogleAds dashboard";
+      const __csrf_token = "{{@csrf_token()}}";
     </script>
+    <script src="/js/google_ads/google_ads_manager.js"></script>
+    <script src="/js/google_ads/dashboard.js"></script>
 @endsection
