@@ -172,6 +172,8 @@ class Dashboard extends GoogleAdsManager {
   chartTypeActivities() {
     $(document).on('click', '[data-action="chat_type"]', function () {
       const chartType = $(this).find('input').val();
+
+      alert(chartType);
     });
   }
 
