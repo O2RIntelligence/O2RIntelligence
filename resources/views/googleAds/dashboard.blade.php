@@ -28,6 +28,7 @@
                     <div class="lds-hourglass"></div>
                 </div>
 
+                @include('googleAds.filter')
                 <div class="row">
                     <div class="col-md-12">
                         <div class="box-body" style="padding-left: 0">
