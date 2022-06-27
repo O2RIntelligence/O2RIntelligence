@@ -9,8 +9,9 @@ class GoogleAdsManager {
     this.setState = this.setState.bind(this);
     this.init = this.init.bind(this);
 
-    this.utils = {
-    };
+    this.utils = {};
+
+    this.init();
   }
 
   /**
@@ -19,7 +20,7 @@ class GoogleAdsManager {
    */
   setState(stateObject) {
     this.state = {
-      ...state,
+      ...this.state,
       ...stateObject,
     };
   }
