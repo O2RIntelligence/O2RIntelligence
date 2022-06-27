@@ -34,13 +34,44 @@
                             <div class="pull-left">
                                 <div class="btn-group" data-toggle="buttons">
                                     <label class="btn btn-info active">
-                                        <input name="page_type" type="radio" value="dates" checked=""> General
+                                        <input name="page_type" type="radio" value="general" checked=""> General
                                     </label>
                                     <label class="btn btn-info">
-                                        <input name="page_type" type="radio" value="seats"> Seats
+                                        <input name="page_type" type="radio" value="muster-account"> Muster Account
+                                    </label>
+                                    <label class="btn btn-info">
+                                        <input name="page_type" type="radio" value="sub-account"> Sub Account
                                     </label>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="box-body" style="padding-left: 0">
+                             <div class="row">
+                                <div class="col-md-6">
+
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    
+                                </div>
+                             </div>
+                        </div>
+                        <div class="box-body" style="padding-left: 0">
+                             <div class="row">
+                                <div class="col-md-4">
+                                    Income Channel Overview
+                                </div>
+                                <div class="col-md-7 text-right">
+                                    <select name="account-filter" id="account-filter" class="form-control" multiple>
+                                        <option value="1">Account one</option>
+                                        <option value="2">Account two</option>
+                                        <option value="3">Account three</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1 text-right">
+                                    <button class="refresh-seats btn-black btn btn-sm btn-block" style="margin-top: 2px;">Refresh</button>
+                                </div>
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -124,10 +155,12 @@
             </div>
         </section>
     </div>
+    
 @endsection
 @section('js')
     {{-- page js link here  --}}
     <script src="{{asset('new-dashboard/chart.js')}}"></script>  
+    @include('googleAds.common_script')
     <script>
       var current_page = "GoogleAds dashboard";
       const __csrf_token = "{{@csrf_token()}}";
