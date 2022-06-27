@@ -24,6 +24,8 @@
             <!-- breadcrumb end --> 
         </section>
 
+        @include('googleAds.filter') 
+
         <section class="content"> 
             <div class="row">
                 <div class="col-md-12">
@@ -199,6 +201,7 @@
 @section('js') 
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
+    @include('googleAds.common_script')
     <script>
         $('#dataTable').DataTable({
             "paging": true,
