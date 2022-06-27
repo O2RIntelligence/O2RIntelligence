@@ -33,11 +33,14 @@
                         <div class="box-body" style="padding-left: 0">
                             <div class="pull-left">
                                 <div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-info active">
-                                        <input name="page_type" type="radio" value="dates" checked=""> General
+                                    <label class="btn btn-info active" data-action="chat_type">
+                                        <input name="chat_type" type="radio" value="general" checked=""> General
                                     </label>
                                     <label class="btn btn-info">
-                                        <input name="page_type" type="radio" value="seats"> Seats
+                                        <input name="chat_type" type="radio" value="master_accounts"> Master Accounts
+                                    </label>
+                                    <label class="btn btn-info">
+                                        <input name="chat_type" type="radio" value="sub_accounts"> Sub Accounts
                                     </label>
                                 </div>
                             </div>

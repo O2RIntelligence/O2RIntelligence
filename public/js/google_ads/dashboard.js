@@ -8,6 +8,7 @@ class Dashboard extends GoogleAdsManager {
 
     this.getDashboardData = this.getDashboardData.bind(this);
     this.populateCards = this.populateCards.bind(this);
+    this.chartTypeActivities = this.chartTypeActivities.bind(this);
   }
 
   init() {
@@ -16,6 +17,7 @@ class Dashboard extends GoogleAdsManager {
 
     self.initiateLineChartOne();
     self.getDashboardData();
+    self.chartTypeActivities();
   }
 
   initiateLineChartOne() {
@@ -40,16 +42,6 @@ class Dashboard extends GoogleAdsManager {
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(220,220,220,1)",
           data: [65, 59, 80, 81, 56, 55, 40]
-        },
-        {
-          label: "Digital Goods",
-          fillColor: "rgba(60,141,188,0.9)",
-          strokeColor: "rgba(60,141,188,0.8)",
-          pointColor: "#3b8bba",
-          pointStrokeColor: "rgba(60,141,188,1)",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(60,141,188,1)",
-          data: [28, 48, 40, 19, 86, 27, 90]
         }
       ]
     };
@@ -98,8 +90,6 @@ class Dashboard extends GoogleAdsManager {
     //--------------
     lineChartOneOptions.datasetFill = false;
     lineChartOne.Line(lineChartOneData, lineChartOneOptions);
-
-
 
 
     // Line chart 2
@@ -177,6 +167,12 @@ class Dashboard extends GoogleAdsManager {
 //--------------
     lineChartTwoOptions.datasetFill = false;
     lineChartTwo.Line(lineChartTwoData, lineChartTwoOptions);
+  }
+
+  chartTypeActivities() {
+    $(document).on('click', '[data-action="chat_type"]', function () {
+      const chartType = $(this).find('input').val();
+    });
   }
 
   getDashboardData() {
