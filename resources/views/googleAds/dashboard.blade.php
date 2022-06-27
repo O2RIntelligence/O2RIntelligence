@@ -114,7 +114,7 @@
                             <div class="box-body">
                                 <div class="isResizable">
                                     <div class="chart-container">
-                                        <canvas id="HNetIncome_container" style="width:100%;height:auto;"></canvas>
+                                        <canvas id="line_chart_one" style="width:100%;height:auto;"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -127,6 +127,7 @@
 @endsection
 @section('js')
     {{-- page js link here  --}}
+    <script src="{{asset('new-dashboard/chart.js')}}"></script>  
     <script>
       var current_page = "GoogleAds dashboard";
       const __csrf_token = "{{@csrf_token()}}";
