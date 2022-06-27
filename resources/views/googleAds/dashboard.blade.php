@@ -28,26 +28,7 @@
                     <div class="lds-hourglass"></div>
                 </div>
 
-                @include('googleAds.filter')
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box-body" style="padding-left: 0">
-                            <div class="pull-left">
-                                <div class="btn-group" data-toggle="buttons">
-                                    <label class="btn btn-info active" data-action="chat_type">
-                                        <input name="chat_type" type="radio" value="general" checked=""> General
-                                    </label>
-                                    <label class="btn btn-info">
-                                        <input name="chat_type" type="radio" value="master_accounts"> Master Accounts
-                                    </label>
-                                    <label class="btn btn-info">
-                                        <input name="chat_type" type="radio" value="sub_accounts"> Sub Accounts
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @include('googleAds.filter') 
 
                 <div class="row">
                     <div class="col-md-3">
