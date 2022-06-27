@@ -128,7 +128,7 @@
                             <div class="box-body">
                                 <div class="isResizable">
                                     <div class="chart-container">
-                                        <canvas id="DNetIncome_container" style="width:100%;height:auto;"></canvas>
+                                        <canvas id="line_chart_one" style="width:100%;height:auto;"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -145,7 +145,7 @@
                             <div class="box-body">
                                 <div class="isResizable">
                                     <div class="chart-container">
-                                        <canvas id="line_chart_one" style="width:100%;height:auto;"></canvas>
+                                        <canvas id="line_chart_two" style="width:100%;height:auto;"></canvas>
                                     </div>
                                 </div>
                             </div>
