@@ -10,8 +10,6 @@ class GoogleAdsManager {
     this.init = this.init.bind(this);
 
     this.utils = {};
-
-    this.init();
   }
 
   /**
