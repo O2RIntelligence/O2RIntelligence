@@ -9,7 +9,37 @@ class GoogleAdsManager {
     this.setState = this.setState.bind(this);
     this.init = this.init.bind(this);
 
-    this.utils = {};
+    this.utils = {
+      /**
+       *
+       * @param labels
+       * @param dataSets
+       * @param chartType {"daily_cost" | "hourly_cost"}
+       */
+      createChartData(labels, dataSets, chartType) {
+        let datasets = [];
+
+        if(dataSets && dataSets?.length > 0) {
+          dataSets?.forEach((data) => {
+            datasets.push({
+              label: data?.name,
+              fillColor: "rgba(210, 214, 222, 1)",
+              strokeColor: "rgba(210, 214, 222, 1)",
+              pointColor: "rgba(210, 214, 222, 1)",
+              pointStrokeColor: "#c1c7d1",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(220,220,220,1)",
+              data: chartType === "daily_cost" ? data?.dailyCostGraphData : chartType === "hourly_cost" ? data?.hourlyCostGraphData : [],
+            })
+          });
+        }
+
+        return {
+          labels,
+          datasets,
+        };
+      }
+    };
   }
 
   /**

@@ -9,42 +9,31 @@ class Dashboard extends GoogleAdsManager {
     this.getDashboardData = this.getDashboardData.bind(this);
     this.populateCards = this.populateCards.bind(this);
     this.chartTypeActivities = this.chartTypeActivities.bind(this);
+    this.initiateLineChartOne = this.initiateLineChartOne.bind(this);
+    this.initiateLineChartTwo = this.initiateLineChartTwo.bind(this);
   }
 
   init() {
     super.init();
     const self = this;
 
-    self.initiateLineChartOne();
     self.getDashboardData();
     self.chartTypeActivities();
   }
 
-  initiateLineChartOne() {
+  initiateLineChartOne(datasets) {
     //--------------
     //- AREA CHART -
     //--------------
+
+    $("#line_chart_one").replaceWith('<canvas id="line_chart_one" style="width:100%;height:auto;"></canvas>');
 
     // Get context with jQuery - using jQuery's .get() method.
     let lineChartCanvasOne = $("#line_chart_one").get(0).getContext("2d");
     let lineChartOne = new Chart(lineChartCanvasOne);
     // This will get the first returned node in the jQuery collection.
 
-    let lineChartOneData = {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [
-        {
-          label: "Electronics",
-          fillColor: "rgba(210, 214, 222, 1)",
-          strokeColor: "rgba(210, 214, 222, 1)",
-          pointColor: "rgba(210, 214, 222, 1)",
-          pointStrokeColor: "#c1c7d1",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(220,220,220,1)",
-          data: [65, 59, 80, 81, 56, 55, 40]
-        }
-      ]
-    };
+    let lineChartOneData = datasets;
 
     let lineChartOneOptions = {
       //Boolean - If we should show the scale at all
@@ -90,38 +79,16 @@ class Dashboard extends GoogleAdsManager {
     //--------------
     lineChartOneOptions.datasetFill = false;
     lineChartOne.Line(lineChartOneData, lineChartOneOptions);
+  }
 
-
+  initiateLineChartTwo(datasets) {
     // Line chart 2
+    $("#line_chart_two").replaceWith('<canvas id="line_chart_two" style="width:100%;height:auto;"></canvas>');
     let lineChartCanvasTwo = $("#line_chart_two").get(0).getContext("2d");
     let lineChartTwo = new Chart(lineChartCanvasTwo);
 // This will get the first returned node in the jQuery collection.
 
-    let lineChartTwoData = {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [
-        {
-          label: "Electronics",
-          fillColor: "rgba(210, 214, 222, 1)",
-          strokeColor: "rgba(210, 214, 222, 1)",
-          pointColor: "rgba(210, 214, 222, 1)",
-          pointStrokeColor: "#c1c7d1",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(220,220,220,1)",
-          data: [65, 59, 80, 81, 56, 55, 40]
-        },
-        {
-          label: "Digital Goods",
-          fillColor: "rgba(60,141,188,0.9)",
-          strokeColor: "rgba(60,141,188,0.8)",
-          pointColor: "#3b8bba",
-          pointStrokeColor: "rgba(60,141,188,1)",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(60,141,188,1)",
-          data: [28, 48, 40, 19, 86, 27, 90]
-        }
-      ]
-    };
+    let lineChartTwoData = datasets;
 
     let lineChartTwoOptions = {
       //Boolean - If we should show the scale at all
@@ -170,10 +137,12 @@ class Dashboard extends GoogleAdsManager {
   }
 
   chartTypeActivities() {
-    $(document).on('click', '[data-action="chat_type"]', function () {
-      const chartType = $(this).find('input').val();
+    const self = this;
 
-      alert(chartType);
+    $(document).on('click', '[data-action="chat_type"]', function () {
+      const chartType = $(this).attr('data-name');
+      self.populateChartData("general", chartType);
+      self.populateChartData("general", chartType);
     });
   }
 
@@ -194,6 +163,8 @@ class Dashboard extends GoogleAdsManager {
         });
 
         self.populateCards();
+        self.populateChartData("general", "daily_cost");
+        self.populateChartData("general", "hourly_cost");
       }
     });
   }
@@ -220,6 +191,42 @@ class Dashboard extends GoogleAdsManager {
 
       $('#monthly_total_cost').text(`${totalMonthlyCost}$`);
       $('#monthly_run_rate').text(`${totalMonthlyRunRate}$`);
+    }
+  }
+
+  /**
+   * Populate chart data
+   * @param type {"general" | "master_accounts" | "sub_accounts"}
+   * @param chartType {"daily_cost" | "hourly_cost"}
+   */
+  populateChartData(type, chartType) {
+    const self = this;
+    let dashboardState = self.state.dashboard;
+
+    if (dashboardState) {
+      let data = chartType === "hourly_cost" ? dashboardState?.hourlyCostGraphData : chartType === "daily_cost" ? dashboardState?.dailyCostGraphData : null;
+      let labels = chartType === "daily_cost" ? data?.totalDailyCostGraphLabel : data?.totalHourlyCostGraphData;
+      let graphData = [];
+
+      if (type === "general") {
+        graphData = this.utils.createChartData(labels, [
+          {
+            name: "TEST",
+            [chartType === "daily_cost" ? "dailyCostGraphData" : "hourlyCostGraphData"]: chartType === "daily_cost" ? data?.totalDailyCostGraphData : data?.totalHourlyCostGraphData,
+          }
+        ], chartType);
+
+      } else if(type === "master_accounts") {
+        graphData = this.utils.createChartData(labels, data?.masterAccountData, chartType);
+      } else if(type === "sub_accounts") {
+        graphData = this.utils.createChartData(labels, data?.subAccountData, chartType);
+      }
+
+      if(chartType === "daily_cost") {
+        self.initiateLineChartOne(graphData);
+      } else if(chartType === "hourly_cost") {
+        self.initiateLineChartTwo(graphData);
+      }
     }
   }
 }
