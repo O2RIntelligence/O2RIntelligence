@@ -29,7 +29,7 @@ class GoogleAdsManager {
               pointStrokeColor: "#c1c7d1",
               pointHighlightFill: "#fff",
               pointHighlightStroke: "rgba(220,220,220,1)",
-              data: chartType === "daily_cost" ? data?.dailyCostGraphData : chartType === "hourly_cost" ? data?.hourlyCostGraphData : [],
+              data: data?.data && data?.data?.length > 0 ? data?.data : new Array(labels?.length).fill(0),
             })
           });
         }
