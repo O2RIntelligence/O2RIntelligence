@@ -202,8 +202,8 @@ class DashboardController extends Controller
                             $dates [] = $currentDateCost->date;
                             $dailyCosts [] = $currentDateCost->cost;
                         }
-                        $subAccountData[$key2]['dailyCostGraphLabel'] = $dates;
-                        $subAccountData[$key2]['dailyCostGraphData'] = $dailyCosts;
+//                        $subAccountData[$key2]['dailyCostGraphLabel'] = $dates;
+                        $subAccountData[$key2]['data'] = $dailyCosts;
                         $dailyCosts = [];
                     }
                 }
@@ -211,8 +211,8 @@ class DashboardController extends Controller
                 foreach ($dateRangeCost as $key => $currentDateCost) {
                     $dailyCosts [] = $currentDateCost->cost;
                 }
-                $masterAccountData[$key1]['dailyCostGraphLabel'] = $dates;
-                $masterAccountData[$key1]['dailyCostGraphData'] = $dailyCosts;
+//                $masterAccountData[$key1]['dailyCostGraphLabel'] = $dates;
+                $masterAccountData[$key1]['data'] = $dailyCosts;
                 $dailyCosts = [];
 
             }
@@ -221,7 +221,7 @@ class DashboardController extends Controller
                 $dailyCosts [] = $currentDateCost->cost;
             }
 
-            return array('totalDailyCostGraphLabel' => $dates, 'totalDailyCostGraphData' => $dailyCosts, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
+            return array('label' => $dates, 'data' => $dailyCosts, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
             dd($exception);
         }
@@ -258,8 +258,8 @@ class DashboardController extends Controller
                             $hours [] = $currentHourCost->hour;
                             $hourlyCosts [] = $currentHourCost->cost;
                         }
-                        $subAccountData[$key2]['hourlyCostGraphLabel'] = $hours;
-                        $subAccountData[$key2]['hourlyCostGraphData'] = $hourlyCosts;
+//                        $subAccountData[$key2]['hourlyCostGraphLabel'] = $hours;
+                        $subAccountData[$key2]['data'] = $hourlyCosts;
                         $hourlyCosts = [];
                     }
                 }
@@ -267,8 +267,8 @@ class DashboardController extends Controller
                 foreach ($hourlyCost as $key => $currentHourCost) {
                     $hourlyCosts [] = $currentHourCost->cost;
                 }
-                $masterAccountData[$key1]['hourlyCostGraphLabel'] = $hours;
-                $masterAccountData[$key1]['hourlyCostGraphData'] = $hourlyCosts;
+//                $masterAccountData[$key1]['hourlyCostGraphLabel'] = $hours;
+                $masterAccountData[$key1]['data'] = $hourlyCosts;
                 $hourlyCosts = [];
 
             }
@@ -277,7 +277,7 @@ class DashboardController extends Controller
                 $hourlyCosts [] = $currentHourCost->cost;
             }
 
-            return array('totalHourlyCostGraphLabel' => $hours, 'totalHourlyCostGraphData' => $hourlyCosts, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
+            return array('label' => $hours, 'data' => $hourlyCosts, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
             dd($exception);
         }
