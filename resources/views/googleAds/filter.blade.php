@@ -37,9 +37,6 @@
                 <div class="row"> 
                     <div class="col-md-11 text-right">
                         <select name="account-filter" id="account-filter" class="form-control" multiple>
-                            <option value="1">Account one</option>
-                            <option value="2">Account two</option>
-                            <option value="3">Account three</option>
                         </select>
                     </div>
                     <div class="col-md-1 text-right">
