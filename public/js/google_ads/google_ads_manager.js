@@ -7,6 +7,7 @@ class GoogleAdsManager {
   constructor() {
     this.initialState = {};
     this.state = this.initialState;
+
     this.dataFilterState = {
       account_type: 'general',
       date_filter: {
@@ -17,6 +18,8 @@ class GoogleAdsManager {
         masterAccounts: [],
         subAccounts: [],
       },
+
+      selected_accounts: [],
     };
 
     this.setState = this.setState.bind(this);
@@ -179,6 +182,9 @@ class GoogleAdsManager {
     const self = this;
     const { account_type: accountType, accounts } = self.dataFilterState;
 
+    // Reset the existing selected accounts
+    self.dataFilterState.selected_accounts = [];
+
     const data = accountType === "master_accounts" ? accounts?.masterAccounts : accountType === "sub_accounts" ? accounts.subAccounts : [];
 
     if (accountType === "general") {
@@ -201,6 +207,7 @@ class GoogleAdsManager {
   /**
    * Data filter activities
    * @param props {{
+   *   onChange?(data: any): void,
    *   onSearch?(data: any): void,
    * }}
    */
@@ -210,18 +217,28 @@ class GoogleAdsManager {
 
     $("#account-filter").select2({
       placeholder: 'Select'
+    }).on('change', function () {
+      self.dataFilterState.selected_accounts = $(this).val();
     });
 
     //Date range as a button
     $('#daterange-btn').daterangepicker({}, function (start, end, label) {
       self.dataFilterState.date_filter.from = start.format('YYYY-MM-DD');
       self.dataFilterState.date_filter.to = end.format('YYYY-MM-DD');
+
+      if (typeof props?.onChange === "function") {
+        props?.onChange(self.dataFilterState);
+      }
     });
 
     $(document).on('click', '[data-action="account_type"]', function () {
       const accountType = $(this).attr('data-name');
       self.dataFilterState.account_type = accountType;
       self.populateFilterAccounts();
+
+      if (typeof props?.onChange === "function") {
+        props?.onChange(self.dataFilterState);
+      }
     });
 
     $(".change-period").on("click", function () {
@@ -231,12 +248,18 @@ class GoogleAdsManager {
       $("input[name=date_period]").val(period);
       if (period !== 'custom') {
         $(".custom-daterange").hide();
+
+        // Update the date range variables
         self.utils.createFilterDate(period);
+
+        if (typeof props?.onChange === "function") {
+          props?.onChange(self.dataFilterState);
+        }
       }
     });
 
     $(document).on('click', '[data-action="filter-search"]', function () {
-      if(typeof props?.onSearch === "function") {
+      if (typeof props?.onSearch === "function") {
         props?.onSearch(self.dataFilterState);
       }
     });
