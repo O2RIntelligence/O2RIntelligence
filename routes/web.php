@@ -56,6 +56,8 @@ Route::post('/google-ads/general-variable/delete', [GeneralVariableController::c
 
 //Dashboard API's
 Route::post('/google-ads/dashboard/data', [DashboardController::class, 'getAllDashboardData'])->name('google-ads.dashboard.data');
+Route::get('/google-ads/all-accounts/data',  [DashboardController::class, 'getAccountInformation'])->name('googleAds.accounts.index');
+
 
 
 //Google OAuth2 Login
@@ -69,9 +71,9 @@ Route::get('/google-ads/usdRate', [GoogleAdsService::class, 'getUsdRate'])->name
 
 //googleAds Web Paths
 Route::get('admin/google-ads/dashboard', [DashboardController::class, 'index'])->name('google-ads.dashboard.index');
-Route::get('admin/google-ads/activity-report', [ActivityReportController::class, 'index'])->name('googleAds.activity-report.index');// 'googleAds.activity-report.index');
-Route::get('admin/google-ads/financial-report',  [FinancialReportController::class, 'index'])->name('googleAds.financial-report.index');//'googleAds.financial-report.index');
-Route::get('admin/google-ads/account-setting',  [MasterAccountController::class, 'index'])->name('googleAds.account-setting.index');//'googleAds.account-setting.index');
-Route::get('admin/google-ads/general-variable', [GeneralVariableController::class, 'index'])->name('googleAds.general-variable.index');// 'googleAds.general-variable.index');
+Route::get('admin/google-ads/activity-report', [ActivityReportController::class, 'index'])->name('googleAds.activity-report.index');
+Route::get('admin/google-ads/financial-report',  [FinancialReportController::class, 'index'])->name('googleAds.financial-report.index');
+Route::get('admin/google-ads/account-setting',  [MasterAccountController::class, 'index'])->name('googleAds.account-setting.index');
+Route::get('admin/google-ads/general-variable', [GeneralVariableController::class, 'index'])->name('googleAds.general-variable.index');
 
 
