@@ -15,7 +15,9 @@ class FinancialReport extends GoogleAdsManager {
   init() {
     super.init();
     const self = this;
-    super.dataFilterActivities();
+    super.dataFilterActivities({
+      onChange: self.getFinancialReportData,
+    });
     this.prepareFinancialTable();
     this.getFinancialReportData();
   }
@@ -35,13 +37,14 @@ class FinancialReport extends GoogleAdsManager {
   }
   getFinancialReportData() {
     const self = this;
+    const { date_filter } = self.dataFilterState;
     self.sendHttpRequest({
       method: "post",
       url: "/api/google-ads/financial-report/data",
       useCsrf: true,
       data: {
-        startDate: '',
-        endDate: '',
+        startDate: date_filter?.from ?? "",
+        endDate: date_filter?.to ?? "",
       },
       onSuccess(data) {
         self.setState({
@@ -51,12 +54,28 @@ class FinancialReport extends GoogleAdsManager {
       }
     });
   }
-  renderFinancialTable() {
+
+  /**
+   * 
+   * @param {{
+   *  data?: any,
+   * }} props 
+   */
+  renderFinancialTable(props) {
     const self = this;
-    console.log(self.state.financialData.financialInformation.totalData);
-    const data = self.state.financialData.financialInformation.totalData;
+    let data = props?.data ?? self.state.financialData.financialInformation.totalData;
+    console.log(data);
+
+    const { account_type, selected_accounts } = self.dataFilterState;
+    if (account_type === "master_accounts") {
+
+
+    } else if (account_type === "sub_accounts") {
+
+    }
 
     const table = self.state.financialTable;
+    table.clear();
     for (let item of data) {
       table.row.add([
         item?.master_account_name ?? "",

@@ -15,7 +15,9 @@ class ActivityReport extends GoogleAdsManager {
   init() {
     super.init();
     const self = this;
-    super.dataFilterActivities();
+    super.dataFilterActivities({
+      onChange: self.getActivityReportData,
+    });
     this.getActivityReportData();
     this.prepareReportTable();
   }
@@ -37,13 +39,14 @@ class ActivityReport extends GoogleAdsManager {
 
   getActivityReportData() {
     const self = this;
+    const { date_filter } = self.dataFilterState;
     self.sendHttpRequest({
       method: "post",
       url: "/api/google-ads/activity-report/data",
       useCsrf: true,
       data: {
-        startDate: '',
-        endDate: '',
+        startDate: date_filter?.from ?? "",
+        endDate: date_filter?.to ?? "",
       },
       onSuccess(data) {
         self.setState({
@@ -60,6 +63,7 @@ class ActivityReport extends GoogleAdsManager {
     const data = self.state.reportData.monthlyForecastData.totalData;
 
     const table = self.state.reportTable;
+    table.clear();
     for (let item of data) {
       table.row.add([
         item?.account_name ?? "",
