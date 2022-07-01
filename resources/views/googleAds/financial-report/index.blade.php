@@ -203,6 +203,12 @@
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
     @include('googleAds.common_script')
     <script>
+      var current_page = "GoogleAds dashboard";
+      const __csrf_token = "{{@csrf_token()}}";
+    </script>
+    <script src="/js/google_ads/google_ads_manager.js"></script>
+    <script src="/js/google_ads/financial_report.js"></script>
+    <script>
         $('#dataTable').DataTable({
             "paging": true,
             "lengthChange": true,
