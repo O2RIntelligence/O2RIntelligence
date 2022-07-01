@@ -57,13 +57,31 @@ class ActivityReport extends GoogleAdsManager {
       }
     });
   }
+
   renderActivityTable() {
     const self = this;
-    console.log(self.state.reportData.monthlyForecastData.totalData);
-    const data = self.state.reportData.monthlyForecastData.totalData;
+    const { account_type, selected_accounts } = self.dataFilterState;
+    let data = self.state.reportData.monthlyForecastData.totalData ?? [];
+
+    if (account_type !== "general" && selected_accounts && selected_accounts?.length > 0) {
+      const filteredData = [];
+
+      selected_accounts?.forEach(function (accountId) {
+        data?.forEach(function (item) {
+          const itemId = account_type === "master_accounts" ? item?.master_account_id : account_type === "sub_accounts" ? item?.sub_account_id : 0;
+
+          if (Number(itemId) === Number(accountId)) {
+            filteredData.push(item);
+          }
+        });
+      });
+
+      data = filteredData;
+    }
 
     const table = self.state.reportTable;
     table.clear();
+    
     for (let item of data) {
       table.row.add([
         item?.account_name ?? "",

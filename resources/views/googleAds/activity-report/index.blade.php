@@ -64,7 +64,7 @@
         <section class="content">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="box grid-box"> 
+                    <div class="box grid-box">
                         <table class="table table-hover grid-table" id="reportTable">
                             <thead>
                             <tr>
@@ -160,7 +160,6 @@
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
     <script src="{{asset('new-dashboard/chart.js')}}"></script>
-    @include('googleAds.common_script')
 
     <script>
       var current_page = "GoogleAds dashboard";
@@ -168,10 +167,10 @@
     </script>
     <script src="/js/google_ads/google_ads_manager.js"></script>
     <script src="/js/google_ads/activity_report.js"></script>
- 
 
-<script>
-  $(function () {
+
+    <script>
+      $(function () {
 
         //--------------
         //- AREA CHART -

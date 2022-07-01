@@ -147,7 +147,6 @@
 @section('js')
     {{-- page js link here  --}}
     <script src="{{asset('new-dashboard/chart.js')}}"></script>
-    @include('googleAds.common_script')
     <script>
       var current_page = "GoogleAds dashboard";
       const __csrf_token = "{{@csrf_token()}}";

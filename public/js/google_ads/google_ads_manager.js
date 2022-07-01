@@ -219,6 +219,9 @@ class GoogleAdsManager {
       placeholder: 'Select'
     }).on('change', function () {
       self.dataFilterState.selected_accounts = $(this).val();
+      if (typeof props?.onPressFilter === "function") {
+        props?.onPressFilter(self.dataFilterState);
+      }
     });
 
     //Date range as a button
@@ -236,8 +239,8 @@ class GoogleAdsManager {
       self.dataFilterState.account_type = accountType;
       self.populateFilterAccounts();
 
-      if (typeof props?.onChange === "function") {
-        props?.onChange(self.dataFilterState);
+      if (typeof props?.onPressFilter === "function") {
+        props?.onPressFilter(self.dataFilterState);
       }
     });
 

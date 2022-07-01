@@ -51,6 +51,7 @@
                               <tr> 
                                 <th>Master Account Name</th>
                                 <th>Master Account ID</th>
+                                <th>Sub Account Name</th>
                                 <th>Sub Account ID</th>
                                 <th>SPENT in ARS</th>
                                 <th>Spent in USD</th>
@@ -201,7 +202,6 @@
 @section('js') 
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
-    @include('googleAds.common_script')
     <script>
       var current_page = "GoogleAds dashboard";
       const __csrf_token = "{{@csrf_token()}}";

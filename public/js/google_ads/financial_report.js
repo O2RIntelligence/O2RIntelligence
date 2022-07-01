@@ -17,10 +17,12 @@ class FinancialReport extends GoogleAdsManager {
     const self = this;
     super.dataFilterActivities({
       onChange: self.getFinancialReportData,
+      onPressFilter: self.renderFinancialTable,
     });
     this.prepareFinancialTable();
     this.getFinancialReportData();
   }
+
   prepareFinancialTable() {
     const self = this;
     self.setState({
@@ -35,6 +37,7 @@ class FinancialReport extends GoogleAdsManager {
         })
     });
   }
+
   getFinancialReportData() {
     const self = this;
     const { date_filter } = self.dataFilterState;
@@ -55,31 +58,36 @@ class FinancialReport extends GoogleAdsManager {
     });
   }
 
-  /**
-   * 
-   * @param {{
-   *  data?: any,
-   * }} props 
-   */
-  renderFinancialTable(props) {
+
+  renderFinancialTable() {
     const self = this;
-    let data = props?.data ?? self.state.financialData.financialInformation.totalData;
-    console.log(data);
-
     const { account_type, selected_accounts } = self.dataFilterState;
-    if (account_type === "master_accounts") {
+    let data = self.state.financialData.financialInformation.totalData ?? [];
 
+    if (account_type !== "general" && selected_accounts && selected_accounts?.length > 0) {
+      const filteredData = [];
 
-    } else if (account_type === "sub_accounts") {
+      selected_accounts?.forEach(function (accountId) {
+        data?.forEach(function (item) {
+          const itemId = account_type === "master_accounts" ? item?.master_account_id : account_type === "sub_accounts" ? item?.sub_account_id : 0;
 
+          if (Number(itemId) === Number(accountId)) {
+            filteredData.push(item);
+          }
+        });
+      });
+
+      data = filteredData;
     }
 
     const table = self.state.financialTable;
     table.clear();
+
     for (let item of data) {
       table.row.add([
         item?.master_account_name ?? "",
         item?.master_account_id ?? "",
+        item?.sub_account_name ?? "",
         item?.sub_account_id ?? "",
         Number(item?.spent_in_ars ?? 0).toFixed(2),
         Number(item?.spent_in_usd ?? 0).toFixed(2),
