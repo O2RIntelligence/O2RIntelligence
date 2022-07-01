@@ -2,8 +2,9 @@ class ActivityReport extends GoogleAdsManager {
   constructor() {
     super();
 
+    this.getActivityReportData = this.getActivityReportData.bind(this);
     this.initialState = {
-      ok: 'ok'
+      reportData: [],
     };
   }
 
@@ -11,6 +12,26 @@ class ActivityReport extends GoogleAdsManager {
     super.init();
     const self = this;
     super.dataFilterActivities();
+    this.getActivityReportData();
+  }
+
+  getActivityReportData() {
+    const self = this;
+    self.sendHttpRequest({
+      method: "post",
+      url: "/api/google-ads/activity-report/data",
+      useCsrf: true,
+      data: {
+        startDate: '',
+        endDate: '',
+      },
+      onSuccess(data) {
+        self.setState({
+          reportData: data,
+        });
+        console.log(self.state.reportData.monthlyForecastData);
+      }
+    });
   }
 }
 
