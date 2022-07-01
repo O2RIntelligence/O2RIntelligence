@@ -10,8 +10,8 @@ class GoogleAdsManager {
     this.dataFilterState = {
       account_type: 'general',
       date_filter: {
-        from: '',
-        to: '',
+        from: moment().utcOffset(0, true).format('YYYY-MM-DD'),
+        to: moment().utcOffset(0, true).format('YYYY-MM-DD'),
       },
       accounts: {
         masterAccounts: [],
@@ -26,12 +26,12 @@ class GoogleAdsManager {
 
     this.utils = {
       /**
-       *
+       * Create chart data
        * @param labels
        * @param dataSets
        * @param chartType {"daily_cost" | "hourly_cost"}
        */
-      createChartData(labels, dataSets, chartType) {
+      createChartData: (labels, dataSets, chartType) => {
         let datasets = [];
 
         if (dataSets && dataSets?.length > 0) {
@@ -53,6 +53,59 @@ class GoogleAdsManager {
           labels,
           datasets,
         };
+      },
+
+      /**
+       * Create the filter dates
+       * @param period {"today" | "yesterday" | "last7" | "last30" | null}
+       */
+      createFilterDate: (period = null) => {
+        const self = this;
+        try {
+          if (!period)
+            period = $("input[name=date_period]").val();
+          let date = null;
+          let startDateInput = $("input[name=start_date]");
+          let endDateInput = $("input[name=end_date]");
+          let fromDate = null, toDate = null;
+
+          switch (period) {
+            case 'today':
+              date = moment().utcOffset(0, true).format('YYYY-MM-DD');
+              startDateInput.val(date);
+              endDateInput.val(date);
+              fromDate = date;
+              toDate = date;
+              break;
+            case 'yesterday':
+              date = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
+              fromDate = date;
+              toDate = date;
+              startDateInput.val(date);
+              endDateInput.val(date);
+              break;
+            case 'last7':
+              fromDate = moment().utcOffset(0, true).subtract(7, "days").format('YYYY-MM-DD');
+              toDate = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
+              startDateInput.val(fromDate);
+              endDateInput.val(toDate);
+              break;
+            case 'last30':
+              fromDate = moment().utcOffset(0, true).startOf('month').format('YYYY-MM-DD');
+              toDate = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
+              startDateInput.val(fromDate);
+              endDateInput.val(toDate);
+              break;
+            default:
+              break;
+          }
+
+          self.dataFilterState.date_filter.from = fromDate;
+          self.dataFilterState.date_filter.to = toDate;
+        } catch (e) {
+          console.log("Error: " + e);
+          swal("Error occurred!", "error");
+        }
       }
     };
   }
@@ -119,10 +172,12 @@ class GoogleAdsManager {
     });
   }
 
+  /**
+   * Populate the filter account list dropdown
+   */
   populateFilterAccounts() {
     const self = this;
     const { account_type: accountType, accounts } = self.dataFilterState;
-    console.log(accountType);
 
     const data = accountType === "master_accounts" ? accounts?.masterAccounts : accountType === "sub_accounts" ? accounts.subAccounts : [];
 
@@ -143,14 +198,47 @@ class GoogleAdsManager {
     }
   }
 
-  dataFilterActivities() {
+  /**
+   * Data filter activities
+   * @param props {{
+   *   onSearch?(data: any): void,
+   * }}
+   */
+  dataFilterActivities(props) {
     const self = this;
     self.getFilterAccountList();
+
+    $("#account-filter").select2({
+      placeholder: 'Select'
+    });
+
+    //Date range as a button
+    $('#daterange-btn').daterangepicker({}, function (start, end, label) {
+      self.dataFilterState.date_filter.from = start.format('YYYY-MM-DD');
+      self.dataFilterState.date_filter.to = end.format('YYYY-MM-DD');
+    });
 
     $(document).on('click', '[data-action="account_type"]', function () {
       const accountType = $(this).attr('data-name');
       self.dataFilterState.account_type = accountType;
       self.populateFilterAccounts();
+    });
+
+    $(".change-period").on("click", function () {
+      $(".time-periods button").removeClass("active");
+      $(this).addClass("active");
+      let period = $(this).data('period');
+      $("input[name=date_period]").val(period);
+      if (period !== 'custom') {
+        $(".custom-daterange").hide();
+        self.utils.createFilterDate(period);
+      }
+    });
+
+    $(document).on('click', '[data-action="filter-search"]', function () {
+      if(typeof props?.onSearch === "function") {
+        props?.onSearch(self.dataFilterState);
+      }
     });
   }
 }
