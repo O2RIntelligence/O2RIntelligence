@@ -40,7 +40,7 @@
                         </select>
                     </div>
                     <div class="col-md-1 text-right">
-                        <button class="refresh-seats btn-black btn btn-block" style="max-height: 32px">Refresh</button>
+                        <button class="refresh-seats btn-black btn btn-block" style="max-height: 32px" data-action="filter-search">Refresh</button>
                     </div>
                  </div> 
             </div>
