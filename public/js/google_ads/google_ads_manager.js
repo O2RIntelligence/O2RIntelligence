@@ -13,7 +13,10 @@ class GoogleAdsManager {
         from: '',
         to: '',
       },
-      accounts: [],
+      accounts: {
+        masterAccounts: [],
+        subAccounts: [],
+      },
     };
 
     this.setState = this.setState.bind(this);
@@ -98,16 +101,46 @@ class GoogleAdsManager {
 
   }
 
+  /**
+   * Get all the account list
+   */
   getFilterAccountList() {
     const self = this;
 
     self.sendHttpRequest({
-      url: '/',
+      url: '/google-ads/all-accounts/data',
       method: 'get',
       onSuccess(res) {
+        self.dataFilterState.accounts.masterAccounts = res?.masterAccounts ?? [];
+        self.dataFilterState.accounts.subAccounts = res?.subAccounts ?? [];
 
+        self.populateFilterAccounts();
       },
-    })
+    });
+  }
+
+  populateFilterAccounts() {
+    const self = this;
+    const { account_type: accountType, accounts } = self.dataFilterState;
+    console.log(accountType);
+
+    const data = accountType === "master_accounts" ? accounts?.masterAccounts : accountType === "sub_accounts" ? accounts.subAccounts : [];
+
+    if (accountType === "general") {
+      $('#account-filter').prop('disabled', true);
+    } else {
+      if (data) {
+        let optionsHtml = ``;
+
+        data?.forEach((account) => {
+          const id = account?.account_id;
+          const name = account?.name;
+          optionsHtml += `<option value="${id}">${name}</option>`;
+        });
+
+        $('#account-filter').html(optionsHtml).prop('disabled', false);
+      }
+    }
   }
 
   dataFilterActivities() {
@@ -117,6 +150,7 @@ class GoogleAdsManager {
     $(document).on('click', '[data-action="account_type"]', function () {
       const accountType = $(this).attr('data-name');
       self.dataFilterState.account_type = accountType;
+      self.populateFilterAccounts();
     });
   }
 }
