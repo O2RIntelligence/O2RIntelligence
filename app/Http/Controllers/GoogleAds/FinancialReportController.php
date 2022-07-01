@@ -4,6 +4,8 @@ namespace App\Http\Controllers\GoogleAds;
 
 use App\Http\Controllers\Controller;
 use App\Model\GoogleAds\DailyData;
+use App\Model\GoogleAds\MasterAccount;
+use App\Model\GoogleAds\SubAccount;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -67,6 +69,8 @@ class FinancialReportController extends Controller
             $masterAccountData = [];
             $subAccountData = [];
             $totalData = [];
+            $accountInfo = [];
+
             foreach ($masterAccounts as $key1 => $masterAccount) {
                 $masterAccountData[$key1]['id'] = $masterAccount->id;
                 $masterAccountData[$key1]['account_id'] = $masterAccount->account_id;
@@ -78,8 +82,13 @@ class FinancialReportController extends Controller
                         $subAccountData[$key2]['account_id'] = $subAccount->account_id;
                         $subAccountData[$key2]['name'] = $subAccount->name;
 
+                        $accountInfo['master_account_name'] = $masterAccount->name;
+                        $accountInfo['master_account_id'] = $masterAccount->account_id;
+                        $accountInfo['sub_account_name'] = $subAccount->name;
+                        $accountInfo['sub_account_id'] = $subAccount->account_id;
+
                         $monthlyData = DailyData::where('sub_account_id', $subAccount->id)->whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-                        $totalData = $this->processMonthlyData($monthlyData, $totalData);
+                        $totalData = $this->processMonthlyData($monthlyData, $totalData, $accountInfo);
 
                         $subAccountData[$key2]['dataTableData'] = $totalData;
                         $totalData = [];
@@ -87,14 +96,14 @@ class FinancialReportController extends Controller
                 }
 
                 $monthlyData = DailyData::where('master_account_id', $masterAccount->id)->whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-                $totalData = $this->processMonthlyData($monthlyData, $totalData);
+                $totalData = $this->processMonthlyData($monthlyData, $totalData, null);
 
                 $masterAccountData[$key1]['dataTableData'] = $totalData;
                 $totalData = [];
 
             }
             $monthlyData = DailyData::whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-            $totalData = $this->processMonthlyData($monthlyData, $totalData);
+            $totalData = $this->processMonthlyData($monthlyData, $totalData, $accountInfo);
 
             return array('totalData' => $totalData, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
@@ -102,10 +111,23 @@ class FinancialReportController extends Controller
         }
     }
 
-    private function processMonthlyData($monthlyData, $totalData){
+    private function processMonthlyData($monthlyData, $totalData, $accountInfo) {
         foreach ($monthlyData as $key => $dailyData) {
+            if(empty($accountInfo)){
+                $subAccountData = SubAccount::where('id', $dailyData->sub_account_id)->get()->first();
+                $masterAccountData = MasterAccount::where('id', $dailyData->master_account_id)->get()->first();
+
+                $accountInfo['master_account_name'] = $masterAccountData->name;
+                $accountInfo['master_account_id'] = $masterAccountData->account_id;
+                $accountInfo['sub_account_name'] = $subAccountData->name;
+                $accountInfo['sub_account_id'] = $subAccountData->account_id;
+            }
             $totalData [] = array(
                 'date' => $dailyData->date,
+                'master_account_name' => $accountInfo['master_account_name'],
+                'master_account_id' => $accountInfo['master_account_id'],
+                'sub_account_name' => $accountInfo['sub_account_name'],
+                'sub_account_id' => $accountInfo['sub_account_id'],
                 'spent_in_ars' => $dailyData->cost,
                 'spent_in_usd' => $dailyData->cost_usd,
                 'discount' => $masterAccount->discount??0,
