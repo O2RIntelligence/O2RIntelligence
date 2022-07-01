@@ -78,7 +78,8 @@ class Dashboard extends GoogleAdsManager {
     //- LINE CHART -
     //--------------
     lineChartOneOptions.datasetFill = false;
-    lineChartOne.Line(lineChartOneData, lineChartOneOptions);
+    const lineChartOneInstance = lineChartOne.Line(lineChartOneData, lineChartOneOptions);
+    document.getElementById("line-chart-one-legend").innerHTML = lineChartOneInstance.generateLegend();
   }
 
   initiateLineChartTwo(datasets) {
@@ -133,16 +134,17 @@ class Dashboard extends GoogleAdsManager {
 //- LINE CHART -
 //--------------
     lineChartTwoOptions.datasetFill = false;
-    lineChartTwo.Line(lineChartTwoData, lineChartTwoOptions);
+    const LineChartTwoInstance = lineChartTwo.Line(lineChartTwoData, lineChartTwoOptions);
+    document.getElementById("line-chart-two-legend").innerHTML = LineChartTwoInstance.generateLegend();
   }
 
   chartTypeActivities() {
     const self = this;
 
-    $(document).on('click', '[data-action="chat_type"]', function () {
+    $(document).on('click', '[data-action="account_type"]', function () {
       const chartType = $(this).attr('data-name');
-      self.populateChartData("general", chartType);
-      self.populateChartData("general", chartType);
+      self.populateChartData(chartType, "daily_cost");
+      self.populateChartData(chartType, "hourly_cost");
     });
   }
 
@@ -205,21 +207,23 @@ class Dashboard extends GoogleAdsManager {
 
     if (dashboardState) {
       let data = chartType === "hourly_cost" ? dashboardState?.hourlyCostGraphData : chartType === "daily_cost" ? dashboardState?.dailyCostGraphData : null;
-      let labels = chartType === "daily_cost" ? data?.totalDailyCostGraphLabel : data?.totalHourlyCostGraphData;
+      let labels = data?.label;
+      console.log(chartType);
+      let graphDataList = data?.data;
       let graphData = [];
 
       if (type === "general") {
         graphData = this.utils.createChartData(labels, [
           {
             name: "TEST",
-            [chartType === "daily_cost" ? "dailyCostGraphData" : "hourlyCostGraphData"]: chartType === "daily_cost" ? data?.totalDailyCostGraphData : data?.totalHourlyCostGraphData,
+            data: graphDataList,
           }
         ], chartType);
 
       } else if(type === "master_accounts") {
-        graphData = this.utils.createChartData(labels, data?.masterAccountData, chartType);
+        graphData = this.utils.createChartData(labels, data?.masterAccountData);
       } else if(type === "sub_accounts") {
-        graphData = this.utils.createChartData(labels, data?.subAccountData, chartType);
+        graphData = this.utils.createChartData(labels, data?.subAccountData);
       }
 
       if(chartType === "daily_cost") {
@@ -227,6 +231,8 @@ class Dashboard extends GoogleAdsManager {
       } else if(chartType === "hourly_cost") {
         self.initiateLineChartTwo(graphData);
       }
+
+      console.log("graphData", graphData);
     }
   }
 }
