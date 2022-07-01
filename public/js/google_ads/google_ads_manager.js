@@ -2,12 +2,24 @@ class GoogleAdsManager {
   initialState = {};
   state = {};
   utils = {};
+  dataFilterState = {};
 
   constructor() {
     this.initialState = {};
     this.state = this.initialState;
+    this.dataFilterState = {
+      account_type: 'general',
+      date_filter: {
+        from: '',
+        to: '',
+      },
+      accounts: [],
+    };
+
     this.setState = this.setState.bind(this);
     this.init = this.init.bind(this);
+    this.getFilterAccountList = this.getFilterAccountList.bind(this);
+    this.dataFilterActivities = this.dataFilterActivities.bind(this);
 
     this.utils = {
       /**
@@ -19,7 +31,7 @@ class GoogleAdsManager {
       createChartData(labels, dataSets, chartType) {
         let datasets = [];
 
-        if(dataSets && dataSets?.length > 0) {
+        if (dataSets && dataSets?.length > 0) {
           dataSets?.forEach((data) => {
             datasets.push({
               label: data?.name,
@@ -84,5 +96,27 @@ class GoogleAdsManager {
 
   init() {
 
+  }
+
+  getFilterAccountList() {
+    const self = this;
+
+    self.sendHttpRequest({
+      url: '/',
+      method: 'get',
+      onSuccess(res) {
+
+      },
+    })
+  }
+
+  dataFilterActivities() {
+    const self = this;
+    self.getFilterAccountList();
+
+    $(document).on('click', '[data-action="account_type"]', function () {
+      const accountType = $(this).attr('data-name');
+      self.dataFilterState.account_type = accountType;
+    });
   }
 }

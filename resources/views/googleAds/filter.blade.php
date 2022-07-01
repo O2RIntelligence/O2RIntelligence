@@ -4,14 +4,14 @@
             <div class="row">
                 <div class="col-md-5">  
                     <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-info active" data-action="chat_type" data-name="general">
-                            <input name="chat_type" type="radio" value="general"> General
+                        <label class="btn btn-info active" data-action="account_type" data-name="general">
+                            <input name="account_type" type="radio" value="general"> General
                         </label>
-                        <label class="btn btn-info" data-action="chat_type" data-name="master_accounts">
-                            <input name="chat_type" type="radio" value="master_accounts"> Master Accounts
+                        <label class="btn btn-info" data-action="account_type" data-name="master_accounts">
+                            <input name="account_type" type="radio" value="master_accounts"> Master Accounts
                         </label>
-                        <label class="btn btn-info" data-action="chat_type" data-name="sub_accounts">
-                            <input name="chat_type" type="radio" value="sub_accounts"> Sub Accounts
+                        <label class="btn btn-info" data-action="account_type" data-name="sub_accounts">
+                            <input name="account_type" type="radio" value="sub_accounts"> Sub Accounts
                         </label>
                     </div>
                 </div>

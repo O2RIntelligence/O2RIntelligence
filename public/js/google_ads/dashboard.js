@@ -141,7 +141,7 @@ class Dashboard extends GoogleAdsManager {
   chartTypeActivities() {
     const self = this;
 
-    $(document).on('click', '[data-action="chat_type"]', function () {
+    $(document).on('click', '[data-action="account_type"]', function () {
       const chartType = $(this).attr('data-name');
       self.populateChartData(chartType, "daily_cost");
       self.populateChartData(chartType, "hourly_cost");
