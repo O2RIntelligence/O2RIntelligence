@@ -46,7 +46,7 @@
                         </div>
 
                          
-                        <table class="table table-hover grid-table" id="dataTable">
+                        <table class="table table-hover grid-table" id="financialTable">
                             <thead>
                               <tr> 
                                 <th>Master Account Name</th>
@@ -63,7 +63,7 @@
                                 <th>Net Income %</th> 
                               </tr>
                             </thead>
-                             <tbody>
+                             <!-- <tbody>
                               <tr>
                                 <td>Acount name one</td>
                                 <td>ID-123</td>
@@ -190,7 +190,7 @@
                                 <td>50</td>
                                 <td>10%</td>
                               </tr>
-                             </tbody>
+                             </tbody> -->
                         </table>
                     </div>
                 </div>
@@ -208,14 +208,4 @@
     </script>
     <script src="/js/google_ads/google_ads_manager.js"></script>
     <script src="/js/google_ads/financial_report.js"></script>
-    <script>
-        $('#dataTable').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false
-          });
-    </script>
 @endsection
