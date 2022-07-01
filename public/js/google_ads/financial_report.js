@@ -60,8 +60,8 @@ class FinancialReport extends GoogleAdsManager {
     for (let item of data) {
       table.row.add([
         item?.master_account_name ?? "",
-        item?.master_Account_id ?? "",
-        item?.sub_Account_id ?? "",
+        item?.master_account_id ?? "",
+        item?.sub_account_id ?? "",
         Number(item?.spent_in_ars ?? 0).toFixed(2),
         Number(item?.spent_in_usd ?? 0).toFixed(2),
         Number(item?.discount ?? 0),
