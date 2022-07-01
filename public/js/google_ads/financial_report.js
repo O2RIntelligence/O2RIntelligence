@@ -8,6 +8,7 @@ class FinancialReport extends GoogleAdsManager {
 
     this.initialState = {
       financialData: [],
+      financialTable: null,
     };
   }
 
@@ -15,13 +16,13 @@ class FinancialReport extends GoogleAdsManager {
     super.init();
     const self = this;
     super.dataFilterActivities();
-    this.getFinancialReportData();
     this.prepareFinancialTable();
+    this.getFinancialReportData();
   }
   prepareFinancialTable() {
     const self = this;
     self.setState({
-      financialData:
+      financialTable:
         $('#financialTable').DataTable({
           "paging": true,
           "lengthChange": true,
@@ -58,9 +59,9 @@ class FinancialReport extends GoogleAdsManager {
     const table = self.state.financialTable;
     for (let item of data) {
       table.row.add([
-        item?.name ?? "",
-        "",
-        "",
+        item?.master_account_name ?? "",
+        item?.master_Account_id ?? "",
+        item?.sub_Account_id ?? "",
         Number(item?.spent_in_ars ?? 0).toFixed(2),
         Number(item?.spent_in_usd ?? 0).toFixed(2),
         Number(item?.discount ?? 0),

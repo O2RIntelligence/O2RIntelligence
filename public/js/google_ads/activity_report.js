@@ -62,7 +62,7 @@ class ActivityReport extends GoogleAdsManager {
     const table = self.state.reportTable;
     for (let item of data) {
       table.row.add([
-        item?.name ?? "",
+        item?.account_name ?? "",
         item?.cost ?? "",
         Number(item?.account_budget ?? 0).toFixed(2),
         Number(item?.budget_usage_percent ?? 0).toFixed(2),
