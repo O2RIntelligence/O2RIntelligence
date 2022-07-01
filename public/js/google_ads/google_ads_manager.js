@@ -208,7 +208,7 @@ class GoogleAdsManager {
    * Data filter activities
    * @param props {{
    *   onChange?(data: any): void,
-   *   onSearch?(data: any): void,
+   *   onPressFilter?(data: any): void,
    * }}
    */
   dataFilterActivities(props) {
@@ -259,8 +259,8 @@ class GoogleAdsManager {
     });
 
     $(document).on('click', '[data-action="filter-search"]', function () {
-      if (typeof props?.onSearch === "function") {
-        props?.onSearch(self.dataFilterState);
+      if (typeof props?.onPressFilter === "function") {
+        props?.onPressFilter(self.dataFilterState);
       }
     });
   }
