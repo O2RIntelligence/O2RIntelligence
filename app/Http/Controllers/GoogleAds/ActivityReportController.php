@@ -146,7 +146,7 @@ class ActivityReportController extends Controller
                         $subAccountData[$key2]['name'] = $subAccount->name;
 
                         $monthlyData = DailyData::where('sub_account_id', $subAccount->id)->whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-                        $totalData = $this->processMonthlyData($monthlyData, $totalData);
+                        $totalData = $this->processMonthlyData($monthlyData, $totalData, $subAccount);
 
                         $subAccountData[$key2]['dataTableData'] = $totalData;
                         $totalData = [];
@@ -154,14 +154,14 @@ class ActivityReportController extends Controller
                 }
 
                 $monthlyData = DailyData::where('master_account_id', $masterAccount->id)->whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-                $totalData = $this->processMonthlyData($monthlyData, $totalData);
+                $totalData = $this->processMonthlyData($monthlyData, $totalData, $masterAccount);
 
                 $masterAccountData[$key1]['dataTableData'] = $totalData;
                 $totalData = [];
 
             }
-            $monthlyData = DailyData::whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-            $totalData = $this->processMonthlyData($monthlyData, $totalData);
+            $monthlyData = DailyData::whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();//dd($monthlyData);
+            $totalData = $this->processMonthlyData($monthlyData, $totalData, null);
 
 
             return array('totalData' => $totalData, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
@@ -175,10 +175,14 @@ class ActivityReportController extends Controller
      * @param $totalData
      * @return mixed
      */
-    private function processMonthlyData($monthlyData, $totalData){
+    private function processMonthlyData($monthlyData, $totalData, $accountInfo){
         foreach ($monthlyData as $key => $dailyData) {
+            if(empty($accountInfo)){
+                $accountInfo = SubAccount::where('id', $dailyData->sub_account_id)->get()->first();
+            }
             $totalData [] = array(
                 'date'=> $dailyData->date,
+                'account_name'=> $accountInfo->name,
                 'cost'=> $dailyData->cost,
                 'account_budget'=> $dailyData->account_budget,
                 'budget_usage_percent'=> $dailyData->budget_usage_percent,
