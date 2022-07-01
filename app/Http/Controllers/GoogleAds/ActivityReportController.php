@@ -160,7 +160,7 @@ class ActivityReportController extends Controller
                 $totalData = [];
 
             }
-            $monthlyData = DailyData::whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();//dd($monthlyData);
+            $monthlyData = DailyData::whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
             $totalData = $this->processMonthlyData($monthlyData, $totalData, null);
 
 
