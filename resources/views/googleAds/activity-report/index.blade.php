@@ -65,7 +65,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="box grid-box"> 
-                        <table class="table table-hover grid-table" id="dataTable">
+                        <table class="table table-hover grid-table" id="reportTable">
                             <thead>
                               <tr> 
                                 <th>Account Name </th>
@@ -75,7 +75,7 @@
                                 <th>Monthly Run Rate</th>  
                               </tr>
                             </thead>
-                            <tbody> 
+                            <!-- <tbody> 
                               <tr>
                                 <td>Acount name one</td>
                                 <td>10000</td>
@@ -118,7 +118,7 @@
                                 <td>50</td>
                                 <td>10</td>
                               </tr>
-                            </tbody>
+                            </tbody> -->
                         </table>
                     </div>  
                 </div>
@@ -169,16 +169,7 @@
     <script src="/js/google_ads/google_ads_manager.js"></script>
     <script src="/js/google_ads/activity_report.js"></script>
  
-    <script>
-         $('#dataTable').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false
-          }); 
-    </script> 
+
 <script>
   $(function () {
 
