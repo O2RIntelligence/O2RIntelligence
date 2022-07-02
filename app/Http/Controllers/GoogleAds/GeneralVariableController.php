@@ -28,8 +28,8 @@ class GeneralVariableController extends Controller
         try {
             $generalVariables = $request->validated();
             if(GeneralVariable::create($generalVariables)){
-                return response()->json(array(['success' => true]));
-            }else return response()->json(array(['success' => false]));
+                return response()->json(['success' => true]);
+            }else return response()->json(['success' => false]);
         } catch (Exception $exception) {
             dd($exception);
         }
@@ -57,7 +57,7 @@ class GeneralVariableController extends Controller
     {
         try {
             if($generalVariables = GeneralVariableResource::collection(GeneralVariable::all())) {
-                return response()->json(array(['success' => true, 'data' => $generalVariables]));
+                return response()->json(['success' => true, 'data' => $generalVariables]);
             }
         } catch (Exception $exception) {
             dd($exception);
@@ -73,7 +73,7 @@ class GeneralVariableController extends Controller
         try {
             $generalVariables = GeneralVariable::where('id', $request->id)->get()->first();
             if ($generalVariables&&$generalVariables->update($request->validated())) {
-                return response()->json(array(['success' => true]));
+                return response()->json(['success' => true]);
             }else return response()->json(['success' => false, 'message' => 'No Data Found']);
         } catch (Exception $exception) {
             dd($exception);
@@ -89,7 +89,7 @@ class GeneralVariableController extends Controller
         try {
             $generalVariables = GeneralVariable::where('id', $request->id)->get()->first();
             if ($generalVariables&&$generalVariables->update([$generalVariables->is_active = !$generalVariables->is_active])) {
-                return response()->json(array(['success' => true]));
+                return response()->json(['success' => true]);
             }else return response()->json(['success' => false, 'message' => 'No Data Found']);
         } catch (Exception $exception) {
             dd($exception);
@@ -104,7 +104,7 @@ class GeneralVariableController extends Controller
     {
         try {
             if(GeneralVariable::withTrashed()->where('id', $request->id)->delete()) {
-                return response()->json(array(['success' => true]));
+                return response()->json(['success' => true]);
             }
         } catch (Exception $exception) {
             dd($exception);
