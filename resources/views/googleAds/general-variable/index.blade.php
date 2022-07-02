@@ -134,28 +134,24 @@
                         </div>
 
                          
-                        <table class="table table-hover grid-table" id="dataTable">
+                        <table class="table table-hover grid-table" id="generalVariableTable">
                             <thead>
                               <tr>
-                                <th class="column-__row_selector__">
+                                <!-- <th class="column-__row_selector__">
                                   <div class="icheckbox_minimal-blue" aria-checked="false" aria-disabled="false" style="position: relative;">
                                     <input type="checkbox" class="grid-select-all" style="position: absolute; opacity: 0;">
                                     <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins>
                                   </div>&nbsp;
                                 </th>
                                 <th class="column-id">ID <a class="fa fa-fw fa-sort" href="http://127.0.0.1:8000/admin/auth/users?_sort%5Bcolumn%5D=id&amp;_sort%5Btype%5D=desc"></a>
-                                </th>
-                                <th class="column-username">Username</th>
-                                <th class="column-name">Name</th>
-                                <th class="column-roles">Roles</th>
-                                <th class="column-created_at">Created At</th>
-                                <th class="column-updated_at">Updated At</th>
-                                <th class="column-api_password">API Password</th>
-                                <th class="column-partner_fee">Partner Fee</th>
+                                </th> -->
+                                <th class="column-username">Official Dollar</th>
+                                <th class="column-name">Blue Dollar</th>
+                                <th class="column-roles">PLUSM Discount</th>
                                 <th class="column-__actions__">Action</th>
                               </tr>
                             </thead>
-                            <tbody>
+                            <!-- <tbody>
                               <tr data-key="1">
                                 <td class="column-__row_selector__">
                                   <div class="icheckbox_minimal-blue" aria-checked="false" aria-disabled="false" style="position: relative;">
@@ -477,7 +473,7 @@
                                   </div>
                                 </td>
                               </tr>
-                            </tbody>
+                            </tbody> -->
                         </table>
                     </div>
                 </div>
@@ -490,14 +486,14 @@
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
     <script>
-         $('#dataTable').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false
-          });
+        //  $('#dataTable').DataTable({
+        //     "paging": true,
+        //     "lengthChange": true,
+        //     "searching": true,
+        //     "ordering": true,
+        //     "info": true,
+        //     "autoWidth": false
+        //   });
 
 
           // open modal 
@@ -505,4 +501,10 @@
             $("#general-variable-setting-modal").modal('show');
           })
     </script>
+        <script>
+      var current_page = "General variables";
+      const __csrf_token = "{{@csrf_token()}}";
+    </script>
+    <script src="/js/google_ads/google_ads_manager.js"></script>
+    <script src="/js/google_ads/general_variables.js"></script>
 @endsection
