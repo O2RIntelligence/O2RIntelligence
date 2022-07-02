@@ -17,6 +17,7 @@ class ActivityReport extends GoogleAdsManager {
     const self = this;
     super.dataFilterActivities({
       onChange: self.getActivityReportData,
+      onPressFilter: self.renderActivityTable,
     });
     this.getActivityReportData();
     this.prepareReportTable();
@@ -64,17 +65,23 @@ class ActivityReport extends GoogleAdsManager {
     let data = self.state.reportData.monthlyForecastData.totalData ?? [];
 
     if (account_type !== "general" && selected_accounts && selected_accounts?.length > 0) {
-      const filteredData = [];
+      let filteredData = [];
 
-      selected_accounts?.forEach(function (accountId) {
-        data?.forEach(function (item) {
-          const itemId = account_type === "master_accounts" ? item?.master_account_id : account_type === "sub_accounts" ? item?.sub_account_id : 0;
+      if(account_type === "master_accounts" || account_type === "sub_accounts") {
+        data = account_type === "master_accounts" ? self.state.reportData.monthlyForecastData.masterAccountData
+          : account_type === "sub_accounts" ? self.state.reportData.monthlyForecastData.subAccountData : [];
 
-          if (Number(itemId) === Number(accountId)) {
-            filteredData.push(item);
-          }
+        selected_accounts?.forEach(function (accountId) {
+          data?.forEach(function (item) {
+            if(Number(item?.account_id) === Number(accountId)) {
+              filteredData = [
+                ...filteredData,
+                ...item?.dataTableData ?? [],
+              ];
+            }
+          });
         });
-      });
+      }
 
       data = filteredData;
     }
