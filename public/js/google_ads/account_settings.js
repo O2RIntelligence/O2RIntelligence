@@ -5,12 +5,16 @@ class AccountSettings extends GoogleAdsManager {
     this.getAccountSettingsData = this.getAccountSettingsData.bind(this);
     this.renderAccountSettingsTable = this.renderAccountSettingsTable.bind(this);
     this.prepareAccountSettingsTable = this.prepareAccountSettingsTable.bind(this);
+    this.openFormDialog = this.openFormDialog.bind(this);
+    this.formActivities = this.formActivities.bind(this);
+    this.submitFormData = this.submitFormData.bind(this);
 
     this.initialState = {
       accountData: [],
       accountTable: null,
+      form: document.forms['ACCOUNT-SETTINGS-FORM'],
     };
-
+    this.state = this.initialState;
   }
 
   init() {
@@ -18,13 +22,87 @@ class AccountSettings extends GoogleAdsManager {
     const self = this;
     this.getAccountSettingsData();
     this.prepareAccountSettingsTable();
+    this.formActivities();
   }
+  formActivities() {
+    const self = this;
+    $(document).on('click', '#createFormDialog', function () {
+      self.openFormDialog();
+      self.state.form['id'].value = "";
+      self.state.form['accountName'].value = "";
+      self.state.form['accountId'].value = "";
+      self.state.form['developerToken'].value = "";
+      self.state.form['discount'].value = "";
+      self.state.form['revenueConversionRate'].value = ""
+    });
+
+    $(document).on('click', '#editFormDialog', function () {
+      self.openFormDialog();
+      const index = $(this).attr('data-index');
+      const data = self.state.accountData[index];
+
+      self.state.form['id'].value = data?.id;
+      self.state.form['accountName'].value = data?.name;
+      self.state.form['accountId'].value = data?.account_id;
+      self.state.form['developerToken'].value = data?.developer_token;
+      self.state.form['discount'].value = data?.discount;
+      self.state.form['revenueConversionRate'].value = data?.revenue_conversion_rate;
+
+    });
+
+    $(document).on('submit', '[name="ACCOUNT-SETTINGS-FORM"]', function (e) {
+      e.preventDefault();
+      self.submitFormData();
+    });
+  }
+  getFormData() {
+    const self = this;
+    return {
+      id: self.state.form['id'].value,
+      accountName: self.state.form['accountName'].value,
+      accountId: self.state.form['accountId'].value,
+      developerToken: self.state.form['developerToken'].value,
+      discount: self.state.form['discount'].value,
+      revenueConversionRate: self.state.form['revenueConversionRate'].value
+    };
+  }
+  submitFormData() {
+    const self = this;
+    const data = {
+      name: self.getFormData().accountName,
+      account_id: self.getFormData().accountId,
+      developer_token: self.getFormData().developerToken,
+      discount: self.getFormData().discount,
+      revenue_conversion_rate: self.getFormData().revenueConversionRate,
+    };
+
+    let type = "store"
+    if (self.getFormData().id !== "") {
+      data.id = self.getFormData().id;
+      type = "update"
+    }
+
+
+
+    self.sendHttpRequest({
+      method: "post",
+      url: "/google-ads/master-account/" + type,
+      useCsrf: true,
+      data,
+      onSuccess() {
+        self.getAccountSettingsData();
+        self.openFormDialog("hide");
+        swal("Save successfully!", 'success');
+      }
+    });
+  }
+
 
   prepareAccountSettingsTable() {
     const self = this;
     self.setState({
       accountTable:
-        $('#generalVariableTable').DataTable({
+        $('#accountSettingsTable').DataTable({
           "paging": true,
           "lengthChange": true,
           "searching": true,
@@ -39,16 +117,13 @@ class AccountSettings extends GoogleAdsManager {
     const self = this;
     self.sendHttpRequest({
       method: "get",
-      url: "/google-ads/general-variables",
+      url: "/google-ads/master-accounts",
       useCsrf: true,
       data: {},
       onSuccess(data) {
         self.setState({
-          accountData: data,
+          accountData: data.data,
         });
-
-        console.log(data[0].data);
-
         self.renderAccountSettingsTable();
       }
     });
@@ -56,20 +131,49 @@ class AccountSettings extends GoogleAdsManager {
 
   renderAccountSettingsTable() {
     const self = this;
-    let data = self.state.accountData[0].data ?? [];
+    let data = self.state.accountData ?? [];
 
     const table = self.state.accountTable;
     table.clear();
 
-    for (let item of data) {
+    data?.forEach(function (item, index) {
       table.row.add([
-        item?.official_dollar ?? 0,
-        item?.blue_dollar ?? 0,
-        Number(item?.plus_m_discount ?? 0).toFixed(2),
+        item?.name ?? "",
+        item?.account_id ?? "",
+        item?.developer_token ?? "",
+        Number(item?.discount ?? 0).toFixed(2),
+        Number(item?.revenue_conversion_rate ?? 0).toFixed(2),
+        `<label class="switch">
+          <input type="checkbox" checked>
+          <span class="slider round"></span>
+        </label>`,
+        `<div class="grid-dropdown-actions dropdown">
+        <a href="#" style="padding: 0 10px;" class="dropdown-toggle" data-toggle="dropdown">
+          <i class="fa fa-ellipsis-v"></i>
+        </a>
+        <ul class="dropdown-menu" style="min-width: 70px !important;box-shadow: 0 2px 3px 0 rgba(0,0,0,.2);border-radius:0;left: -65px;top: 5px;">
+          <li>
+            <a id="editFormDialog" href="javascript:void(0)" data-index="${index}">Edit</a>
+          </li>
+          <!-- <li>
+             <a data-_key="14" href="javascript:void(0);" class="grid-row-action-62b58e69c638a2961">Delete</a>
+           </li>
+          -->
+        </ul>
+      </div>`
       ]);
-    }
+    });
 
     table.draw();
+  }
+  /**
+ * 
+ * @param {{
+   *  action: 'show' | 'hide'
+   * }} action 
+   */
+  openFormDialog(action = 'show') {
+    $('#account-setting-modal').modal(action);
   }
 }
 

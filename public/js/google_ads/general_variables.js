@@ -69,14 +69,15 @@ class GeneralVariables extends GoogleAdsManager {
       blue_dollar: self.getFormData().blueDollar,
       plus_m_discount: self.getFormData().plusmDiscount,
     };
-
+    let type = "store"
     if (self.getFormData().id !== "") {
       data.id = self.getFormData().id;
+      type = "update"
     }
 
     self.sendHttpRequest({
       method: "post",
-      url: "/google-ads/general-variable/store",
+      url: "/google-ads/general-variable/" + type,
       useCsrf: true,
       data,
       onSuccess() {
