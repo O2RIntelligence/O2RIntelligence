@@ -58,7 +58,7 @@ class MasterAccountController extends Controller
     {
         try {
             if($masterAccounts = MasterAccountResource::collection(MasterAccount::all())) {
-                return response()->json(array(['success' => true, 'data' => $masterAccounts]));
+                return response()->json(['success' => true, 'data' => $masterAccounts]);
             }
         } catch (Exception $exception) {
             dd($exception);
