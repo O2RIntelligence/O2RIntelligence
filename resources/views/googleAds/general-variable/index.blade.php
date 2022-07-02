@@ -112,7 +112,7 @@
                                 </div>
                                             
                                 <div class="btn-group pull-right grid-create-btn" style="margin-right: 10px">
-                                    <a href="javascript:void(0)" class="btn btn-sm btn-success" title="New" id="newModalTrigger">
+                                    <a href="javascript:void(0)" class="btn btn-sm btn-success" title="New" id="createFormDialog">
                                         <i class="fa fa-plus"></i><span class="hidden-xs">&nbsp;&nbsp;New</span>
                                     </a>
                                 </div> 
@@ -486,22 +486,6 @@
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
     <script>
-        //  $('#dataTable').DataTable({
-        //     "paging": true,
-        //     "lengthChange": true,
-        //     "searching": true,
-        //     "ordering": true,
-        //     "info": true,
-        //     "autoWidth": false
-        //   });
-
-
-          // open modal 
-          $(document).on("click", "#newModalTrigger", function(){
-            $("#general-variable-setting-modal").modal('show');
-          })
-    </script>
-        <script>
       var current_page = "General variables";
       const __csrf_token = "{{@csrf_token()}}";
     </script>
