@@ -30,7 +30,7 @@ class MasterAccountController extends Controller
             if(MasterAccount::create($masterAccountInformation)){
                $response = $this->subAccountController()->getSubAccountsFromGoogleAds();
                 return $response;
-            }else return response()->json(array(['success' => false]));
+            }else return response()->json(['success' => false]);
         } catch (Exception $exception) {
             dd($exception);
         }
@@ -74,7 +74,7 @@ class MasterAccountController extends Controller
         try {
             $masterAccount = MasterAccount::where('id', $request->id)->get()->first();
             if ($masterAccount&&$masterAccount->update($request->validated())) {
-                return response()->json(array(['success' => true]));
+                return response()->json(['success' => true]);
             }else return response()->json(['success' => false, 'message' => 'No Accounts Found']);
         } catch (Exception $exception) {
             dd($exception);
@@ -90,7 +90,7 @@ class MasterAccountController extends Controller
         try {
             $masterAccount = MasterAccount::where('id', $request->id)->get()->first();
             if ($masterAccount&&$masterAccount->update([$masterAccount->is_active = !$masterAccount->is_active])) {
-                return response()->json(array(['success' => true]));
+                return response()->json(['success' => true]);
             }else return response()->json(['success' => false, 'message' => 'No Accounts Found']);
         } catch (Exception $exception) {
             dd($exception);
@@ -105,7 +105,7 @@ class MasterAccountController extends Controller
     {
         try {
             if(MasterAccount::withTrashed()->where('id', $request->id)->delete()) {
-                return response()->json(array(['success' => true]));
+                return response()->json(['success' => true]);
             }
         } catch (Exception $exception) {
             dd($exception);
