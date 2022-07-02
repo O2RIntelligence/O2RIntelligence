@@ -8,16 +8,16 @@
               </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="" class="control-label">Label</label>
-                    <input type="text" class="form-control">
+                    <label for="" class="control-label">Official Dollar</label>
+                    <input type="number" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="" class="control-label">Label</label>
-                    <input type="text" class="form-control">
+                    <label for="" class="control-label">Blue Dollar</label>
+                    <input type="number" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="" class="control-label">Label</label>
-                    <input type="text" class="form-control">
+                    <label for="" class="control-label">PLUSM Discount</label>
+                    <input type="number" class="form-control">
                 </div>
 
                 <div class="mt-3 text-right">
