@@ -9,6 +9,7 @@ class GeneralVariables extends GoogleAdsManager {
     this.initialState = {
       variablesData: [],
       variablesTable: null,
+      form: document.forms['GENERAL-VARIABLE-FORM'],
     };
   }
 
@@ -30,7 +31,7 @@ class GeneralVariables extends GoogleAdsManager {
           "ordering": true,
           "info": true,
           "autoWidth": false
-        })
+        }),
     });
   }
 
