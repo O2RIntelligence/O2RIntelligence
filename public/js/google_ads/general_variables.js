@@ -45,9 +45,6 @@ class GeneralVariables extends GoogleAdsManager {
         self.setState({
           variablesData: data,
         });
-
-        console.log(data[0].data);
-
         self.renderGeneralVariablesTable();
       }
     });
@@ -55,7 +52,7 @@ class GeneralVariables extends GoogleAdsManager {
 
   renderGeneralVariablesTable() {
     const self = this;
-    let data = self.state.variablesData[0].data ?? [];
+    let data = self.state.variablesData.data ?? [];
 
     const table = self.state.variablesTable;
     table.clear();

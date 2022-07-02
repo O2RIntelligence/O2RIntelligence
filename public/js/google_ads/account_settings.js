@@ -10,6 +10,7 @@ class AccountSettings extends GoogleAdsManager {
       accountData: [],
       accountTable: null,
     };
+
   }
 
   init() {
@@ -67,6 +68,7 @@ class AccountSettings extends GoogleAdsManager {
         Number(item?.plus_m_discount ?? 0).toFixed(2),
       ]);
     }
+
     table.draw();
   }
 }
