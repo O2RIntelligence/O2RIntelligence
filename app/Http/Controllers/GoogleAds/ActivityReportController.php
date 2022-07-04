@@ -89,8 +89,8 @@ class ActivityReportController extends Controller
                             $hours [] = $currentHourCost->hour;
                             $hourlyCosts [] = $currentHourCost->cost_usd;
                         }
-                        $subAccountData[$key2]['hourlyCostGraphLabel'] = $hours;
-                        $subAccountData[$key2]['hourlyCostGraphData'] = $hourlyCosts;
+//                        $subAccountData[$key2]['hourlyCostGraphLabel'] = $hours;
+                        $subAccountData[$key2]['data'] = $hourlyCosts;
                         $hourlyCosts = [];
                     }
                 }
@@ -98,8 +98,8 @@ class ActivityReportController extends Controller
                 foreach ($hourlyCost as $key => $currentHourCost) {
                     $hourlyCosts [] = $currentHourCost->cost_usd;
                 }
-                $masterAccountData[$key1]['hourlyCostGraphLabel'] = $hours;
-                $masterAccountData[$key1]['hourlyCostGraphData'] = $hourlyCosts;
+//                $masterAccountData[$key1]['hourlyCostGraphLabel'] = $hours;
+                $masterAccountData[$key1]['data'] = $hourlyCosts;
                 $hourlyCosts = [];
 
             }
@@ -108,7 +108,7 @@ class ActivityReportController extends Controller
                 $hourlyCosts [] = $currentHourCost->cost_usd;
             }
 
-            return array('totalHourlyCostChartLabel' => $hours, 'totalHourlyCostChartData' => $hourlyCosts, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
+            return array('label' => $hours, 'data' => $hourlyCosts, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
             dd($exception);
         }
