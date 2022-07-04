@@ -32,15 +32,16 @@ class HourlyDataController extends Controller
     /**
      * Gets Hourly Data of all sub accounts
      *
+     * @param Request $request
      * @return JsonResponse
      */
 
-    public function getHourlyData(Request $request)
+    public function getHourlyData(Request $request): JsonResponse
     {
         try {
             $dateRange = date('Y-m-d',strtotime($request->date??'today'));
             $dailyData = [];
-            $masterAccounts = MasterAccountResource::collection(MasterAccount::all());
+            $masterAccounts = MasterAccountResource::collection(MasterAccount::where('is_online', true)->get());
             foreach ($masterAccounts as $key => $masterAccount) {
                 $googleAdsClient = $this->getGoogleAdsAuthService()->getGoogleAdsService($masterAccount);
                 $subAccounts = SubAccountResource::collection(SubAccount::all());

@@ -49,10 +49,10 @@ class SubAccountController extends Controller
      *
      * @return JsonResponse
      */
-    public function getSubAccountsFromGoogleAds()
+    public function getSubAccountsFromGoogleAds(): JsonResponse
     {
         try {
-            $masterAccounts =  MasterAccountResource::collection(MasterAccount::all());
+            $masterAccounts =  MasterAccountResource::collection(MasterAccount::where('is_online', true)->get());
             $subAccounts = [];
             foreach ($masterAccounts as $key => $masterAccount) {
                 $googleAdsClient = $this->getGoogleAdsAuthService()->getGoogleAdsService($masterAccount);
