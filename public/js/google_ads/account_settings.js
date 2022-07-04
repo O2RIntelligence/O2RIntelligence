@@ -54,6 +54,12 @@ class AccountSettings extends GoogleAdsManager {
       e.preventDefault();
       self.submitFormData();
     });
+
+    $(document).on('click', '[data-action="changeStatus"]', function () {
+      const id = $(this).attr('data-id');
+      self.updateStatus(id);
+    });
+
   }
   getFormData() {
     const self = this;
@@ -97,6 +103,18 @@ class AccountSettings extends GoogleAdsManager {
     });
   }
 
+  updateStatus(id) {
+    const self = this;
+    self.sendHttpRequest({
+      method: "post",
+      url: "/google-ads/master-account/status",
+      useCsrf: true,
+      data: { id },
+      onSuccess() {
+        swal("Change successfully!", 'success');
+      }
+    });
+  }
 
   prepareAccountSettingsTable() {
     const self = this;
@@ -143,8 +161,8 @@ class AccountSettings extends GoogleAdsManager {
         item?.developer_token ?? "",
         Number(item?.discount ?? 0).toFixed(2),
         Number(item?.revenue_conversion_rate ?? 0).toFixed(2),
-        `<label class="switch">
-          <input type="checkbox" checked>
+        `<label data-action="changeStatus"  data-id="${item.id}" class="switch">
+          <input type="checkbox" ${Number(item?.is_active) === 1 ? "checked" : ""} >
           <span class="slider round"></span>
         </label>`,
         `<div class="grid-dropdown-actions dropdown">
