@@ -36,6 +36,7 @@ Route::get('/google-ads/master-accounts', [MasterAccountController::class, 'getA
 Route::post('/google-ads/master-account/update', [MasterAccountController::class, 'update'])->name('google-ads.master-account.update');
 Route::post('/google-ads/master-account/status', [MasterAccountController::class, 'switchStatus'])->name('google-ads.master-account.status');
 Route::post('/google-ads/master-account/delete', [MasterAccountController::class, 'delete'])->name('google-ads.master-account.delete');
+Route::post('/google-ads/master-account/check-access', [MasterAccountController::class, 'checkIfDeveloperTokenIsUpdated'])->name('google-ads.master-account.check-access');
 
 
 //Sub-Account Operations

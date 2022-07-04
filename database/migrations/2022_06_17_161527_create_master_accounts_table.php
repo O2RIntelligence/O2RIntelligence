@@ -21,7 +21,7 @@ class CreateMasterAccountsTable extends Migration
             $table->string('developer_token');
             $table->string('discount')->default(0);
             $table->string('revenue_conversion_rate')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(false);
             $table->boolean('is_online')->default(false);
 
             $table->softDeletes();

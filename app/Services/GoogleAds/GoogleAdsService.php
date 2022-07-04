@@ -297,7 +297,6 @@ class GoogleAdsService
     {
         $managerCustomerId = $masterAccount->account_id;
         $loginCustomerId = $masterAccount->account_id;
-//        $googleAdsClient = $this->getGoogleAdsClient()->getGoogleAdsService($masterAccount);
         $rootCustomerIds = [];
         if (is_null($managerCustomerId)) {
             // We will get the account hierarchies for all accessible customers.
