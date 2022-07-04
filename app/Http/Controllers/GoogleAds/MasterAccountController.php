@@ -15,7 +15,8 @@ class MasterAccountController extends Controller
     public function index(){
         return view('googleAds.account-setting.index');
     }
-    public function subAccountController(){
+    public function subAccountController(): SubAccountController
+    {
         return new SubAccountController();
     }
 
@@ -27,10 +28,11 @@ class MasterAccountController extends Controller
     {
         try {
             $masterAccountInformation = $request->validated();
-            if(MasterAccount::create($masterAccountInformation)){
-               $response = $this->subAccountController()->getSubAccountsFromGoogleAds();
-                return $response;
-            }else return response()->json(['success' => false]);
+            if(MasterAccount::where('account_id', $masterAccountInformation['account_id'])->get()->first()) {
+                return response()->json(['success' => false, 'message' => 'Duplicate Entry']);
+            }
+            $masterAccount = MasterAccount::create($masterAccountInformation);//){
+            return response()->json(['success'=> (bool)$masterAccount]);
         } catch (Exception $exception) {
             dd($exception);
         }
