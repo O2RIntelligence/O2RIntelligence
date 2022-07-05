@@ -32,14 +32,13 @@ class HourlyDataController extends Controller
     /**
      * Gets Hourly Data of all sub accounts
      *
-     * @param Request $request
      * @return JsonResponse
      */
 
-    public function getHourlyData(Request $request): JsonResponse
+    public function getHourlyData(): JsonResponse
     {
         try {
-            $dateRange = date('Y-m-d',strtotime($request->date??'today'));
+            $dateRange = date('Y-m-d',strtotime('today'));
             $dailyData = [];
             $masterAccounts = MasterAccountResource::collection(MasterAccount::where('is_online', true)->get());
             foreach ($masterAccounts as $key => $masterAccount) {
