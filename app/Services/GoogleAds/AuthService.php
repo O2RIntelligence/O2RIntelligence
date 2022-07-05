@@ -66,7 +66,7 @@ class AuthService
                 $oAuth2Credential = (new OAuth2TokenBuilder())
                     ->withClientId($this->clientID)
                     ->withClientSecret($this->clientSecret)
-                    ->withRefreshToken($token->refresh_token)
+                    ->withRefreshToken($token->access_token)
                     ->build();
 
                 return (new GoogleAdsClientBuilder())

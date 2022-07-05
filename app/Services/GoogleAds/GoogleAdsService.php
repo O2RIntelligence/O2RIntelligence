@@ -2,6 +2,7 @@
 
 namespace App\Services\GoogleAds;
 
+use App\Http\Controllers\GoogleAds\HourlyDataController;
 use App\Model\GoogleAds\DailyData;
 use App\Model\GoogleAds\HourlyData;
 use Exception;
@@ -188,6 +189,7 @@ class GoogleAdsService
      * @throws Exception
      */
     public function storeHourlyData($hourlyData){
+//        HourlyData::all()->each->delete();
         foreach($hourlyData as $singleData){
             $hourlyData = HourlyData::create($singleData);
             if(!$hourlyData) throw new Exception('Could not create hourly data');
