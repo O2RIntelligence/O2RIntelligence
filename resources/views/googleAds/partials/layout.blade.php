@@ -97,8 +97,8 @@
 <script src="{{asset('vendor/laravel-admin/bootstrap-switch/dist/js/bootstrap-switch.min.js')}}"></script>
 <script src="{{asset('vendor/laravel-admin/fontawesome-iconpicker/dist/js/fontawesome-iconpicker.min.js')}}"></script>
 <script src="{{asset('vendor/laravel-admin/bootstrap-fileinput/js/plugins/sortable.min.js?v=4.5.2')}}"></script>
-<script src="{{asset('vendor/laravel-admin/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+<script src="{{asset('vendor/laravel-admin/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js')}}"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 @yield('js')
 
 </body>

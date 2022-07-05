@@ -60,7 +60,7 @@
         </section>
 
         @include('googleAds.filter')
-        <section class="content">
+        <section class="content" style="min-height: 30px">
             <div class="row">
                 <div class="col-md-12">
                     <div class="box grid-box">
