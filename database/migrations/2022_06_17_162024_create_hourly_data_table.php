@@ -27,10 +27,7 @@ class CreateHourlyDataTable extends Migration
 
             $table->string('cost');
             $table->string('cost_usd');
-            $table->boolean('is_active')->default(true);
-            $table->boolean('is_online')->default(false);
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }
