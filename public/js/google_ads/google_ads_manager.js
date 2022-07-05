@@ -40,12 +40,12 @@ class GoogleAdsManager {
           dataSets?.forEach((data) => {
             datasets.push({
               label: data?.name,
-              fillColor: "rgba(210, 214, 222, 1)",
-              strokeColor: "rgba(210, 214, 222, 1)",
-              pointColor: "rgba(210, 214, 222, 1)",
-              pointStrokeColor: "#c1c7d1",
-              pointHighlightFill: "#fff",
-              pointHighlightStroke: "rgba(220,220,220,1)",
+              fill: "rgba(210, 214, 222, 1)",
+              borderColor: this.utils.getRandomColor(), 
+              // pointColor: "rgba(210, 214, 222, 1)",
+              // pointStrokeColor: "#c1c7d1",
+              // pointHighlightFill: "#fff",
+              // pointHighlightStroke: "rgba(220,220,220,1)",
               data: data?.data && data?.data?.length > 0 ? data?.data : new Array(labels?.length).fill(0),
             })
           });
@@ -55,6 +55,20 @@ class GoogleAdsManager {
           labels,
           datasets,
         };
+      },
+
+      //   2196f38c
+      // f443368c
+      // 3f51b570
+      // 00968896
+
+      getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
       },
 
       /**
@@ -109,7 +123,8 @@ class GoogleAdsManager {
           swal("Error occurred!", "error");
         }
       }
-    };
+    }; 
+
   }
 
   /**

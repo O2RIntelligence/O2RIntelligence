@@ -1,6 +1,6 @@
  
     <div class="content">
-        <div class="box-body" style="padding-left: 0; padding--right: 0">
+        <div class="box-body" style="padding-left: 0; padding-right: 0">
             <div class="row">
                 <div class="col-md-5">  
                     <div class="btn-group" data-toggle="buttons">
@@ -32,7 +32,7 @@
         </div>
 
         
-        <div class="box grid-box with-border"> 
+        <div class="box grid-box with-border mb-0"> 
             <div class="box-body">  
                 <div class="row"> 
                     <div class="col-md-11 text-right">

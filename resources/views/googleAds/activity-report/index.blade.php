@@ -133,7 +133,7 @@
                         </div>
                         <div class="box-body text-center">
                             <div class="chart-container">
-                                <canvas id="activityReportDonutChart" style="height:250px"></canvas>
+                                <canvas id="activityReportDonutChart" style="height:302px"></canvas>
                             </div>
                             <div id="donut-legend" class="donut-legend"></div>
                         </div>
@@ -160,14 +160,14 @@
 @section('js')
     <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
     <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
-    <script src="{{asset('new-dashboard/chart.js')}}"></script>
+    {{-- <script src="{{asset('new-dashboard/chart.js')}}"></script> --}}
 
     <script>
       var current_page = "GoogleAds dashboard";
       const __csrf_token = "{{@csrf_token()}}";
     </script>
-    <script src="/js/google_ads/google_ads_manager.js"></script>
-    <script src="/js/google_ads/activity_report.js"></script>
+    <script src="{{asset('js/google_ads/google_ads_manager.js')}}"></script>
+    <script src="{{asset('js/google_ads/activity_report.js')}}"></script>
 
 
     <!-- <script>

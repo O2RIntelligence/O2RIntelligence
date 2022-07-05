@@ -24,67 +24,6 @@ class ActivityReport extends GoogleAdsManager {
     this.prepareReportTable();
   }
 
-  initiateLineChart(datasets) {
-    //--------------
-    //- AREA CHART -
-    //--------------
-
-    $("#activityReportLineChart").replaceWith('<canvas id="activityReportLineChart" style="height:302px"></canvas>');
-
-    // Get context with jQuery - using jQuery's .get() method.
-    let lineChartCanvasOne = $("#activityReportLineChart").get(0).getContext("2d");
-    let lineChartOne = new Chart(lineChartCanvasOne);
-    // This will get the first returned node in the jQuery collection.
-
-    let lineChartOneData = datasets;
-
-    let lineChartOneOptions = {
-      //Boolean - If we should show the scale at all
-      showScale: true,
-      //Boolean - Whether grid lines are shown across the chart
-      scaleShowGridLines: false,
-      //String - Colour of the grid lines
-      scaleGridLineColor: "rgba(0,0,0,.05)",
-      //Number - Width of the grid lines
-      scaleGridLineWidth: 1,
-      //Boolean - Whether to show horizontal lines (except X axis)
-      scaleShowHorizontalLines: true,
-      //Boolean - Whether to show vertical lines (except Y axis)
-      scaleShowVerticalLines: true,
-      //Boolean - Whether the line is curved between points
-      bezierCurve: true,
-      //Number - Tension of the bezier curve between points
-      bezierCurveTension: 0.3,
-      //Boolean - Whether to show a dot for each point
-      pointDot: false,
-      //Number - Radius of each point dot in pixels
-      pointDotRadius: 4,
-      //Number - Pixel width of point dot stroke
-      pointDotStrokeWidth: 1,
-      //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-      pointHitDetectionRadius: 20,
-      //Boolean - Whether to show a stroke for datasets
-      datasetStroke: true,
-      //Number - Pixel width of dataset stroke
-      datasetStrokeWidth: 2,
-      //Boolean - Whether to fill the dataset with a color
-      datasetFill: true,
-      //String - A legend template
-      legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (let i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-      //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-      maintainAspectRatio: true,
-      //Boolean - whether to make the chart responsive to window resizing
-      responsive: true,
-    };
-
-    //-------------
-    //- LINE CHART -
-    //--------------
-    lineChartOneOptions.datasetFill = false;
-    const lineChartOneInstance = lineChartOne.Line(lineChartOneData, lineChartOneOptions);
-    // document.getElementById("line-chart-one-legend").innerHTML = lineChartOneInstance.generateLegend();
-  }
-
   initiateDoughnutChart() {
     var ctx = document.getElementById("activityReportDonutChart").getContext('2d');
 
@@ -94,7 +33,6 @@ class ActivityReport extends GoogleAdsManager {
         labels: ["Tokyo",	"Mumbai",	"Mexico City",	"Shanghai"],
         datasets: [{
           data: [500,	50,	2424,	14040], // Specify the data values array
-
           borderColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color border
           backgroundColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color background (Points and Fill)
           borderWidth: 1 // Specify bar border width
@@ -104,6 +42,40 @@ class ActivityReport extends GoogleAdsManager {
         maintainAspectRatio: false, // Add to prevent default behaviour of full-width/height
       }
     });
+  }
+
+  initiateLineChart(datasets) {
+
+    var xValues = [100,200,300,400,500,600,700,800,900,1000];
+
+    new Chart("activityReportLineChart", {
+      type: "line",
+      data: datasets,
+      // data: {
+      //   labels: xValues,
+      //   datasets: [{ 
+      //     label: "My First dataset 1",
+      //     data: [860,1140,1060,1060,1070,1110,1330,2210,7830,2478],
+      //     borderColor: "red",
+      //     fill: false
+      //   }, 
+      //   { 
+      //     label: "My First dataset 2",
+      //     data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
+      //     borderColor: "green",
+      //     fill: false
+      //   }, { 
+      //     label: "My First dataset 3",
+      //     data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
+      //     borderColor: "blue",
+      //     fill: false
+      //   }
+      // ]
+      // },
+      options: {
+        legend: {display: true}
+      }
+    }); 
   }
 
   prepareReportTable() {
