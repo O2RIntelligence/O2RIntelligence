@@ -189,8 +189,8 @@ class GoogleAdsService
      * @throws Exception
      */
     public function storeHourlyData($hourlyData){
-//        HourlyData::all()->each->delete();
         foreach($hourlyData as $singleData){
+            HourlyData::where('hour', $singleData['hour'])->delete();
             $hourlyData = HourlyData::create($singleData);
             if(!$hourlyData) throw new Exception('Could not create hourly data');
         }
@@ -261,6 +261,7 @@ class GoogleAdsService
                 $formattedData[] = $newData;
             }
         }
+
         $this->storeHourlyData($formattedData);
         return $formattedData;
     }
