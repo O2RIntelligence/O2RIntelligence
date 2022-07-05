@@ -1,36 +1,5 @@
 @section('css')
-    {{-- page css link here  --}}
-    <style>
-      .line-legends ul {
-        list-style: none;
-        margin-top: 10px
-      }
-
-      .line-legends ul li {
-        display: inline-block; 
-        position: relative;
-        margin: 4px 6px;
-        border-radius: 5px;
-        padding: 2px 8px 2px 45px;
-        font-size: 14px;
-        cursor: default;
-        -webkit-transition: background-color 200ms ease-in-out;
-        -moz-transition: background-color 200ms ease-in-out;
-        -o-transition: background-color 200ms ease-in-out;
-        transition: background-color 200ms ease-in-out;
-      }
-
-      .line-legends li span {
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 40px;
-        height: 20px;
-        border-radius: 5px;
-        border: 4px solid red;
-      }
-    </style>
+    
 @endsection
 @extends('googleAds.partials.layout')
 @section('content')
@@ -146,7 +115,7 @@
 @endsection
 @section('js')
     {{-- page js link here  --}}
-    <script src="{{asset('new-dashboard/chart.js')}}"></script>
+    {{-- <script src="{{asset('new-dashboard/chart.js')}}"></script> --}}
     <script>
       var current_page = "GoogleAds dashboard";
       const __csrf_token = "{{@csrf_token()}}";

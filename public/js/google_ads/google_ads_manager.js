@@ -34,14 +34,54 @@ class GoogleAdsManager {
        * @param dataSets
        */
       createChartData: (labels, dataSets) => {
-        let datasets = [];
-
+        let datasets = []; 
         if (dataSets && dataSets?.length > 0) {
+          const color = this.utils.getRandomColor();
+          const color2 = this.utils.getRandomColor();
           dataSets?.forEach((data) => {
             datasets.push({
               label: data?.name,
-              fill: "rgba(210, 214, 222, 1)",
-              borderColor: this.utils.getRandomColor(), 
+              fill: 'transparent',
+              borderColor: color,  
+              backgroundColor: '#ecf0f5',
+              borderWidth: 2,
+              // pointColor: "rgba(210, 214, 222, 1)",
+              // pointStrokeColor: "#c1c7d1",
+              // pointHighlightFill: "#fff",
+              // pointHighlightStroke: "rgba(220,220,220,1)",
+              data: data?.data && data?.data?.length > 0 ? data?.data : new Array(labels?.length).fill(0),
+            })
+          });
+        }
+
+        return {
+          labels,
+          datasets,
+        };
+      },
+
+      /**
+       * Create doughnut chart data
+       * @param labels
+       * @param dataSets
+       */
+       createDoughnutChartData: (labels, dataSets) => {
+        let datasets = []; 
+        if (dataSets && dataSets?.length > 0) {
+          
+          dataSets?.forEach((data) => {
+            const color = this.utils.getRandomColor();
+            datasets.push({
+              // data: [500,	50,	2424,	14040], // Specify the data values array
+              //     borderColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color border
+              //     backgroundColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color background (Points and Fill)
+              //     borderWidth: 1 // Specify bar border width
+
+              label: data?.name,
+              fill: '#f443368c', 
+              borderColor: new Array(labels.length).fill(this.utils.getRandomColor()),  
+              backgroundColor: new Array(labels.length).fill(this.utils.getRandomColor()),
+              borderWidth: 1,
               // pointColor: "rgba(210, 214, 222, 1)",
               // pointStrokeColor: "#c1c7d1",
               // pointHighlightFill: "#fff",

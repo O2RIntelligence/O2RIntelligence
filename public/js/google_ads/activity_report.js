@@ -24,19 +24,20 @@ class ActivityReport extends GoogleAdsManager {
     this.prepareReportTable();
   }
 
-  initiateDoughnutChart() {
+  initiateDoughnutChart(datasets) {
     var ctx = document.getElementById("activityReportDonutChart").getContext('2d');
-
+    console.log('donut chart dataset', datasets)
     var myChart = new Chart(ctx, {
       type: 'doughnut',
-      data: {
-        labels: ["Tokyo",	"Mumbai",	"Mexico City",	"Shanghai"],
-        datasets: [{
-          data: [500,	50,	2424,	14040], // Specify the data values array
-          borderColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color border
-          backgroundColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color background (Points and Fill)
-          borderWidth: 1 // Specify bar border width
-        }]},
+      data: datasets,
+      // data: {
+      //   labels: ["Tokyo",	"Mumbai",	"Mexico City",	"Shanghai"],
+      //   datasets: [{
+      //     data: [500,	50,	2424,	14040], // Specify the data values array
+      //     borderColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color border
+      //     backgroundColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color background (Points and Fill)
+      //     borderWidth: 1 // Specify bar border width
+      //   }]},
       options: {
         responsive: true, // Instruct chart js to respond nicely.
         maintainAspectRatio: false, // Add to prevent default behaviour of full-width/height
@@ -156,9 +157,40 @@ class ActivityReport extends GoogleAdsManager {
     table.draw();
 
     self.populateLineChartData("general");
-    self.initiateDoughnutChart();
+    self.populateDoughnutChartData('general');
   }
 
+  populateDoughnutChartData(type) {
+    const self = this;
+    let activityReportState = self.state.reportData;
+
+    if (activityReportState) {
+      let data = activityReportState?.hourlyCostChartData;
+      let labels = data?.label;
+       
+      
+      let graphDataList = data?.data;
+      let graphData = [];
+
+      if (type === "general") {
+        graphData = this.utils.createDoughnutChartData(labels, [
+          {
+            name: "TEST",
+            data: graphDataList,
+          }
+        ], "hourly_cost");
+
+      } else if (type === "master_accounts") {
+        graphData = this.utils.createDoughnutChartData(labels, data?.masterAccountData);
+      } else if (type === "sub_accounts") {
+        graphData = this.utils.createDoughnutChartData(labels, data?.subAccountData);
+      }
+
+      console.log('DDoughnut graph data',graphData);
+
+      self.initiateDoughnutChart(graphData);
+    }
+  }
   populateLineChartData(type) {
     const self = this;
     let activityReportState = self.state.reportData;
