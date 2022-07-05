@@ -16,140 +16,89 @@ class Dashboard extends GoogleAdsManager {
   init() {
     super.init();
     const self = this;
-
+    super.dataFilterActivities({
+      onChange: self.getDashboardData,
+      onPressFilter: self.getDashboardData,
+    });
     self.getDashboardData();
     self.chartTypeActivities();
   }
 
   initiateLineChartOne(datasets) {
-    //--------------
-    //- AREA CHART -
-    //--------------
-
-    $("#line_chart_one").replaceWith('<canvas id="line_chart_one" style="width:100%;height:auto;"></canvas>');
-
-    // Get context with jQuery - using jQuery's .get() method.
-    let lineChartCanvasOne = $("#line_chart_one").get(0).getContext("2d");
-    let lineChartOne = new Chart(lineChartCanvasOne);
-    // This will get the first returned node in the jQuery collection.
-
-    let lineChartOneData = datasets;
-
-    let lineChartOneOptions = {
-      //Boolean - If we should show the scale at all
-      showScale: true,
-      //Boolean - Whether grid lines are shown across the chart
-      scaleShowGridLines: false,
-      //String - Colour of the grid lines
-      scaleGridLineColor: "rgba(0,0,0,.05)",
-      //Number - Width of the grid lines
-      scaleGridLineWidth: 1,
-      //Boolean - Whether to show horizontal lines (except X axis)
-      scaleShowHorizontalLines: true,
-      //Boolean - Whether to show vertical lines (except Y axis)
-      scaleShowVerticalLines: true,
-      //Boolean - Whether the line is curved between points
-      bezierCurve: true,
-      //Number - Tension of the bezier curve between points
-      bezierCurveTension: 0.3,
-      //Boolean - Whether to show a dot for each point
-      pointDot: false,
-      //Number - Radius of each point dot in pixels
-      pointDotRadius: 4,
-      //Number - Pixel width of point dot stroke
-      pointDotStrokeWidth: 1,
-      //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-      pointHitDetectionRadius: 20,
-      //Boolean - Whether to show a stroke for datasets
-      datasetStroke: true,
-      //Number - Pixel width of dataset stroke
-      datasetStrokeWidth: 2,
-      //Boolean - Whether to fill the dataset with a color
-      datasetFill: true,
-      //String - A legend template
-      legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (let i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-      //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-      maintainAspectRatio: true,
-      //Boolean - whether to make the chart responsive to window resizing
-      responsive: true,
-    };
-
-    //-------------
-    //- LINE CHART -
-    //--------------
-    lineChartOneOptions.datasetFill = false;
-    const lineChartOneInstance = lineChartOne.Line(lineChartOneData, lineChartOneOptions);
-    document.getElementById("line-chart-one-legend").innerHTML = lineChartOneInstance.generateLegend();
-  }
+    new Chart("line_chart_one", {
+      type: "line",
+      data: datasets,
+      // data: {
+      //   labels: xValues,
+      //   datasets: [{
+      //     label: "My First dataset 1",
+      //     data: [860,1140,1060,1060,1070,1110,1330,2210,7830,2478],
+      //     borderColor: "red",
+      //     fill: false
+      //   },
+      //   {
+      //     label: "My First dataset 2",
+      //     data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
+      //     borderColor: "green",
+      //     fill: false
+      //   }, {
+      //     label: "My First dataset 3",
+      //     data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
+      //     borderColor: "blue",
+      //     fill: false
+      //   }
+      // ]
+      // },
+      options: {
+        legend: {display: true}
+      }
+    });
+  };
 
   initiateLineChartTwo(datasets) {
-    // Line chart 2
-    $("#line_chart_two").replaceWith('<canvas id="line_chart_two" style="width:100%;height:auto;"></canvas>');
-    let lineChartCanvasTwo = $("#line_chart_two").get(0).getContext("2d");
-    let lineChartTwo = new Chart(lineChartCanvasTwo);
-// This will get the first returned node in the jQuery collection.
-
-    let lineChartTwoData = datasets;
-
-    let lineChartTwoOptions = {
-      //Boolean - If we should show the scale at all
-      showScale: true,
-      //Boolean - Whether grid lines are shown across the chart
-      scaleShowGridLines: false,
-      //String - Colour of the grid lines
-      scaleGridLineColor: "rgba(0,0,0,.05)",
-      //Number - Width of the grid lines
-      scaleGridLineWidth: 1,
-      //Boolean - Whether to show horizontal lines (except X axis)
-      scaleShowHorizontalLines: true,
-      //Boolean - Whether to show vertical lines (except Y axis)
-      scaleShowVerticalLines: true,
-      //Boolean - Whether the line is curved between points
-      bezierCurve: true,
-      //Number - Tension of the bezier curve between points
-      bezierCurveTension: 0.3,
-      //Boolean - Whether to show a dot for each point
-      pointDot: false,
-      //Number - Radius of each point dot in pixels
-      pointDotRadius: 4,
-      //Number - Pixel width of point dot stroke
-      pointDotStrokeWidth: 1,
-      //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-      pointHitDetectionRadius: 20,
-      //Boolean - Whether to show a stroke for datasets
-      datasetStroke: true,
-      //Number - Pixel width of dataset stroke
-      datasetStrokeWidth: 2,
-      //Boolean - Whether to fill the dataset with a color
-      datasetFill: true,
-      //String - A legend template
-      legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (let i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-      //Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-      maintainAspectRatio: true,
-      //Boolean - whether to make the chart responsive to window resizing
-      responsive: true,
-    };
-
-//-------------
-//- LINE CHART -
-//--------------
-    lineChartTwoOptions.datasetFill = false;
-    const LineChartTwoInstance = lineChartTwo.Line(lineChartTwoData, lineChartTwoOptions);
-    document.getElementById("line-chart-two-legend").innerHTML = LineChartTwoInstance.generateLegend();
+    new Chart("line_chart_two", {
+      type: "line",
+      data: datasets,
+      // data: {
+      //   labels: xValues,
+      //   datasets: [{
+      //     label: "My First dataset 1",
+      //     data: [860,1140,1060,1060,1070,1110,1330,2210,7830,2478],
+      //     borderColor: "red",
+      //     fill: false
+      //   },
+      //   {
+      //     label: "My First dataset 2",
+      //     data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
+      //     borderColor: "green",
+      //     fill: false
+      //   }, {
+      //     label: "My First dataset 3",
+      //     data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
+      //     borderColor: "blue",
+      //     fill: false
+      //   }
+      // ]
+      // },
+      options: {
+        legend: {display: true}
+      }
+    });
   }
 
   chartTypeActivities() {
     const self = this;
 
-    $(document).on('click', '[data-action="account_type"]', function () {
-      const chartType = $(this).attr('data-name');
-      self.populateChartData(chartType, "daily_cost");
-      self.populateChartData(chartType, "hourly_cost");
-    });
+    // $(document).on('click', '[data-action="account_type"]', function () {
+    //   const chartType = $(this).attr('data-name');
+    //   self.populateChartData(chartType, "daily_cost");
+    //   self.populateChartData(chartType, "hourly_cost");
+    // });
   }
 
   getDashboardData() {
     const self = this;
+    const {account_type} = self.dataFilterState;
 
     self.sendHttpRequest({
       method: "post",
@@ -165,8 +114,8 @@ class Dashboard extends GoogleAdsManager {
         });
 
         self.populateCards();
-        self.populateChartData("general", "daily_cost");
-        self.populateChartData("general", "hourly_cost");
+        self.populateChartData(account_type, "daily_cost");
+        self.populateChartData(account_type, "hourly_cost");
       }
     });
   }
@@ -178,7 +127,7 @@ class Dashboard extends GoogleAdsManager {
     const self = this;
 
     if (self.state.dashboard?.dailyProjection) {
-      let { totalDailyCost, totalDailyRunRate } = self.state.dashboard?.dailyProjection;
+      let {totalDailyCost, totalDailyRunRate} = self.state.dashboard?.dailyProjection;
       totalDailyCost = Number(totalDailyCost)?.toFixed(2);
       totalDailyRunRate = Number(totalDailyRunRate)?.toFixed(2);
 
@@ -187,7 +136,7 @@ class Dashboard extends GoogleAdsManager {
     }
 
     if (self.state.dashboard?.monthlyProjection) {
-      let { totalMonthlyCost, totalMonthlyRunRate } = self.state.dashboard?.monthlyProjection;
+      let {totalMonthlyCost, totalMonthlyRunRate} = self.state.dashboard?.monthlyProjection;
       totalMonthlyCost = Number(totalMonthlyCost)?.toFixed(2);
       totalMonthlyRunRate = Number(totalMonthlyRunRate)?.toFixed(2);
 
@@ -204,31 +153,46 @@ class Dashboard extends GoogleAdsManager {
   populateChartData(type, chartType) {
     const self = this;
     let dashboardState = self.state.dashboard;
+    const { selected_accounts } = self.dataFilterState;
 
     if (dashboardState) {
       let data = chartType === "hourly_cost" ? dashboardState?.hourlyCostGraphData : chartType === "daily_cost" ? dashboardState?.dailyCostGraphData : null;
       let labels = data?.label;
       console.log(chartType);
-      let graphDataList = data?.data;
+      let graphDataList = type === "general" ? data?.data : type === "master_accounts" ? data?.masterAccountData : type === "sub_accounts" ? data?.subAccountData : [];
       let graphData = [];
 
       if (type === "general") {
         graphData = this.utils.createChartData(labels, [
           {
-            name: "TEST",
+            name: "",
             data: graphDataList,
           }
         ], chartType);
 
-      } else if(type === "master_accounts") {
-        graphData = this.utils.createChartData(labels, data?.masterAccountData);
-      } else if(type === "sub_accounts") {
-        graphData = this.utils.createChartData(labels, data?.subAccountData);
+      } else if (type === "master_accounts" || type === "sub_accounts") {
+        if(selected_accounts && selected_accounts?.length > 0) {
+          let filteredData = [];
+
+          console.log("graphDataList", graphDataList)
+          selected_accounts?.forEach(function (accountId) {
+            graphDataList?.forEach(function (item) {
+              if (Number(item?.account_id) === Number(accountId)) {
+                console.log(item)
+                filteredData.push(item);
+              }
+            });
+          });
+
+          graphDataList = filteredData;
+        }
+
+        graphData = this.utils.createChartData(labels, graphDataList);
       }
 
-      if(chartType === "daily_cost") {
+      if (chartType === "daily_cost") {
         self.initiateLineChartOne(graphData);
-      } else if(chartType === "hourly_cost") {
+      } else if (chartType === "hourly_cost") {
         self.initiateLineChartTwo(graphData);
       }
 

@@ -1,5 +1,5 @@
 @section('css')
-    
+
 @endsection
 @extends('googleAds.partials.layout')
 @section('content')
@@ -22,13 +22,13 @@
 
         </section>
 
+        @include('googleAds.filter')
+
         <section class="content">
             <div class="dashboard-report">
                 <div class="loader" style="display: none;">
                     <div class="lds-hourglass"></div>
                 </div>
-
-                @include('googleAds.filter') 
 
                 <div class="row">
                     <div class="col-md-3">
@@ -83,7 +83,7 @@
                                 <div class="isResizable">
                                     <div class="chart-container">
                                         <div id="line-chart-one-legend" class="line-legends"></div>
-                                        <canvas id="line_chart_one" style="width:100%;height:auto;"></canvas>
+                                        <canvas id="line_chart_one" style="width:100%;height: 400px;"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -101,7 +101,7 @@
                                 <div class="isResizable">
                                     <div class="chart-container">
                                         <div id="line-chart-two-legend" class="line-legends"></div>
-                                        <canvas id="line_chart_two" style="width:100%;height:auto;"></canvas>
+                                        <canvas id="line_chart_two" style="width:100%;height: 400px;"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -120,6 +120,6 @@
       var current_page = "GoogleAds dashboard";
       const __csrf_token = "{{@csrf_token()}}";
     </script>
-    <script src="/js/google_ads/google_ads_manager.js"></script>
-    <script src="/js/google_ads/dashboard.js"></script>
+    <script src="{{asset('js/google_ads/google_ads_manager.js')}}"></script>
+    <script src="{{asset('js/google_ads/dashboard.js')}}"></script>
 @endsection

@@ -34,10 +34,10 @@ class GoogleAdsManager {
        * @param dataSets
        */
       createChartData: (labels, dataSets) => {
+        console.log("dataSets", dataSets);
         let datasets = []; 
         if (dataSets && dataSets?.length > 0) {
           const color = this.utils.getRandomColor();
-          const color2 = this.utils.getRandomColor();
           dataSets?.forEach((data) => {
             datasets.push({
               label: data?.name,
@@ -70,7 +70,12 @@ class GoogleAdsManager {
         if (dataSets && dataSets?.length > 0) {
           
           dataSets?.forEach((data) => {
-            const color = this.utils.getRandomColor();
+            const colors = [];
+
+            for (let i = 0; i < labels.length; i++) {
+              colors.push(this.utils.getRandomColor());
+            }
+
             datasets.push({
               // data: [500,	50,	2424,	14040], // Specify the data values array
               //     borderColor: ['#2196f38c', '#f443368c', '#3f51b570', '#00968896'], // Add custom color border
@@ -79,8 +84,8 @@ class GoogleAdsManager {
 
               label: data?.name,
               fill: '#f443368c', 
-              borderColor: new Array(labels.length).fill(this.utils.getRandomColor()),  
-              backgroundColor: new Array(labels.length).fill(this.utils.getRandomColor()),
+              borderColor: colors,
+              backgroundColor: colors,
               borderWidth: 1,
               // pointColor: "rgba(210, 214, 222, 1)",
               // pointStrokeColor: "#c1c7d1",

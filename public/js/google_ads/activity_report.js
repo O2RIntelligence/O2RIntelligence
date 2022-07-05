@@ -46,9 +46,6 @@ class ActivityReport extends GoogleAdsManager {
   }
 
   initiateLineChart(datasets) {
-
-    var xValues = [100,200,300,400,500,600,700,800,900,1000];
-
     new Chart("activityReportLineChart", {
       type: "line",
       data: datasets,
@@ -76,7 +73,7 @@ class ActivityReport extends GoogleAdsManager {
       options: {
         legend: {display: true}
       }
-    }); 
+    });
   }
 
   prepareReportTable() {
@@ -156,8 +153,8 @@ class ActivityReport extends GoogleAdsManager {
     }
     table.draw();
 
-    self.populateLineChartData("general");
-    self.populateDoughnutChartData('general');
+    self.populateLineChartData(account_type);
+    self.populateDoughnutChartData(account_type);
   }
 
   populateDoughnutChartData(type) {
@@ -175,7 +172,7 @@ class ActivityReport extends GoogleAdsManager {
       if (type === "general") {
         graphData = this.utils.createDoughnutChartData(labels, [
           {
-            name: "TEST",
+            name: "",
             data: graphDataList,
           }
         ], "hourly_cost");
@@ -183,6 +180,7 @@ class ActivityReport extends GoogleAdsManager {
       } else if (type === "master_accounts") {
         graphData = this.utils.createDoughnutChartData(labels, data?.masterAccountData);
       } else if (type === "sub_accounts") {
+        console.log("SUB", data?.subAccountData)
         graphData = this.utils.createDoughnutChartData(labels, data?.subAccountData);
       }
 
@@ -206,7 +204,7 @@ class ActivityReport extends GoogleAdsManager {
       if (type === "general") {
         graphData = this.utils.createChartData(labels, [
           {
-            name: "TEST",
+            name: "",
             data: graphDataList,
           }
         ], "hourly_cost");
