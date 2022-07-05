@@ -201,16 +201,18 @@ class GoogleAdsService
      */
     public function getHourlyData(GoogleAdsClient $googleAdsClient, $masterAccount, $subAccount, $dateRange)
     {
+        //$dateRange=date('Y-m-d',strtotime("Yesterday"));
         $customerId = $subAccount->account_id;
         $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate();
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
 
         // Creates a query that retrieves all keyword statistics.
-        $query = "SELECT metrics.cost_micros, segments.date, segments.hour FROM campaign WHERE segments.date BETWEEN '" . $dateRange. "' AND '" . $dateRange. "' AND customer.id = " . $customerId;//." AND metrics.cost_micros > 0";
+        $query = "SELECT metrics.cost_micros, segments.date, segments.hour FROM campaign WHERE segments.date BETWEEN '" . $dateRange. "' AND '" . $dateRange. "' AND customer.id = " . $customerId." ORDER BY segments.hour";//." AND metrics.cost_micros > 0";
         // Issues a search stream request.
         $stream = $googleAdsServiceClient->searchStream($customerId, $query);
         $results = [];
         $formattedData = [];
+        $allData =[];
 //        HourlyData::query()->forceDelete();
         // Iterates over all rows in all messages and prints the requested field values for the keyword in each row.
         foreach ($stream->iterateAllElements() as $key => $googleAdsRow) {
@@ -220,29 +222,42 @@ class GoogleAdsService
             $hour = $results[$key]['segments']['hour'];
             $costInUsd = $cost / $usdToArs;
 
-            if(!empty($newData['hour']) && $newData['hour']==$hour && $newData['sub_account_id'] == $subAccount->id){
+            $allData[] = [
+                'date' => $date,
+                'hour' => intval($hour),
+                'master_account_id' => $masterAccount->id,
+                'sub_account_id' => $subAccount->id,
+                'cost' => $cost,
+                'cost_usd' => $costInUsd,
+            ];
+
+//
+
+        }
+
+        foreach ($allData as $key2 => $data) {
+            if ($allData[0] != $data && $allData[$key2]['hour'] == $allData[$key2 - 1]['hour'] && $data['sub_account_id'] == $subAccount->id) {
                 $newData = [
-                    'date' => $date,
-                    'hour' => $hour,
+                    'date' => $data['date'],
+                    'hour' => $data['hour'],
                     'master_account_id' => $masterAccount->id,
                     'sub_account_id' => $subAccount->id,
-                    'cost' => $cost+$newData['cost'],
-                    'cost_usd' => $costInUsd+$newData['cost_usd'],
+                    'cost' => $data['cost'] + $allData[$key2 - 1]['cost'],
+                    'cost_usd' => $data['cost_usd'] + $allData[$key2 - 1]['cost_usd'],
                 ];
                 array_pop($formattedData);
                 $formattedData[] = $newData;
-            }else {
+            } else {
                 $newData = [
-                    'date' => $date,
-                    'hour' => intval($hour),
+                    'date' => $data['date'],
+                    'hour' => $data['hour'],
                     'master_account_id' => $masterAccount->id,
                     'sub_account_id' => $subAccount->id,
-                    'cost' => $cost,
-                    'cost_usd' => $costInUsd,
+                    'cost' => $data['cost'],
+                    'cost_usd' => $data['cost_usd'],
                 ];
                 $formattedData[] = $newData;
             }
-
         }
         $this->storeHourlyData($formattedData);
         return $formattedData;

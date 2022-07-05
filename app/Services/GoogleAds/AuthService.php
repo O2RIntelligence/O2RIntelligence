@@ -62,7 +62,7 @@ class AuthService
                     $client->setAccessToken($token);
                     $token = (object) $token;
                     $googleGrantTokens->update(['refresh_token'=>$token->refresh_token, 'access_token'=>$token->access_token]);
-                }
+                }else $token = $googleGrantTokens;
                 $oAuth2Credential = (new OAuth2TokenBuilder())
                     ->withClientId($this->clientID)
                     ->withClientSecret($this->clientSecret)

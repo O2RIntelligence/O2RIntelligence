@@ -64,7 +64,7 @@ class MasterAccountController extends Controller
             if($this->masterAccountHasAccess($masterAccountInformation)){
                 $masterAccountInformation->is_active = true;
                 $masterAccountInformation->is_online = true;
-                $masterAccount = MasterAccount::create($masterAccountInformation);
+                $masterAccount = MasterAccount::create((array)$masterAccountInformation);
                 return response()->json(['success'=> (bool)$masterAccount]);
             }else return response()->json(['success' => false, 'message' => 'Developer Token Not Updated,Sub Accounts Under This Master Account Are Not Accessible']);
         } catch (Exception $exception) {
