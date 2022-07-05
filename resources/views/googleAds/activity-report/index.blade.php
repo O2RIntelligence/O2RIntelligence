@@ -37,7 +37,6 @@
             border-radius: 5px;
         }
     </style>
-
 @endsection
 @extends('googleAds.partials.layout')
 @section('content')
@@ -133,7 +132,9 @@
                             <h3 class="box-title">Donut Chart</h3>
                         </div>
                         <div class="box-body text-center">
-                            <canvas id="donutChart" style="height:250px"></canvas>
+                            <div class="chart-container">
+                                <canvas id="activityReportDonutChart" style="height:250px"></canvas>
+                            </div>
                             <div id="donut-legend" class="donut-legend"></div>
                         </div>
                     </div>
@@ -145,7 +146,7 @@
                         </div>
                         <div class="box-body">
                             <div class="chart">
-                                <canvas id="lineChartOne" style="height:302px"></canvas>
+                                <canvas id="activityReportLineChart" style="height:302px"></canvas>
                             </div>
                         </div>
                     </div>
@@ -169,7 +170,7 @@
     <script src="/js/google_ads/activity_report.js"></script>
 
 
-    <script>
+    <!-- <script>
       $(function () {
 
         //--------------
@@ -318,5 +319,5 @@
         var myChart = pieChart.Doughnut(PieData, pieOptions);
         document.getElementById("donut-legend").innerHTML = myChart.generateLegend();
       });
-    </script>
+    </script> -->
 @endsection
