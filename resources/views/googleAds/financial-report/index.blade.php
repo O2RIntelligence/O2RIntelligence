@@ -1,7 +1,12 @@
 @section('css')
     {{-- page css link here  --}}
      <!-- DataTables -->
-    <link rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/dataTables.bootstrap.min.css">  
+    <link rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/dataTables.bootstrap.min.css">
+    <style>
+        .filters .sorting::after {
+            display: none !important;
+        }
+    </style>
 @endsection
 @extends('googleAds.partials.layout')
 @section('content')

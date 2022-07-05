@@ -32,9 +32,8 @@ class GoogleAdsManager {
        * Create chart data
        * @param labels
        * @param dataSets
-       * @param chartType {"daily_cost" | "hourly_cost"}
        */
-      createChartData: (labels, dataSets, chartType) => {
+      createChartData: (labels, dataSets) => {
         let datasets = [];
 
         if (dataSets && dataSets?.length > 0) {
