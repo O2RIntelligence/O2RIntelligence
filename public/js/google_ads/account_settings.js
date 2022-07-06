@@ -8,6 +8,7 @@ class AccountSettings extends GoogleAdsManager {
     this.openFormDialog = this.openFormDialog.bind(this);
     this.formActivities = this.formActivities.bind(this);
     this.submitFormData = this.submitFormData.bind(this);
+    this.checkStatus = this.checkStatus.bind(this);
 
     this.initialState = {
       accountData: [],
@@ -47,7 +48,11 @@ class AccountSettings extends GoogleAdsManager {
       self.state.form['developerToken'].value = data?.developer_token;
       self.state.form['discount'].value = data?.discount;
       self.state.form['revenueConversionRate'].value = data?.revenue_conversion_rate;
+    });
 
+    $(document).on('click', '#checkStatus', function () {
+      const id = $(this).attr('data-id');
+      self.checkStatus(id);
     });
 
     $(document).on('submit', '[name="ACCOUNT-SETTINGS-FORM"]', function (e) {
@@ -144,6 +149,19 @@ class AccountSettings extends GoogleAdsManager {
     });
   }
 
+  checkStatus(id) {
+    const self = this;
+    self.sendHttpRequest({
+      method: "post",
+      url: "/google-ads/master-account/check-access",
+      useCsrf: true,
+      data: { id },
+      onSuccess(data) {
+        swal(`${data?.success}`, 'success');
+      }
+    });
+  }
+
   renderAccountSettingsTable() {
     const self = this;
     let data = self.state.accountData ?? [];
@@ -170,10 +188,9 @@ class AccountSettings extends GoogleAdsManager {
           <li>
             <a id="editFormDialog" href="javascript:void(0)" data-index="${index}">Edit</a>
           </li>
-          <!-- <li>
-             <a data-_key="14" href="javascript:void(0);" class="grid-row-action-62b58e69c638a2961">Delete</a>
-           </li>
-          -->
+          <li>
+             <a data-id="${item.id}" id="checkStatus" href="javascript:void(0);">Check Status</a>
+          </li>
         </ul>
       </div>`
       ]);
