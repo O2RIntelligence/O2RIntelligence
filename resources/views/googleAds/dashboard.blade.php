@@ -77,7 +77,7 @@
                     <div class="col-md-12">
                         <div class="box grid-box">
                             <div class="box-header with-border text-center">
-                                <b>{{ __('Daily NET Income') }}</b>
+                                <b>{{ __('Daily Total Cost') }}</b>
                             </div>
                             <div class="box-body">
                                 <div class="isResizable">
@@ -95,7 +95,7 @@
                     <div class="col-md-12">
                         <div class="box grid-box">
                             <div class="box-header with-border text-center">
-                                <b>{{ __('Hourly NET Income') }}</b>
+                                <b>{{ __('Hourly Total Cost') }}</b>
                             </div>
                             <div class="box-body">
                                 <div class="isResizable">
