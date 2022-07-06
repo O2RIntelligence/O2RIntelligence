@@ -25,6 +25,8 @@ class ActivityReport extends GoogleAdsManager {
   }
 
   initiateDoughnutChart(datasets) {
+    $('#activityReportDonutChart').replaceWith('<canvas id="activityReportDonutChart" style="height:302px"></canvas>');
+    
     var ctx = document.getElementById("activityReportDonutChart").getContext('2d');
     console.log('donut chart dataset', datasets)
     var myChart = new Chart(ctx, {
@@ -46,6 +48,8 @@ class ActivityReport extends GoogleAdsManager {
   }
 
   initiateLineChart(datasets) {
+    $('#activityReportLineChart').replaceWith('<canvas id="activityReportLineChart" style="height:302px"></canvas>');
+    
     new Chart("activityReportLineChart", {
       type: "line",
       data: datasets,
@@ -172,7 +176,7 @@ class ActivityReport extends GoogleAdsManager {
       self.initiateDoughnutChart(graphData);
     }
   }
-  
+
   populateLineChartData(type) {
     const self = this;
     let activityReportState = self.state.reportData;

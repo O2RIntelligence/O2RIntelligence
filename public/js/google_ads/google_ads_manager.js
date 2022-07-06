@@ -86,7 +86,7 @@ class GoogleAdsManager {
               //     borderWidth: 1 // Specify bar border width
 
               label: data?.name,
-              fill: '#f443368c',
+              // fill: '#f443368c',
               borderColor: colors,
               backgroundColor: colors,
               borderWidth: 1,
