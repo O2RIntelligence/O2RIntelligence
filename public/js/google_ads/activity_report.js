@@ -197,9 +197,8 @@ class ActivityReport extends GoogleAdsManager {
     let activityReportState = self.state.reportData;
 
     if (activityReportState) {
-      let data = activityReportState?.hourlyCostChartData;
+      let data = activityReportState?.monthlyForecastData;
       let labels = data?.label;
-      console.log(data);
       
       let graphDataList = data?.data;
       let graphData = [];
