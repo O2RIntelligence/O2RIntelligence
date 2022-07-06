@@ -12,6 +12,9 @@
           padding-left: 10px;
           padding-right: 10px;
         }
+        .custom-filter-dropdown .dropdown-item:hover{
+           cursor: pointer;
+        }
 
         .dataTables_length{
           float: left;
