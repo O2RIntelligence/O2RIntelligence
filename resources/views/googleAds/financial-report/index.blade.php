@@ -104,6 +104,7 @@
                         <table class="table table-hover grid-table" id="financialTable">
                             <thead>
                               <tr> 
+                                <th>Date</th>
                                 <th>Master Account Name</th>
                                 <th>Master Account ID</th>
                                 <th>Sub Account Name</th>

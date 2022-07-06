@@ -346,8 +346,9 @@ class FinancialReport extends GoogleAdsManager {
       const table = self.state.financialTable;
       table.clear();
 
-      for (let item of data) {
+      for (let item of data) { 
         table.row.add([
+          item?.date ?? "",
           item?.master_account_name ?? "",
           item?.master_account_id ?? "",
           item?.sub_account_name ?? "",

@@ -67,57 +67,14 @@
                         <table class="table table-hover grid-table" id="reportTable">
                             <thead>
                             <tr>
+                                <th>Date</th>
                                 <th>Account Name</th>
                                 <th>Total Cost</th>
                                 <th>Account Budget</th>
                                 <th>Budget Usage %</th>
                                 <th>Monthly Run Rate</th>
                             </tr>
-                            </thead>
-                            <!-- <tbody> 
-                              <tr>
-                                <td>Acount name one</td>
-                                <td>10000</td>
-                                <td>1000</td>
-                                <td>50</td>
-                                <td>10</td>
-                            </tr>
-                            <tr>
-                                <td>Acount name one</td>
-                                <td>10000</td>
-                                <td>1000</td>
-                                <td>50</td>
-                                <td>10</td>
-                            </tr>
-                            <tr>
-                                <td>Acount name one</td>
-                                <td>10000</td>
-                                <td>1000</td>
-                                <td>50</td>
-                                <td>10</td>
-                            </tr>
-                            <tr>
-                                <td>Acount name one</td>
-                                <td>10000</td>
-                                <td>1000</td>
-                                <td>50</td>
-                                <td>10</td>
-                            </tr>
-                            <tr>
-                                <td>Acount name one</td>
-                                <td>10000</td>
-                                <td>1000</td>
-                                <td>50</td>
-                                <td>10</td>
-                            </tr>
-                            <tr>
-                                <td>Acount name one</td>
-                                <td>10000</td>
-                                <td>1000</td>
-                                <td>50</td>
-                                <td>10</td>
-                              </tr>
-                            </tbody> -->
+                            </thead> 
                         </table>
                     </div>
                 </div>
