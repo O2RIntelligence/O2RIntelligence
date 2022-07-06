@@ -35,14 +35,14 @@ class GoogleAdsManager {
        */
       createChartData: (labels, dataSets) => {
         console.log("dataSets", dataSets);
-        let datasets = []; 
+        let datasets = [];
         if (dataSets && dataSets?.length > 0) {
           const color = this.utils.getRandomColor();
           dataSets?.forEach((data) => {
             datasets.push({
               label: data?.name,
               fill: 'transparent',
-              borderColor: color,  
+              borderColor: color,
               backgroundColor: '#ecf0f5',
               borderWidth: 2,
               // pointColor: "rgba(210, 214, 222, 1)",
@@ -65,12 +65,15 @@ class GoogleAdsManager {
        * @param labels
        * @param dataSets
        */
-       createDoughnutChartData: (labels, dataSets) => {
-        let datasets = []; 
+      createDoughnutChartData: (dataSets) => {
+        let labels = [], datasets = [];
         if (dataSets && dataSets?.length > 0) {
           
+
           dataSets?.forEach((data) => {
             const colors = [];
+
+            labels.push(data?.name);
 
             for (let i = 0; i < labels.length; i++) {
               colors.push(this.utils.getRandomColor());
@@ -83,7 +86,7 @@ class GoogleAdsManager {
               //     borderWidth: 1 // Specify bar border width
 
               label: data?.name,
-              fill: '#f443368c', 
+              // fill: '#f443368c',
               borderColor: colors,
               backgroundColor: colors,
               borderWidth: 1,
@@ -91,7 +94,8 @@ class GoogleAdsManager {
               // pointStrokeColor: "#c1c7d1",
               // pointHighlightFill: "#fff",
               // pointHighlightStroke: "rgba(220,220,220,1)",
-              data: data?.data && data?.data?.length > 0 ? data?.data : new Array(labels?.length).fill(0),
+              name: data?.name,
+              data: new Array(1).fill(data?.monthlyCost),
             })
           });
         }
@@ -168,7 +172,7 @@ class GoogleAdsManager {
           swal("Error occurred!", "error");
         }
       }
-    }; 
+    };
 
   }
 

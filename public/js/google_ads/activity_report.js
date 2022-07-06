@@ -25,6 +25,8 @@ class ActivityReport extends GoogleAdsManager {
   }
 
   initiateDoughnutChart(datasets) {
+    $('#activityReportDonutChart').replaceWith('<canvas id="activityReportDonutChart" style="height:302px"></canvas>');
+    
     var ctx = document.getElementById("activityReportDonutChart").getContext('2d');
     console.log('donut chart dataset', datasets)
     var myChart = new Chart(ctx, {
@@ -46,6 +48,8 @@ class ActivityReport extends GoogleAdsManager {
   }
 
   initiateLineChart(datasets) {
+    $('#activityReportLineChart').replaceWith('<canvas id="activityReportLineChart" style="height:302px"></canvas>');
+    
     new Chart("activityReportLineChart", {
       type: "line",
       data: datasets,
@@ -71,7 +75,7 @@ class ActivityReport extends GoogleAdsManager {
       // ]
       // },
       options: {
-        legend: {display: true}
+        legend: { display: true }
       }
     });
   }
@@ -116,47 +120,47 @@ class ActivityReport extends GoogleAdsManager {
     const self = this;
     const { account_type, selected_accounts } = self.dataFilterState;
 
-    if(self.state.reportData && self.state.reportTable) {
+    if (self.state.reportData && self.state.reportTable) {
       let data = self.state.reportData.monthlyForecastData.totalData ?? [];
 
-    if (account_type !== "general" && selected_accounts && selected_accounts?.length > 0) {
-      let filteredData = [];
+      if (account_type !== "general" && selected_accounts && selected_accounts?.length > 0) {
+        let filteredData = [];
 
-      if (account_type === "master_accounts" || account_type === "sub_accounts") {
-        data = account_type === "master_accounts" ? self.state.reportData.monthlyForecastData.masterAccountData
-          : account_type === "sub_accounts" ? self.state.reportData.monthlyForecastData.subAccountData : [];
+        if (account_type === "master_accounts" || account_type === "sub_accounts") {
+          data = account_type === "master_accounts" ? self.state.reportData.monthlyForecastData.masterAccountData
+            : account_type === "sub_accounts" ? self.state.reportData.monthlyForecastData.subAccountData : [];
 
-        selected_accounts?.forEach(function (accountId) {
-          data?.forEach(function (item) {
-            if (Number(item?.account_id) === Number(accountId)) {
-              filteredData = [
-                ...filteredData,
-                ...item?.dataTableData ?? [],
-              ];
-            }
+          selected_accounts?.forEach(function (accountId) {
+            data?.forEach(function (item) {
+              if (Number(item?.account_id) === Number(accountId)) {
+                filteredData = [
+                  ...filteredData,
+                  ...item?.dataTableData ?? [],
+                ];
+              }
+            });
           });
-        });
+        }
+
+        data = filteredData;
       }
 
-      data = filteredData;
-    }
+      const table = self.state.reportTable;
+      table.clear();
 
-    const table = self.state.reportTable;
-    table.clear();
+      for (let item of data) {
+        table.row.add([
+          item?.account_name ?? "",
+          item?.cost ?? "",
+          Number(item?.account_budget ?? 0).toFixed(2),
+          Number(item?.budget_usage_percent ?? 0).toFixed(2),
+          Number(item?.monthly_run_rate ?? 0).toFixed(2)
+        ]);
+      }
+      table.draw();
 
-    for (let item of data) {
-      table.row.add([
-        item?.account_name ?? "",
-        item?.cost ?? "",
-        Number(item?.account_budget ?? 0).toFixed(2),
-        Number(item?.budget_usage_percent ?? 0).toFixed(2),
-        Number(item?.monthly_run_rate ?? 0).toFixed(2)
-      ]);
-    }
-    table.draw();
-
-    self.populateLineChartData(account_type);
-    self.populateDoughnutChartData(account_type);
+      self.populateLineChartData(account_type);
+      self.populateDoughnutChartData(account_type);
     }
   }
 
@@ -165,33 +169,14 @@ class ActivityReport extends GoogleAdsManager {
     let activityReportState = self.state.reportData;
 
     if (activityReportState) {
-      let data = activityReportState?.hourlyCostChartData;
-      let labels = data?.label;
-       
-      
-      let graphDataList = data?.data;
-      let graphData = [];
-
-      if (type === "general") {
-        graphData = this.utils.createDoughnutChartData(labels, [
-          {
-            name: "",
-            data: graphDataList,
-          }
-        ], "hourly_cost");
-
-      } else if (type === "master_accounts") {
-        graphData = this.utils.createDoughnutChartData(labels, data?.masterAccountData);
-      } else if (type === "sub_accounts") {
-        console.log("SUB", data?.subAccountData)
-        graphData = this.utils.createDoughnutChartData(labels, data?.subAccountData);
-      }
-
-      console.log('DDoughnut graph data',graphData);
+      let data = activityReportState?.donutChartData;
+      let graphData = this.utils.createDoughnutChartData(data?.subAccountData);
+      console.log("DOUNT CHART DATASET", graphData);
 
       self.initiateDoughnutChart(graphData);
     }
   }
+
   populateLineChartData(type) {
     const self = this;
     let activityReportState = self.state.reportData;
@@ -199,15 +184,14 @@ class ActivityReport extends GoogleAdsManager {
     if (activityReportState) {
       let data = activityReportState?.hourlyCostChartData;
       let labels = data?.label;
-      console.log(data);
-      
+
       let graphDataList = data?.data;
       let graphData = [];
 
       if (type === "general") {
         graphData = this.utils.createChartData(labels, [
           {
-            name: "",
+            name: "General",
             data: graphDataList,
           }
         ], "hourly_cost");
@@ -218,7 +202,7 @@ class ActivityReport extends GoogleAdsManager {
         graphData = this.utils.createChartData(labels, data?.subAccountData);
       }
 
-      console.log(graphData);
+      console.log("Line chart graphdata", graphData);
 
       self.initiateLineChart(graphData);
     }

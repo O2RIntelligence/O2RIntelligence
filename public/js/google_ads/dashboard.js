@@ -25,6 +25,7 @@ class Dashboard extends GoogleAdsManager {
   }
 
   initiateLineChartOne(datasets) {
+    $('#line_chart_one').replaceWith('<canvas id="line_chart_one" style="width:100%;height: 400px;"></canvas>');
     new Chart("line_chart_one", {
       type: "line",
       data: datasets,
@@ -56,6 +57,8 @@ class Dashboard extends GoogleAdsManager {
   };
 
   initiateLineChartTwo(datasets) {
+    $('#line_chart_two').replaceWith('<canvas id="line_chart_two" style="width:100%;height: 400px;"></canvas>');
+    
     new Chart("line_chart_two", {
       type: "line",
       data: datasets,
@@ -165,7 +168,7 @@ class Dashboard extends GoogleAdsManager {
       if (type === "general") {
         graphData = this.utils.createChartData(labels, [
           {
-            name: "",
+            name: "General",
             data: graphDataList,
           }
         ], chartType);
