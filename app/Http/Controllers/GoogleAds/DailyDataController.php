@@ -18,10 +18,17 @@ use Illuminate\Http\Response;
 
 class DailyDataController extends Controller
 {
+    /**
+     * @return GoogleAdsService
+     */
     public function getGoogleAdsService(): GoogleAdsService
     {
         return new GoogleAdsService();
     }
+
+    /**
+     * @return AuthService
+     */
     public function getGoogleAdsAuthService(): AuthService
     {
         return new AuthService();
@@ -30,12 +37,15 @@ class DailyDataController extends Controller
     /**
      * Gets Daily Data of all sub accounts
      *
+     * @param null $startDate
+     * @param null $endDate
      * @return JsonResponse
      */
-    public function getDailyData(Request $request){
+    public function getDailyDataFromService($startDate=null, $endDate=null): JsonResponse
+    {
         try {
-            $dateRange['startDate'] = date('Y-m-01',strtotime($request->startDate??'today'));
-            $dateRange['endDate'] = date('Y-m-d',strtotime($request->endDate??'today'));
+            $dateRange['startDate'] = date('Y-m-d',strtotime($startDate??'today'));
+            $dateRange['endDate'] = date('Y-m-d',strtotime($endDate??'today'));
             $dailyData = [];
             $masterAccounts =  MasterAccountResource::collection(MasterAccount::all());
             $generalVariable = GeneralVariable::get()->first();
@@ -51,6 +61,15 @@ class DailyDataController extends Controller
             dd($exception);
         }
 
+    }
+
+    /** Handles multiple daily data if date range is provided
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getDailyData(Request $request): JsonResponse
+    {
+        return $this->getDailyDataFromService($request->startDate??null, $request->endDate??null);
     }
 
 }

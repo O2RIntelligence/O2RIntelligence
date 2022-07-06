@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\HourlyDataUpdate::class
+        Commands\HourlyDataUpdate::class,
+        Commands\DailyDataUpdate::class,
     ];
 
     /**
@@ -24,8 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('hourlyData:update')
-                  ->everyTenMinutes();
+        $schedule->command('hourlyData:update')
+            ->everyTenMinutes();
+        $schedule->command('dailyData:update')
+            ->dailyAt('00:15');
     }
 
     /**
