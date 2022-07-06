@@ -121,107 +121,25 @@
                 <div class="col-md-12">
                     <div class="box grid-box">
                         <div class="box-header with-border">
-                            <div class="pull-right">
-                                <div class="dropdown pull-right column-selector">
-                                    <button type="button" class="btn btn-sm btn-instagram dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fa fa-table"></i>
-                                        &nbsp;
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li>
-                                            <ul>
-                                                                
-                                                <li class="checkbox icheck">
-                                                    <label>
-                                                        <div class="icheckbox_minimal-blue checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" class="column-select-item" value="id" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>&nbsp;&nbsp;&nbsp;ID
-                                                    </label>
-                                                </li>
-                                                                
-                                                <li class="checkbox icheck">
-                                                    <label>
-                                                        <div class="icheckbox_minimal-blue checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" class="column-select-item" value="username" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>&nbsp;&nbsp;&nbsp;Username
-                                                    </label>
-                                                </li>
-                                                                
-                                                <li class="checkbox icheck">
-                                                    <label>
-                                                        <div class="icheckbox_minimal-blue checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" class="column-select-item" value="name" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>&nbsp;&nbsp;&nbsp;Name
-                                                    </label>
-                                                </li>
-                                                                
-                                                <li class="checkbox icheck">
-                                                    <label>
-                                                        <div class="icheckbox_minimal-blue checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" class="column-select-item" value="roles" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>&nbsp;&nbsp;&nbsp;Roles
-                                                    </label>
-                                                </li>
-                                                                
-                                                <li class="checkbox icheck">
-                                                    <label>
-                                                        <div class="icheckbox_minimal-blue checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" class="column-select-item" value="created_at" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>&nbsp;&nbsp;&nbsp;Created At
-                                                    </label>
-                                                </li>
-                                                                
-                                                <li class="checkbox icheck">
-                                                    <label>
-                                                        <div class="icheckbox_minimal-blue checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" class="column-select-item" value="updated_at" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>&nbsp;&nbsp;&nbsp;Updated At
-                                                    </label>
-                                                </li>
-                                                                
-                                                <li class="checkbox icheck">
-                                                    <label>
-                                                        <div class="icheckbox_minimal-blue checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" class="column-select-item" value="api_password" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>&nbsp;&nbsp;&nbsp;API Password
-                                                    </label>
-                                                </li>
-                                                                
-                                                <li class="checkbox icheck">
-                                                    <label>
-                                                        <div class="icheckbox_minimal-blue checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="checkbox" class="column-select-item" value="partner_fee" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>&nbsp;&nbsp;&nbsp;Partner Fee
-                                                    </label>
-                                                </li>
-                                                            </ul>
-                                        </li>
-                                        <li class="divider">
-                                        </li><li class="text-right">
-                                            <button class="btn btn-sm btn-default column-select-all">All</button>&nbsp;&nbsp;
-                                            <button class="btn btn-sm btn-primary column-select-submit">Submit</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="btn-group pull-right" style="margin-right: 10px">
-                                    <a href="http://127.0.0.1:8000/admin/auth/users?_export_=all" target="_blank" class="btn btn-sm btn-twitter" title="Export"><i class="fa fa-download"></i><span class="hidden-xs"> Export</span></a>
-                                    <button type="button" class="btn btn-sm btn-twitter dropdown-toggle" data-toggle="dropdown">
-                                        <span class="caret"></span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                        <li><a href="http://127.0.0.1:8000/admin/auth/users?_export_=all" target="_blank">All</a></li>
-                                        <li><a href="http://127.0.0.1:8000/admin/auth/users?_export_=page%3A1" target="_blank">Current page</a></li>
-                                        <li><a href="http://127.0.0.1:8000/admin/auth/users?_export_=selected%3A__rows__" target="_blank" class="export-selected">Selected rows</a></li>
-                                    </ul>
-                                </div>
-                                            
-                                <div class="btn-group pull-right grid-create-btn" style="margin-right: 10px">
-                                    <a href="javascript:void(0)" class="btn btn-sm btn-success" title="New" id="createFormDialog">
-                                        <i class="fa fa-plus"></i><span class="hidden-xs">&nbsp;&nbsp;New</span>
-                                    </a>
-                                </div> 
-                            </div>
-                            <div class="pull-left">
-                                <div class="btn-group grid-select-all-btn" style="display:none;margin-right: 5px;">
-                                    <a class="btn btn-sm btn-default hidden-xs"><span class="selected"></span></a>
-                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-                                        <span class="caret"></span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                </div> 
-                                <div class="btn-group" style="margin-right: 5px" data-toggle="buttons">
-                                    <label class="btn btn-sm btn-dropbox 62b585909f737-filter-btn " title="Filter">
-                                        <input type="checkbox"><i class="fa fa-filter"></i><span class="hidden-xs">&nbsp;&nbsp;Filter</span>
-                                    </label> 
-                                </div>
-                            </div>
+                          <div class="pull-right"> 
+                            <div class="btn-group pull-right" style="margin-right: 10px">
+                                <a href="javascript:void(0)" class="btn btn-sm btn-twitter" title="Export"><i class="fa fa-download"></i><span class="hidden-xs"> Export</span></a>
+                                <button type="button" class="btn btn-sm btn-twitter dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="javascript:void(0)" target="_blank">All</a></li>
+                                    <li><a href="javascript:void(0)" target="_blank">Current page</a></li>
+                                    <li><a href="javascript:void(0)" target="_blank" class="export-selected">Selected rows</a></li>
+                                </ul>
+                            </div> 
+                            <div class="btn-group pull-right grid-create-btn" style="margin-right: 10px">
+                                <a href="javascript:void(0)" class="btn btn-sm btn-success" title="New" id="createFormDialog">
+                                    <i class="fa fa-plus"></i><span class="hidden-xs">&nbsp;&nbsp;New</span>
+                                </a>
+                            </div> 
+                        </div> 
                         </div>
 
                          
@@ -579,7 +497,8 @@
     <script>
       var current_page = "General variables";
       const __csrf_token = "{{@csrf_token()}}";
-    </script>
-    <script src="/js/google_ads/google_ads_manager.js"></script>
-    <script src="/js/google_ads/general_variables.js"></script>
+    </script> 
+
+    <script src="{{asset('js/google_ads/google_ads_manager.js')}}"></script>
+    <script src="{{asset('js/google_ads/general_variables.js')}}"></script>
 @endsection

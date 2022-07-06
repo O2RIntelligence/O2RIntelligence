@@ -98,15 +98,15 @@ class Dashboard extends GoogleAdsManager {
 
   getDashboardData() {
     const self = this;
-    const {account_type} = self.dataFilterState;
+    const {account_type, date_filter} = self.dataFilterState; 
 
     self.sendHttpRequest({
       method: "post",
       url: "/google-ads/dashboard/data",
       useCsrf: true,
       data: {
-        startDate: '2022-06-27',
-        endDate: '2022-06-27',
+        startDate: date_filter?.from ?? "",
+        endDate: date_filter?.to ?? "",
       },
       onSuccess(data) {
         self.setState({

@@ -90,9 +90,7 @@ input:checked + .slider:before {
                 <div class="col-md-12">
                     <div class="box grid-box">
                         <div class="box-header with-border">
-                            <div class="pull-right">
-                                
-                                
+                            <div class="pull-right"> 
                                 <div class="btn-group pull-right" style="margin-right: 10px">
                                     <a href="javascript:void(0)" target="_blank" class="btn btn-sm btn-twitter" title="Export"><i class="fa fa-download"></i><span class="hidden-xs"> Export</span></a>
                                     <button type="button" class="btn btn-sm btn-twitter dropdown-toggle" data-toggle="dropdown">
@@ -471,7 +469,8 @@ input:checked + .slider:before {
     <script>
       var current_page = "Account settings";
       const __csrf_token = "{{@csrf_token()}}";
-    </script>
-    <script src="/js/google_ads/google_ads_manager.js"></script>
-    <script src="/js/google_ads/account_settings.js"></script>
+    </script> 
+
+    <script src="{{asset('js/google_ads/google_ads_manager.js')}}"></script>
+    <script src="{{asset('js/google_ads/account_settings.js')}}"></script>
 @endsection

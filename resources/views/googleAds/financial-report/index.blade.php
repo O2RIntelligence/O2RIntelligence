@@ -210,7 +210,8 @@
     <script>
       var current_page = "GoogleAds dashboard";
       const __csrf_token = "{{@csrf_token()}}";
-    </script>
-    <script src="/js/google_ads/google_ads_manager.js"></script>
-    <script src="/js/google_ads/financial_report.js"></script>
+    </script> 
+
+    <script src="{{asset('js/google_ads/google_ads_manager.js')}}"></script>
+    <script src="{{asset('js/google_ads/financial_report.js')}}"></script>
 @endsection
