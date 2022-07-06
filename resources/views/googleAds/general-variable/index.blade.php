@@ -1,7 +1,9 @@
 @section('css')
     {{-- page css link here  --}}
      <!-- DataTables -->
-    <link rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/dataTables.bootstrap.min.css"> 
+    {{-- <link rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/dataTables.bootstrap.min.css">  --}}
+
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/dataTables.bootstrap.min.css">
     <style type="text/css">
           /* for sm */
 
@@ -492,8 +494,11 @@
     @include('googleAds.general-variable.form-modal')
 @endsection
 @section('js') 
-    <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script>
+    {{-- <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.11.3/js/dataTables.bootstrap.min.js"></script> --}}
+
+    <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.12.1/js/dataTables.bootstrap.min.js"></script>
     <script>
       var current_page = "General variables";
       const __csrf_token = "{{@csrf_token()}}";

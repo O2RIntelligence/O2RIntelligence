@@ -42,6 +42,7 @@ class FinancialReport extends GoogleAdsManager {
   prepareFinancialTable() {
     const self = this;
     const table = $('#financialTable').DataTable({
+      'responsive': true,
       "paging": true,
       "lengthChange": true,
       "searching": true,
@@ -52,6 +53,10 @@ class FinancialReport extends GoogleAdsManager {
         'bSortable': false,
         'aTargets': ['nosort']
       }],
+      'dom': 'lBfrtip',
+      'buttons': [
+        'csv', 'excel'
+      ],
       initComplete() {
         var api = this.api();
 
