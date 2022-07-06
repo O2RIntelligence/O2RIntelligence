@@ -8,6 +8,11 @@
             display: none !important;
         }
 
+        .custom-filter-dropdown{
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+
         .dataTables_length{
           float: left;
           padding-left: 10px; 

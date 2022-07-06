@@ -46,7 +46,7 @@ class FinancialReport extends GoogleAdsManager {
       "paging": true,
       "lengthChange": true,
       "searching": true,
-      "ordering": true,
+      "ordering": false,
       "info": true,
       "autoWidth": false,
       'aoColumnDefs': [{
