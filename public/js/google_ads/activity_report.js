@@ -115,7 +115,9 @@ class ActivityReport extends GoogleAdsManager {
   renderActivityTable() {
     const self = this;
     const { account_type, selected_accounts } = self.dataFilterState;
-    let data = self.state.reportData.monthlyForecastData.totalData ?? [];
+
+    if(self.state.reportData && self.state.reportTable) {
+      let data = self.state.reportData.monthlyForecastData.totalData ?? [];
 
     if (account_type !== "general" && selected_accounts && selected_accounts?.length > 0) {
       let filteredData = [];
@@ -155,6 +157,7 @@ class ActivityReport extends GoogleAdsManager {
 
     self.populateLineChartData(account_type);
     self.populateDoughnutChartData(account_type);
+    }
   }
 
   populateDoughnutChartData(type) {
