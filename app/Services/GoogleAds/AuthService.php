@@ -50,18 +50,18 @@ class AuthService
     public function getGoogleAdsService($masterAccount): GoogleAdsClient
     {
         try {
-            if ($googleGrantTokens = GoogleGrantToken::get()->first()) {
-                $tokens = $googleGrantTokens->access_token;
+            if ($googleGrantTokens = GoogleGrantToken::get()->first()->toArray()) {
                 $client = $this->getClient();
                 $client->setAccessToken($googleGrantTokens);
-                if (empty($tokens) || $client->isAccessTokenExpired()) {
+                $googleGrantTokens = (object)$googleGrantTokens;
+                if (empty($googleGrantTokens->access_token) || $client->isAccessTokenExpired()) {
                     $token = $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-                    if (!$googleGrantTokens->update(['auth_token' => json_encode($token)])) {
-                        throw new Exception('Could not Update Token with refresh token expired');
-                    }
+//                    if (!GoogleGrantToken::where('id',$googleGrantTokens->id)->update(['auth_token' => json_encode($token)])) {
+//                        throw new Exception('Could not Update Token with refresh token expired');
+//                    }
                     $client->setAccessToken($token);
                     $token = (object) $token;
-                    $googleGrantTokens->update(['refresh_token'=>$token->refresh_token, 'access_token'=>$token->access_token]);
+                    GoogleGrantToken::where('id',$googleGrantTokens->id)->update(['refresh_token'=>$token->refresh_token, 'access_token'=>$token->access_token, 'expires_in'=>$token->expires_in]);
                 }else $token = $googleGrantTokens;
                 $oAuth2Credential = (new OAuth2TokenBuilder())
                     ->withClientId($this->clientID)
