@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DailyData extends Model
 {
-    use SoftDeletes, UsesUuid;
+    use UsesUuid;
     protected $fillable=[
         'id',
         'date',

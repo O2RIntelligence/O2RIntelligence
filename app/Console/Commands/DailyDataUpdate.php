@@ -38,7 +38,7 @@ class DailyDataUpdate extends Command
     public function handle()
     {
         if ((new \App\Http\Controllers\GoogleAds\DailyDataController)->getDailyDataFromService()) {
-            $this->info('Daily Data Data Updated Successfully');
-        }else $this->info('Daily Data Data Update Failed');
+            $this->info('Daily Data Updated Successfully');
+        }else $this->info('Daily Data Update Failed');
     }
 }

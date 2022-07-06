@@ -181,6 +181,7 @@ class GoogleAdsService
      */
     public function storeDailyData($dailyData){
         foreach($dailyData as $singleData){
+            $prevData = DailyData::where('date', $singleData['date'])->where('sub_account_id', $singleData['sub_account_id'])->delete();
             $dailyData = DailyData::create($singleData);
             if(!$dailyData) throw new Exception('Could not create daily data');
         }
@@ -189,8 +190,9 @@ class GoogleAdsService
      * @throws Exception
      */
     public function storeHourlyData($hourlyData){
+        HourlyData::where('date','!=',date('Y-m-d'))->delete();
         foreach($hourlyData as $singleData){
-            HourlyData::where('hour', $singleData['hour'])->delete();
+            HourlyData::where('hour', $singleData['hour'])->where('sub_account_id', $singleData['sub_account_id'])->delete();
             $hourlyData = HourlyData::create($singleData);
             if(!$hourlyData) throw new Exception('Could not create hourly data');
         }
@@ -232,8 +234,6 @@ class GoogleAdsService
                 'cost' => $cost,
                 'cost_usd' => $costInUsd,
             ];
-
-//
 
         }
 

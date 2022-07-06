@@ -40,7 +40,7 @@ class HourlyDataUpdate extends Command
     public function handle()
     {
         if ((new \App\Http\Controllers\GoogleAds\HourlyDataController)->getHourlyData()) {
-            $this->info('Hourly Data Data Updated Successfully');
-        }else $this->info('Hourly Data Data Update Failed');
+            $this->info('Hourly Data Updated Successfully');
+        }else $this->info('Hourly Data Update Failed');
     }
 }
