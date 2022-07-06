@@ -153,7 +153,7 @@ class MasterAccountController extends Controller
 
     /**
      * @param $masterAccount
-     * @return void
+     * @return bool|void
      * @throws Exception
      */
     public function masterAccountHasAccess($masterAccount)
@@ -182,7 +182,7 @@ class MasterAccountController extends Controller
             if ($masterAccount) {
                 if ($this->masterAccountHasAccess($masterAccount)) {
                     $masterAccount->update([$masterAccount->is_online = true]);
-                    return response()->json(['success' => true]);
+                    return response()->json(['success' => true, 'message' => 'Master Account is Active and Access Level is Updated to Basic']);
                 } else return response()->json(['success' => false, 'message' => 'Developer Token not Updated Yet, Sub Accounts Under This Master Account Are Still Not Accessible']);
             } else return response()->json(['success' => false, 'message' => 'No Accounts Found']);
         } catch(Exception $exception) {
