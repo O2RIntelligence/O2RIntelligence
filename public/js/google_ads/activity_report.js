@@ -175,7 +175,7 @@ class ActivityReport extends GoogleAdsManager {
       if (type === "general") {
         graphData = this.utils.createDoughnutChartData(labels, [
           {
-            name: "",
+            name: "General",
             data: graphDataList,
           }
         ], "hourly_cost");
@@ -186,8 +186,6 @@ class ActivityReport extends GoogleAdsManager {
         console.log("SUB", data?.subAccountData)
         graphData = this.utils.createDoughnutChartData(labels, data?.subAccountData);
       }
-
-      console.log('DDoughnut graph data',graphData);
 
       self.initiateDoughnutChart(graphData);
     }
@@ -206,7 +204,7 @@ class ActivityReport extends GoogleAdsManager {
       if (type === "general") {
         graphData = this.utils.createChartData(labels, [
           {
-            name: "",
+            name: "General",
             data: graphDataList,
           }
         ], "hourly_cost");

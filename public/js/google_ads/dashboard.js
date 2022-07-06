@@ -165,7 +165,7 @@ class Dashboard extends GoogleAdsManager {
       if (type === "general") {
         graphData = this.utils.createChartData(labels, [
           {
-            name: "",
+            name: "General",
             data: graphDataList,
           }
         ], chartType);
