@@ -59,6 +59,10 @@
     padding-left: 0;
 }
 
+.select2.select2-container{
+    width: 100% !important
+}
+
 .date-range-area .col-md-5.right{
     width: calc(50% - 65px); 
 }

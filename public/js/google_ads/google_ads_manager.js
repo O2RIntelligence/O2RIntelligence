@@ -248,6 +248,7 @@ class GoogleAdsManager {
 
     if (accountType === "general") {
       $('#account-filter').prop('disabled', true);
+      $('#account-filter').val('').trigger('change');
     } else {
       if (data) {
         let optionsHtml = ``;
@@ -297,7 +298,6 @@ class GoogleAdsManager {
       const accountType = $(this).attr('data-name');
       self.dataFilterState.account_type = accountType;
       self.populateFilterAccounts();
-
       if (typeof props?.onPressFilter === "function") {
         props?.onPressFilter(self.dataFilterState);
       }
