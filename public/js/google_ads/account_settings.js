@@ -157,7 +157,7 @@ class AccountSettings extends GoogleAdsManager {
       useCsrf: true,
       data: { id },
       onSuccess(data) {
-        swal(`${data?.success}`, 'success');
+        swal(`${data?.message}`, 'success');
       }
     });
   }
