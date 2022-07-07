@@ -44,7 +44,7 @@ Route::get('/google-ads/sub-accounts/online', [SubAccountController::class, 'get
 Route::get('/google-ads/sub-accounts', [SubAccountController::class, 'showAll'])->name('google-ads.sub-accounts.get');
 
 //Cost Operation
-Route::post('/google-ads/sub-accounts/daily-data', [DailyDataController::class, 'getDailyData'])->name('google-ads.sub-accounts.daily-data');
+Route::get('/google-ads/sub-accounts/daily-data', [DailyDataController::class, 'getDailyData'])->name('google-ads.sub-accounts.daily-data');
 Route::get('/google-ads/sub-accounts/hourly-data', [HourlyDataController::class, 'getHourlyData'])->name('google-ads.sub-accounts.hourly-data');
 
 //General Variables Operation
