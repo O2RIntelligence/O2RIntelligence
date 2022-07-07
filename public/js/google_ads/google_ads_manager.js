@@ -68,7 +68,7 @@ class GoogleAdsManager {
       createDoughnutChartData: (dataSets) => {
         let labels = [], datasets = [];
         if (dataSets && dataSets?.length > 0) {
-          
+
 
           dataSets?.forEach((data) => {
             const colors = [];
@@ -157,7 +157,8 @@ class GoogleAdsManager {
               break;
             case 'last30':
               fromDate = moment().utcOffset(0, true).startOf('month').format('YYYY-MM-DD');
-              toDate = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
+              // toDate = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
+              toDate = moment().utcOffset(0, true).format('YYYY-MM-DD');
               startDateInput.val(fromDate);
               endDateInput.val(toDate);
               break;

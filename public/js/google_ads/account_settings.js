@@ -97,7 +97,8 @@ class AccountSettings extends GoogleAdsManager {
       url: "/google-ads/master-account/" + type,
       useCsrf: true,
       data,
-      onSuccess() {
+      onSuccess(res) {
+        console.log(res);
         self.getAccountSettingsData();
         self.openFormDialog("hide");
         swal("Save successfully!", 'success');
