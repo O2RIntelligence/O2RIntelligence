@@ -12,6 +12,8 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
 
 class FinancialReportController extends Controller
 {
@@ -64,8 +66,8 @@ class FinancialReportController extends Controller
     public function getFinancialInformation($start_date, $end_date, $masterAccounts, $subAccounts)
     {
         try {
-            $startDate = date('Y-m-01', strtotime($start_date));
-            $endDate = date('Y-m-t', strtotime($end_date));
+            $startDate = date('Y-m-d', strtotime($start_date));
+            $endDate = date('Y-m-d', strtotime($end_date));
             $masterAccountData = [];
             $subAccountData = [];
             $totalData = [];
@@ -102,10 +104,10 @@ class FinancialReportController extends Controller
                 $totalData = [];
 
             }
-            $monthlyData = DailyData::whereBetween('date', [$startDate, $endDate])->orderBy('date', 'asc')->get();
-            $totalData = $this->processMonthlyData($monthlyData, $totalData, $accountInfo);
-
-            return array('totalData' => $totalData, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
+            foreach ($subAccountData as $singleSubAccountData){
+                if(!empty($singleSubAccountData['dataTableData'])) $totalData[] = $singleSubAccountData['dataTableData'];
+            }
+            return array('totalData' => array_merge([],...$totalData), 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
             dd($exception);
         }
