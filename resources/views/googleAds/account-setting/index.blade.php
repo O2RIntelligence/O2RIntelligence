@@ -92,7 +92,7 @@ input:checked + .slider:before {
                     <div class="box grid-box">
                         <div class="box-header with-border">
                             <div class="pull-right"> 
-                                <div class="btn-group pull-right" style="margin-right: 10px">
+                                <!-- <div class="btn-group pull-right" style="margin-right: 10px">
                                     <a href="javascript:void(0)" target="_blank" class="btn btn-sm btn-twitter" title="Export"><i class="fa fa-download"></i><span class="hidden-xs"> Export</span></a>
                                     <button type="button" class="btn btn-sm btn-twitter dropdown-toggle" data-toggle="dropdown">
                                         <span class="caret"></span>
@@ -103,7 +103,7 @@ input:checked + .slider:before {
                                         <li><a href="javascript:void(0)" target="_blank">Current page</a></li>
                                         <li><a href="javascript:void(0)" target="_blank" class="export-selected">Selected rows</a></li>
                                     </ul>
-                                </div> 
+                                </div>  -->
                                 <div class="btn-group pull-right grid-create-btn" style="margin-right: 10px">
                                     <a href="javascript:void(0)" class="btn btn-sm btn-success" title="New" id="createFormDialog">
                                         <i class="fa fa-plus"></i><span class="hidden-xs">&nbsp;&nbsp;New</span>
