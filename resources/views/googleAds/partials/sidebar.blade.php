@@ -56,38 +56,54 @@
                     </li>
                 </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview 
+            {{(
+                request()->is('admin/google-ads/dashboard')
+                || request()->is('admin/google-ads/activity-report')
+                || request()->is('admin/google-ads/financial-report')
+                || request()->is('admin/google-ads/account-setting')
+                || request()->is('admin/google-ads/general-variable')
+                )?'active':''}}
+            ">
                 <a href="#">
                     <i class="fa fa fa-line-chart"></i>
                     <span>Google Ads</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
-                <ul class="treeview-menu">
-                    <li>
+                <ul class="treeview-menu
+                {{(
+                request()->is('admin/google-ads/dashboard')
+                || request()->is('admin/google-ads/activity-report')
+                || request()->is('admin/google-ads/financial-report')
+                || request()->is('admin/google-ads/account-setting')
+                || request()->is('admin/google-ads/general-variable')
+                )?'menu-open':''}}
+                ">
+                    <li class="{{(request()->is('admin/google-ads/dashboard'))?'active':''}}">
                         <a href="{{url('admin/google-ads/dashboard')}}">
                             <i class="fa fa-bars"></i>
                             <span>Overview</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="{{(request()->is('admin/google-ads/activity-report'))?'active':''}}">
                         <a href="{{url('admin/google-ads/activity-report')}}">
                             <i class="fa fa-dollar"></i>
                             <span>Activity Report</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="{{(request()->is('admin/google-ads/financial-report'))?'active':''}}">
                         <a href="{{url('admin/google-ads/financial-report')}}">
                             <i class="fa fa-area-chart"></i>
                             <span>Financial Report</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="{{(request()->is('admin/google-ads/account-setting'))?'active':''}}">
                         <a href="{{url('admin/google-ads/account-setting')}}">
                             <i class="fa fa-dollar"></i>
                             <span>Account Setting</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="{{(request()->is('admin/google-ads/general-variable'))?'active':''}}">
                         <a href="{{url('admin/google-ads/general-variable')}}">
                             <i class="fa fa-area-chart"></i>
                             <span>General Variables</span>
