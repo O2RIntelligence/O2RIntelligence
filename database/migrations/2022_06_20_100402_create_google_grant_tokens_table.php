@@ -18,6 +18,7 @@ class CreateGoogleGrantTokensTable extends Migration
 
             $table->string('refresh_token')->nullable();
             $table->string('access_token')->nullable();
+            $table->string('expires_in')->nullable();
 
             $table->softDeletes();
             $table->timestamps();
