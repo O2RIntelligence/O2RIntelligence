@@ -1,16 +1,14 @@
-function initiatePopover() {
-  $('[data-toggle="popover"]').popover({
-    trigger: 'hover',
-  });
-}
-
 function addDropdownValue(element) {
   const operation = $(element).attr('data-operation');
   const colIdx = $(element).attr('data-idx');
-  const title = $(element).attr('data-title');
   $(element).parents('.dropdown').find('[name="selected_filter_operation"]').val(operation);
   $(element).parents('.dropdown').find('[name="selectedColIndex"]').val(colIdx);
-  $('#filterColumn').append('<option selected>' + title + '</option>')
+}
+
+function clearDropdownValue(element) {
+  const key = $(element).attr('data-key');
+  $(element).parents('.dropdown').find('[name="selected_filter_operation"]').val('');
+  $('#input' + key).val('');
 }
 
 
@@ -21,6 +19,7 @@ class FinancialReport extends GoogleAdsManager {
     this.getFinancialReportData = this.getFinancialReportData.bind(this);
     this.prepareFinancialTable = this.prepareFinancialTable.bind(this);
     this.renderFinancialTable = this.renderFinancialTable.bind(this);
+    this.htmlTemplates = this.htmlTemplates.bind(this);
 
     this.initialState = {
       financialData: [],
@@ -41,164 +40,141 @@ class FinancialReport extends GoogleAdsManager {
 
   prepareFinancialTable() {
     const self = this;
+
+    const columns = [
+      {
+        key: 'date',
+        title: 'Date',
+        type: 'date',
+      },
+      {
+        key: 'master_account_name',
+        title: 'Master Account Name',
+        type: 'text',
+      },
+      {
+        key: 'master_account_id',
+        title: 'Master Account ID',
+        type: 'number',
+      },
+      {
+        key: 'sub_account_name',
+        title: 'Sub Account Name',
+        type: 'text',
+      },
+      {
+        key: 'sub_account_id',
+        title: 'Sub Account Id',
+        type: 'number',
+      },
+      {
+        key: 'SPENT_IN_ARS',
+        title: 'SPENT in ARS',
+        type: 'number',
+      },
+      {
+        key: 'Spent_In_USD',
+        title: 'Spent in USD',
+        type: 'number',
+      },
+      {
+        key: 'discount',
+        title: 'Discount',
+        type: 'number',
+      },
+      {
+        key: 'revenue',
+        title: 'Revenue',
+        type: 'number',
+      },
+      {
+        key: 'Google_Media_Cost',
+        title: 'Google Media Cost',
+        type: 'number',
+      },
+      {
+        key: 'PlusM_Share',
+        title: 'PlusM Share',
+        type: 'text',
+      },
+      {
+        key: 'Total_Cost',
+        title: 'Total Cost',
+        type: 'number',
+      },
+      {
+        key: 'Net_Income',
+        title: 'Net Income',
+        type: 'number',
+      },
+      {
+        key: 'Net_Income_Percent',
+        title: 'Net Income %',
+        type: 'number',
+      },
+    ];
+
+    let theadRow = '<tr>', theadFilterRow = '<tr class="filters">';
+    columns.forEach(function (item, index) {
+      theadRow += `<th>${item.title}</th>`;
+      theadFilterRow += `<td>${self.htmlTemplates().tableFilterItem({
+        colIndex: index,
+        key: item?.key,
+        title: item?.title,
+        type: item?.type,
+      })}</td>`;
+    });
+    theadRow += '</tr>';
+    theadFilterRow += '</tr>';
+
+    const thead = $('#financialTable thead');
+    thead.append(theadRow);
+    thead.append(theadFilterRow);
+
     const table = $('#financialTable').DataTable({
       'responsive': true,
       "paging": true,
       "lengthChange": true,
       "searching": true,
-      "ordering": false,
+      "ordering": true,
+      "orderCellsTop": true,
       "info": true,
       "autoWidth": false,
-      'aoColumnDefs': [{
-        'bSortable': false,
-        'aTargets': ['nosort']
-      }],
       'dom': 'lBfrtip',
       'buttons': [
         'csv', 'excel'
       ],
       initComplete() {
-        var api = this.api();
+        let api = this.api();
 
-        $('#financialTable thead tr').clone(true).addClass('filters').appendTo('#financialTable thead');
-        $('#financialTable tr.filters th').removeClass('sorting').addClass('nosort');
+        $(document).on('keyup', '.filters input', function () {
+          api.draw();
+        });
 
-        api
-          .columns()
-          .eq(0)
-          .each(function (colIdx) {
-            // Set the header cell to contain the input element
-            var cell = $('.filters th').eq(
-              $(api.column(colIdx).header()).index()
-            );
-
-            var title = $(cell).text();
-            var type = 'text';
-            if (title == 'Date') type = 'date'
-            if (title == 'Month') type = 'month'
-
-            $(cell).html(`
-              <div style="display: flex;" data-contain="filter">
-                <input onclick="event.stopPropagation()" data-name="query" type="${type}" id="input${title.replace(/[^a-zA-Z0-9]/g, '-')}" placeholder="${title}" />
-                <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fa fa-filter"></i>
-                  </button>
-
-                  <div class="dropdown-menu custom-filter-dropdown">
-                    <a class="dropdown-item text-danger" data-action="clear" style="display: block;" onclick="clearDropdownValue(this)" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}">
-                    Clear
-                    </a>
-                    <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="equal">Is equal to</a>
-                    <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="not_equal">Is not equal to</a>
-                    <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="greater_than">Greater than</a>
-                    <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="greater_equal">Greater equal</a>
-                    <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="less_than">Less than</a>
-                    <a class="dropdown-item" style="display: block;" onclick="addDropdownValue(this)" data-idx="${colIdx}" data-title="${title.replace(/[^a-zA-Z0-9]/g, '-')}" data-operation="less_equal">Less equal</a>
-                  </div>
-                  <input type="hidden" id="operator${title.replace(/[^a-zA-Z0-9]/g, '-')}" name="selected_filter_operation" />
-                  <input type="hidden" id="colIndex${title.replace(/[^a-zA-Z0-9]/g, '-')}" name="selectedColIndex" />
-                </div>
-              </div>
-                            `);
-
-            // On every keypress in this input
-            $(
-              'input',
-              $('.filters th').eq($(api.column(colIdx).header()).index())
-            )
-              .off('keyup change')
-              .on('keyup change', function (e) {
-                /*e.stopPropagation();
-
-                // Get the search value
-                $(this).attr('title', $(this).val());
-                const filterCaseValue = getDropdownValue(this);
-                console.log("filterCaseValue", filterCaseValue)
-
-                var cursorPosition = this.selectionStart;
-                // Search the column for that value
-
-                var regexr = '({search})';
-                let searchRegx = this.value != ''
-                    ? regexr.replace('{search}', '(((' + this.value + ')))')
-                    : '';
-
-                if (filterCaseValue && filterCaseValue !== '') {
-                    switch(filterCaseValue) {
-                        case 'not_equal':
-                            searchRegx = `^(?!(((${this.value})))$)`;
-                            break;
-
-                        case 'not_equal':
-                            searchRegx = `^(?!(((${this.value})))$)`;
-                            break;
-                    }
-                }*/
-
-                api
-                  // .column(colIdx)
-                  // .search(searchRegx, true, false)
-                  .draw();
-
-                /*$(this)
-                    .focus()[0]
-                    .setSelectionRange(cursorPosition, cursorPosition);*/
-              });
-
-
-            $(
-              '[data-action="clear"]',
-              $('.filters th').eq($(api.column(colIdx).header()).index())
-                .on('click', function () {
-                  setTimeout(() => {
-                    api.draw();
-                  }, 10);
-                })
-            );
-
-
-            $(
-              '.dropdown-item',
-              $('.filters th').eq($(api.column(colIdx).header()).index())
-                .on('click', function () {
-
-                  api.draw();
-                })
-            );
-          });
-
-        $('tr.headers:not(.filters) th').append(`
-                            <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right"
-                data-html="true" data-trigger="focus" data-placement="right"
-                data-toggle="popover"
-                title="Only Equal to and Not Equal to filter option is applied for filtering Text data
-                All the filter options can be applied for Number value."></i>
-                            `);
-        initiatePopover();
+        $(document).on('click', '.filters .dropdown-item', function () {
+          api.draw();
+        });
       }
     });
 
 
     $.fn.dataTable.ext.search.push(
       function (settings, data, dataIndex) {
-        var filterableColumns = $('#filterColumn').val();
-        filterableColumns = Array.from(new Set(filterableColumns))
-        // console.log(filterableColumns)
         var flag = true;
 
-        filterableColumns.forEach(function (item, index) {
+        columns.forEach(function (item) {
           if (flag) {
-            var inputValue = $("#input" + item).val();
-            var operator = $("#operator" + item).val();
-            var colIndex = $("#colIndex" + item).val();
+            var inputValue = $("#input" + item?.key).val();
+            var operator = $("#operator" + item?.key).val();
+            var colIndex = $("#colIndex" + item?.key).val();
             var cellValue = data[colIndex];
 
-            if (item == 'Date' && inputValue) {
+            if (item?.type === 'date' && inputValue && cellValue) {
               inputValue = inputValue.replaceAll('-', '/');
+              cellValue = cellValue.replaceAll('-', '/');
 
-              let leftDate = Date.parse(cellValue.trim());
-              let rightDate = Date.parse(inputValue.trim());
+              let leftDate = Date.parse(cellValue?.trim());
+              let rightDate = Date.parse(inputValue?.trim());
 
               if (inputValue.trim() !== '') {
                 switch (operator) {
@@ -227,7 +203,7 @@ class FinancialReport extends GoogleAdsManager {
                 flag = true;
               }
 
-            } else if (item == 'Month' && inputValue) {
+            } else if (item?.type === 'month' && inputValue) {
               inputValue = inputValue.replace('-', '/');
 
               let leftDate = Date.parse(cellValue.trim());
@@ -261,13 +237,13 @@ class FinancialReport extends GoogleAdsManager {
               }
 
             } else {
-              if (inputValue.toLowerCase().trim() !== '') {
+              if (inputValue?.toLowerCase().trim() !== '') {
                 switch (operator) {
                   case 'equal':
-                    flag = cellValue.toLowerCase().trim() == inputValue.toLowerCase().trim();
+                    flag = cellValue?.toLowerCase().trim() == inputValue.toLowerCase().trim();
                     break;
                   case 'not_equal':
-                    flag = cellValue.toLowerCase().trim() != inputValue.toLowerCase().trim();
+                    flag = cellValue?.toLowerCase().trim() != inputValue.toLowerCase().trim();
                     break;
                   case 'greater_than':
                     flag = parseFloat(cellValue.trim().replace(/,/g, '')) > parseFloat(inputValue.trim().replace(/,/g, ''));
@@ -301,7 +277,7 @@ class FinancialReport extends GoogleAdsManager {
 
   getFinancialReportData() {
     const self = this;
-    const { date_filter } = self.dataFilterState;
+    const {date_filter} = self.dataFilterState;
     self.sendHttpRequest({
       method: "post",
       url: "/api/google-ads/financial-report/data",
@@ -322,7 +298,7 @@ class FinancialReport extends GoogleAdsManager {
 
   renderFinancialTable() {
     const self = this;
-    const { account_type, selected_accounts } = self.dataFilterState;
+    const {account_type, selected_accounts} = self.dataFilterState;
 
     if (self.state.financialData && self.state.financialTable) {
       let data = self.state.financialData.financialInformation.totalData ?? [];
@@ -346,7 +322,7 @@ class FinancialReport extends GoogleAdsManager {
       const table = self.state.financialTable;
       table.clear();
 
-      for (let item of data) { 
+      for (let item of data) {
         table.row.add([
           item?.date ?? "",
           item?.master_account_name ?? "",
@@ -365,6 +341,76 @@ class FinancialReport extends GoogleAdsManager {
         ]);
       }
       table.draw();
+    }
+  }
+
+  htmlTemplates() {
+    return {
+      tableFilterItem: (data) => {
+        function dropdownItemHiddenClass() {
+          return `dropdown-item ${data?.type === "text" ? "hide-filter-item" : ""}`;
+        }
+
+        return `
+        <div style="display: flex;" data-contain="filter">
+          <input data-name="query" type="${data?.type}"
+                 id="input${data?.key}"
+                 placeholder="${data?.title}" />
+          <div class="dropdown">
+              <button 
+                      class="btn btn-secondary dropdown-toggle" type="button"
+                      id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                      aria-expanded="false">
+                  <i class="fa fa-filter"></i>
+              </button>
+  
+              <div class="dropdown-menu custom-filter-dropdown">
+                  <a class="dropdown-item text-danger" data-action="clear"
+                     style="display: block;" onclick="clearDropdownValue(this)"
+                     data-title="${data?.title}"
+                     data-key="${data?.key}"
+                     >
+                      Clear
+                  </a>
+                  <a class="dropdown-item" style="display: block;"
+                     onclick="addDropdownValue(this)" data-idx="${data?.colIndex}"
+                     data-title="${data?.title}"
+                     data-key="${data?.key}"
+                     data-operation="equal">Is equal to</a>
+                  <a class="dropdown-item" style="display: block;"
+                     onclick="addDropdownValue(this)" data-idx="${data?.colIndex}"
+                     data-title="${data?.title}"
+                     data-key="${data?.key}"
+                     data-operation="not_equal">Is not equal to</a>
+                  <a class="dropdown-item ${dropdownItemHiddenClass()}" style="display: block;"
+                     onclick="addDropdownValue(this)" data-idx="${data?.colIndex}"
+                     data-title="${data?.title}"
+                     data-key="${data?.key}"
+                     data-operation="greater_than">Greater than</a>
+                  <a class="dropdown-item ${dropdownItemHiddenClass()}" style="display: block;"
+                     onclick="addDropdownValue(this)" data-idx="${data?.colIndex}"
+                     data-title="${data?.title}"
+                     data-key="${data?.key}"
+                     data-operation="greater_equal">Greater equal</a>
+                  <a class="dropdown-item ${dropdownItemHiddenClass()}" style="display: block;"
+                     onclick="addDropdownValue(this)" data-idx="${data?.colIndex}"
+                     data-title="${data?.title}"
+                     data-key="${data?.key}"
+                     data-operation="less_than">Less than</a>
+                  <a class="dropdown-item ${dropdownItemHiddenClass()}" style="display: block;"
+                     onclick="addDropdownValue(this)" data-idx="${data?.colIndex}"
+                     data-title="${data?.title}"
+                     data-key="${data?.key}"
+                     data-operation="less_equal">Less equal</a>
+              </div>
+              <input type="hidden" id="operator${data?.key}"
+                     name="selected_filter_operation" />
+              <input type="hidden" id="colIndex${data?.key}"
+                     name="selectedColIndex" />
+          </div>
+        </div>
+        `;
+      },
     }
   }
 }
