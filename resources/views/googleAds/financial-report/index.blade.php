@@ -111,52 +111,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="box grid-box">
-                        <table class="table table-hover grid-table" id="financialTable">
-                            <thead>
-<!--                            <tr>
-                                <th>Date</th>
-                                <th>Master Account Name</th>
-                                <th>Master Account ID</th>
-                                <th>Sub Account Name</th>
-                                <th>Sub Account ID</th>
-                                <th>SPENT in ARS</th>
-                                <th>Spent in USD</th>
-                                <th>Discount</th>
-                                <th>Revenue</th>
-                                <th>Google Media Cost</th>
-                                <th>PlusM Share</th>
-                                <th>Total Cost</th>
-                                <th>Net Income</th>
-                                <th>Net Income %</th>
-                            </tr>-->
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-
-            <!--            <div class="row">
-                <div class="col-md-12">
-                    <div class="box grid-box with-border">
-                        <div class="box-header with-border">
-                            <div class="row">
-                                <div class="col-md-7">
-                                    <b style="line-height:35px;">{{ __('Results') }}</b>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="box-body table-responsive">
-                            <table id="financialTable" class="table table-bordered table-hover grid-table">
-                                <thead></thead>
-                                <tbody></tbody>
-                                <tfoot></tfoot>
+                            <table class="table table-hover grid-table" id="financialTable">
+                                <thead>
+                                </thead>
                             </table>
                         </div>
                     </div>
                 </div>
-            </div>-->
+            </div>
         </section>
     </div>
 @endsection
@@ -170,7 +133,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="//cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
     <script src="//cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
-<!--    <script src="//cdn.datatables.net/searchbuilder/1.3.0/js/dataTables.searchBuilder.min.js"></script>-->
+    <!--    <script src="//cdn.datatables.net/searchbuilder/1.3.0/js/dataTables.searchBuilder.min.js"></script>-->
 
 
     <script>
