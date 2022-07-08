@@ -95,7 +95,7 @@ class FinancialReport extends GoogleAdsManager {
       {
         key: 'PlusM_Share',
         title: 'PlusM Share',
-        type: 'text',
+        type: 'number',
       },
       {
         key: 'Total_Cost',
