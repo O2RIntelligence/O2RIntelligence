@@ -97,7 +97,9 @@ class DashboardController extends Controller
                         if (date('Y-m-d') == $date) {
                             $hourlyData = HourlyData::where('sub_account_id', $subAccount->id)->sum('cost');
                             $dailyCost = $hourlyData / $dayCount;
-                            $dailyRunRate = ($hourlyData / HourlyData::count()) * 24;
+                            if(intval(HourlyData::count())>0)$hourlyDataCount = HourlyData::count();
+                            else $hourlyDataCount = 1;
+                            $dailyRunRate = ($hourlyData / $hourlyDataCount) * 24;
                         } else {
                             $dataFromDate = DailyData::where('sub_account_id', $subAccount->id)->where('date', $date)->sum('cost');
                             $dailyCost = $dataFromDate / $dayCount;
