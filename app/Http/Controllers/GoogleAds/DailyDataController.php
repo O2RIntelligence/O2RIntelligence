@@ -44,7 +44,7 @@ class DailyDataController extends Controller
     public function getDailyDataFromService($startDate=null, $endDate=null): JsonResponse
     {
         try {
-            $dateRange['startDate'] = date('Y-m-d',strtotime($startDate??'today'));
+            $dateRange['startDate'] = date('Y-m-d',strtotime($startDate??'yesterday'));
             $dateRange['endDate'] = date('Y-m-d',strtotime($endDate??'today'));
             $dailyData = [];
             $masterAccounts =  MasterAccountResource::collection(MasterAccount::all());
