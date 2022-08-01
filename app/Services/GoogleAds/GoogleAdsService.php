@@ -76,13 +76,13 @@ class GoogleAdsService
     public function getDailyData(GoogleAdsClient $googleAdsClient, $masterAccount, $subAccount, $dateRange, $generalVariable)
     {
         $customerId = $subAccount->account_id;
-        $discount = intval($masterAccount->discount);
+        $discount = intval($masterAccount->discount)/100;
         $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate();
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
         $official_dollar = intval($generalVariable->official_dollar);
-        $plusMDiscount = intval($generalVariable->plus_m_discount);
+        $plusMDiscount = intval($generalVariable->plus_m_discount)/100;
         // Creates a query that retrieves all keyword statistics.
-        $query = "SELECT metrics.cost_micros, segments.date,campaign_budget.amount_micros FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" . $dateRange['endDate'] . "' AND customer.id = " . $customerId." ORDER BY segments.date";//AND metrics.cost_micros > 0";
+        $query = "SELECT metrics.cost_micros, segments.date,campaign_budget.amount_micros FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" . $dateRange['endDate'] . "' AND customer.id = " . $customerId . " ORDER BY segments.date";//AND metrics.cost_micros > 0";
         // Issues a search stream request.
         /** @var GoogleAdsServerStreamDecorator $stream */
         $stream = $googleAdsServiceClient->searchStream($customerId, $query);
@@ -102,22 +102,19 @@ class GoogleAdsService
             $costInUsd = $cost / $usdToArs;
             $googleMediaCost = ($cost + ($cost * config('googleAds.google_media_cost_constant'))); //[SPENT in ARS+(SPENT in ARS x 0.21)]/Blue Dollar
             if (intval($generalVariable->blue_dollar) > 0) {
-                $googleMediaCost = $googleMediaCost/ $generalVariable->blue_dollar;
+                $googleMediaCost = $googleMediaCost / $generalVariable->blue_dollar;
             }
             //$plusMShare = ((($googleMediaCost - ($googleMediaCost * $plusMDiscount)) / $official_dollar) - $googleMediaCost) / 2; //[((Google Media Cost-(Google Media Cost*PLUSM Discount))/Official Dollar)-(Google Media Cost)]/2
             $plusMShare = $googleMediaCost;
-            if($plusMDiscount>0)$plusMShare = $plusMShare - ($googleMediaCost * $plusMDiscount);
-            if($official_dollar>0) $plusMShare = $plusMShare/$official_dollar;
-            $plusMShare = $plusMShare - $googleMediaCost;
-            $revenue = $costInUsd ; //Spent in USD - (Spent in USD X Discount)
-            if($discount>0){
-                $revenue = $revenue - ($costInUsd * $discount);
-            }
+            if ($plusMDiscount > 0) $plusMShare = $plusMShare - ($googleMediaCost * $plusMDiscount);
+            if ($official_dollar > 0) $plusMShare = $plusMShare / $official_dollar;
+            $plusMShare = ($plusMShare - $googleMediaCost)/2;
+            $revenue = $costInUsd - ($costInUsd * $discount); //Spent in USD - (Spent in USD X Discount)
 
 
-            $currentMonth = intval(date('m',strtotime($date)));
-            $currentMonthCurrentDay = intval(date('d',strtotime($date)));
-            $currentMonthAllDayCount = intval(date('t',strtotime($date)));
+            $currentMonth = intval(date('m', strtotime($date)));
+            $currentMonthCurrentDay = intval(date('d', strtotime($date)));
+            $currentMonthAllDayCount = intval(date('t', strtotime($date)));
 //            $prevMonth = $currentMonth;
 //            if($currentMonth > $prevMonth){
 //                $costThisMonth = 0;
@@ -125,32 +122,32 @@ class GoogleAdsService
 //            }
             $total_cost = $googleMediaCost + $plusMShare;
             $costThisMonth = $cost;//todo:for multiple month add all cost<=>reset cost
-            $account_budget = $results[$key]['campaignBudget']['amountMicros']/config('googleAds.micro_cost');
+            $account_budget = $results[$key]['campaignBudget']['amountMicros'] / config('googleAds.micro_cost');
             $netIncome = $revenue - $total_cost;
-            $netIncomePercent = (($revenue - $total_cost) / $costInUsd)*100;
-            $accountBudgetPercent = ($costThisMonth / $account_budget)*100;
-            $monthlyRunRate = ($cost/$currentMonthCurrentDay)*$currentMonthAllDayCount;
-            if(!empty($newData['date']) && $newData['date']==$date && $newData['sub_account_id'] == $subAccount->id){
+            $netIncomePercent = (($revenue - $total_cost) / $costInUsd) * 100;
+            $accountBudgetPercent = ($costThisMonth / $account_budget) * 100;
+            $monthlyRunRate = ($cost / $currentMonthCurrentDay) * $currentMonthAllDayCount;
+            if (!empty($newData['date']) && $newData['date'] == $date && $newData['sub_account_id'] == $subAccount->id) {
                 $newData = [
                     'date' => $date,
                     'master_account_id' => $masterAccount->id,
                     'sub_account_id' => $subAccount->id,
-                    'cost' => $cost+$newData['cost'],
-                    'cost_usd' => $costInUsd+$newData['cost_usd'],
-                    'discount' => $discount+$newData['discount'],
-                    'revenue' => $revenue+$newData['revenue'],
-                    'google_media_cost' => $googleMediaCost+$newData['google_media_cost'],
-                    'plus_m_share' => $plusMShare+$newData['plus_m_share'],
-                    'total_cost' => $total_cost+$newData['total_cost'],
-                    'net_income' => $netIncome+$newData['net_income'],
-                    'net_income_percent' => $netIncomePercent+$newData['net_income_percent'],
-                    'account_budget' => $account_budget+$newData['account_budget'],
-                    'budget_usage_percent' => $accountBudgetPercent+$newData['budget_usage_percent'],
-                    'monthly_run_rate'=>$monthlyRunRate+$newData['monthly_run_rate'],
+                    'cost' => $cost + $newData['cost'],
+                    'cost_usd' => $costInUsd + $newData['cost_usd'],
+                    'discount' => $discount*100,
+                    'revenue' => $revenue + $newData['revenue'],
+                    'google_media_cost' => $googleMediaCost + $newData['google_media_cost'],
+                    'plus_m_share' => $plusMShare + $newData['plus_m_share'],
+                    'total_cost' => $total_cost + $newData['total_cost'],
+                    'net_income' => $netIncome + $newData['net_income'],
+                    'net_income_percent' => $netIncomePercent + $newData['net_income_percent'],
+                    'account_budget' => $account_budget + $newData['account_budget'],
+                    'budget_usage_percent' => $accountBudgetPercent + $newData['budget_usage_percent'],
+                    'monthly_run_rate' => $monthlyRunRate + $newData['monthly_run_rate'],
                 ];
                 array_pop($formattedData);
                 $formattedData[] = $newData;
-            }else {
+            } else {
                 $newData = [
                     'date' => $date,
                     'master_account_id' => $masterAccount->id,
@@ -179,22 +176,25 @@ class GoogleAdsService
     /**Stores Daily Data to Database
      * @throws Exception
      */
-    public function storeDailyData($dailyData){
-        foreach($dailyData as $singleData){
+    public function storeDailyData($dailyData)
+    {
+        foreach ($dailyData as $singleData) {
             $prevData = DailyData::where('date', $singleData['date'])->where('sub_account_id', $singleData['sub_account_id'])->delete();
             $dailyData = DailyData::create($singleData);
-            if(!$dailyData) throw new Exception('Could not create daily data');
+            if (!$dailyData) throw new Exception('Could not create daily data');
         }
     }
+
     /**Stores Hourly Data to Database
      * @throws Exception
      */
-    public function storeHourlyData($hourlyData){
-        HourlyData::where('date','!=',date('Y-m-d'))->delete();
-        foreach($hourlyData as $singleData){
+    public function storeHourlyData($hourlyData)
+    {
+        HourlyData::where('date', '!=', date('Y-m-d'))->delete();
+        foreach ($hourlyData as $singleData) {
             HourlyData::where('hour', $singleData['hour'])->where('sub_account_id', $singleData['sub_account_id'])->delete();
             $hourlyData = HourlyData::create($singleData);
-            if(!$hourlyData) throw new Exception('Could not create hourly data');
+            if (!$hourlyData) throw new Exception('Could not create hourly data');
         }
     }
 
@@ -211,12 +211,12 @@ class GoogleAdsService
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
 
         // Creates a query that retrieves all keyword statistics.
-        $query = "SELECT metrics.cost_micros, segments.date, segments.hour FROM campaign WHERE segments.date BETWEEN '" . $dateRange. "' AND '" . $dateRange. "' AND customer.id = " . $customerId." ORDER BY segments.hour";//." AND metrics.cost_micros > 0";
+        $query = "SELECT metrics.cost_micros, segments.date, segments.hour FROM campaign WHERE segments.date BETWEEN '" . $dateRange . "' AND '" . $dateRange . "' AND customer.id = " . $customerId . " ORDER BY segments.hour";//." AND metrics.cost_micros > 0";
         // Issues a search stream request.
         $stream = $googleAdsServiceClient->searchStream($customerId, $query);
         $results = [];
         $formattedData = [];
-        $allData =[];
+        $allData = [];
 //        HourlyData::query()->forceDelete();
         // Iterates over all rows in all messages and prints the requested field values for the keyword in each row.
         foreach ($stream->iterateAllElements() as $key => $googleAdsRow) {
