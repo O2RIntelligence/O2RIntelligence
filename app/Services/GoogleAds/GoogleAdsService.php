@@ -104,11 +104,11 @@ class GoogleAdsService
             if (intval($generalVariable->blue_dollar) > 0) {
                 $googleMediaCost = $googleMediaCost / $generalVariable->blue_dollar;
             }
-            //$plusMShare = ((($googleMediaCost - ($googleMediaCost * $plusMDiscount)) / $official_dollar) - $googleMediaCost) / 2; //[((Google Media Cost-(Google Media Cost*PLUSM Discount))/Official Dollar)-(Google Media Cost)]/2
-            $plusMShare = $googleMediaCost;
-            if ($plusMDiscount > 0) $plusMShare = $plusMShare - ($googleMediaCost * $plusMDiscount);
+//            $plusMShare = [((Google Media Cost-(Google Media Cost*PLUSM Discount))/Official Dollar)] - [(Google Media Cost *1.21) / Blue Dollar]
+            $plusMShare = $googleMediaCost - ($googleMediaCost * $plusMDiscount);
+//            if ($plusMDiscount > 0) $plusMShare = $plusMShare - ($googleMediaCost * $plusMDiscount);
             if ($official_dollar > 0) $plusMShare = $plusMShare / $official_dollar;
-            $plusMShare = ($plusMShare - $googleMediaCost)/2;
+            $plusMShare = $plusMShare - (($googleMediaCost*config('googleAds.plus_m_share_equation_constant'))/$generalVariable->blue_dollar);
             $revenue = $costInUsd - ($costInUsd * $discount); //Spent in USD - (Spent in USD X Discount)
 
 
