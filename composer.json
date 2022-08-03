@@ -11,6 +11,8 @@
         "php": "^7.1.3",
         "encore/laravel-admin": "^1.8",
         "fideloper/proxy": "^4.0",
+        "google/apiclient": "2.12.1",
+        "googleads/google-ads-php": "15.0",
         "guzzlehttp/guzzle": "^7.0",
         "laravel-admin-ext/chartjs": "^1.0",
         "laravel-admin-ext/config": "^1.1",
