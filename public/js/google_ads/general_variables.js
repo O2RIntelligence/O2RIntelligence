@@ -129,7 +129,7 @@ class GeneralVariables extends GoogleAdsManager {
       table.row.add([
         item?.official_dollar ?? 0,
         item?.blue_dollar ?? 0,
-        Number(item?.plus_m_discount ?? 0).toFixed(2),
+        `${Number(item?.plus_m_discount ?? 0).toFixed(2)}%`,
         `<div class="grid-dropdown-actions dropdown">
           <a href="#" style="padding: 0 10px;" class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-ellipsis-v"></i>

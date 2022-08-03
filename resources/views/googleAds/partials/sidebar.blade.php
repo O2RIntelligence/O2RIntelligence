@@ -100,7 +100,7 @@
                     <li class="{{(request()->is('admin/google-ads/account-setting'))?'active':''}}">
                         <a href="{{url('admin/google-ads/account-setting')}}">
                             <i class="fa fa-dollar"></i>
-                            <span>Account Setting</span>
+                            <span>Account Settings</span>
                         </a>
                     </li>
                     <li class="{{(request()->is('admin/google-ads/general-variable'))?'active':''}}">

@@ -179,7 +179,7 @@ class AccountSettings extends GoogleAdsManager {
         item?.name ?? "",
         item?.account_id ?? "",
         item?.developer_token ?? "",
-        Number(item?.discount ?? 0).toFixed(2),
+        `${Number(item?.discount ?? 0).toFixed(2)}%`,
         Number(item?.revenue_conversion_rate ?? 0).toFixed(2),
         `<label class="switch">
           <input  data-action="changeStatus"  data-id="${item.id}" type="checkbox" ${Number(item?.is_active) === 1 ? "checked" : ""} >
