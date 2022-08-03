@@ -122,6 +122,7 @@ class DashboardController extends Controller
             }
             if($difference->d > 1){
                 $totalDailyCost = $totalDailyCost/($difference->d+1);
+                $totalDailyRunRate = $totalDailyRunRate/($difference->d+1);
             }
             return array('totalDailyCost' => $totalDailyCost, 'totalDailyRunRate' => $totalDailyRunRate, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
