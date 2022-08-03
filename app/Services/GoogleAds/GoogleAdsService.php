@@ -125,25 +125,25 @@ class GoogleAdsService
             $account_budget = $results[$key]['campaignBudget']['amountMicros'] / config('googleAds.micro_cost');
             $netIncome = $revenue - $total_cost;
             $netIncomePercent = (($revenue - $total_cost) / $costInUsd) * 100;
-            $accountBudgetPercent = ($costThisMonth / $account_budget) * 100;
+//            $accountBudgetPercent = ($cost / $account_budget) * 100;
             $monthlyRunRate = ($cost / $currentMonthCurrentDay) * $currentMonthAllDayCount;
             if (!empty($newData['date']) && $newData['date'] == $date && $newData['sub_account_id'] == $subAccount->id) {
                 $newData = [
                     'date' => $date,
                     'master_account_id' => $masterAccount->id,
                     'sub_account_id' => $subAccount->id,
-                    'cost' => $cost + $newData['cost'],
-                    'cost_usd' => $costInUsd + $newData['cost_usd'],
+                    'cost' => round($cost + $newData['cost'],2),
+                    'cost_usd' => round($costInUsd + $newData['cost_usd'],2),
                     'discount' => $discount*100,
-                    'revenue' => $revenue + $newData['revenue'],
-                    'google_media_cost' => $googleMediaCost + $newData['google_media_cost'],
-                    'plus_m_share' => $plusMShare + $newData['plus_m_share'],
-                    'total_cost' => $total_cost + $newData['total_cost'],
-                    'net_income' => $netIncome + $newData['net_income'],
-                    'net_income_percent' => $netIncomePercent + $newData['net_income_percent'],
-                    'account_budget' => $account_budget + $newData['account_budget'],
-                    'budget_usage_percent' => $accountBudgetPercent + $newData['budget_usage_percent'],
-                    'monthly_run_rate' => $monthlyRunRate + $newData['monthly_run_rate'],
+                    'revenue' => round($revenue + $newData['revenue'],2),
+                    'google_media_cost' => round($googleMediaCost + $newData['google_media_cost'],2),
+                    'plus_m_share' => round($plusMShare + $newData['plus_m_share'],2),
+                    'total_cost' => round($total_cost + $newData['total_cost'],2),
+                    'net_income' => round($netIncome + $newData['net_income'],2),
+                    'net_income_percent' => round($netIncomePercent + $newData['net_income_percent'],2),
+                    'account_budget' => round($account_budget + $newData['account_budget'],2),
+                    'budget_usage_percent' => 0,//$accountBudgetPercent.'()'. $newData['budget_usage_percent'],// + $newData['budget_usage_percent'],
+                    'monthly_run_rate' => round($monthlyRunRate + $newData['monthly_run_rate'],2),
                 ];
                 array_pop($formattedData);
                 $formattedData[] = $newData;
@@ -152,21 +152,24 @@ class GoogleAdsService
                     'date' => $date,
                     'master_account_id' => $masterAccount->id,
                     'sub_account_id' => $subAccount->id,
-                    'cost' => $cost,
-                    'cost_usd' => $costInUsd,
+                    'cost' => round($cost,2),
+                    'cost_usd' => round($costInUsd,2),
                     'discount' => $discount,
-                    'revenue' => $revenue,
-                    'google_media_cost' => $googleMediaCost,
-                    'plus_m_share' => $plusMShare,
-                    'total_cost' => $total_cost,
-                    'net_income' => $revenue - $total_cost,
-                    'net_income_percent' => (($revenue - $total_cost) / $costInUsd) * 100,
-                    'account_budget' => $account_budget,
-                    'budget_usage_percent' => ($costThisMonth / $account_budget) * 100,
-                    'monthly_run_rate' => ($cost / $currentMonthCurrentDay) * $currentMonthAllDayCount,
+                    'revenue' => round($revenue,2),
+                    'google_media_cost' => round($googleMediaCost,2),
+                    'plus_m_share' => round($plusMShare,2),
+                    'total_cost' => round($total_cost,2),
+                    'net_income' => round($revenue - $total_cost,2),
+                    'net_income_percent' => round((($revenue - $total_cost) / $costInUsd) * 100,2),
+                    'account_budget' => round($account_budget,2),
+                    'budget_usage_percent' => 0,
+                    'monthly_run_rate' => round(($cost / $currentMonthCurrentDay) * $currentMonthAllDayCount,2),
                 ];
                 $formattedData[] = $newData;
             }
+        }
+        foreach ($formattedData as $key => $value) {
+            $formattedData[$key]['budget_usage_percent'] = round($formattedData[$key]['cost']/$formattedData[$key]['account_budget'] * 100,2);
         }
 //        return $results;
         $this->storeDailyData($formattedData);
@@ -231,8 +234,8 @@ class GoogleAdsService
                 'hour' => intval($hour),
                 'master_account_id' => $masterAccount->id,
                 'sub_account_id' => $subAccount->id,
-                'cost' => $cost,
-                'cost_usd' => $costInUsd,
+                'cost' => round($cost,2),
+                'cost_usd' => round($costInUsd,2),
             ];
 
         }
@@ -244,8 +247,8 @@ class GoogleAdsService
                     'hour' => $data['hour'],
                     'master_account_id' => $masterAccount->id,
                     'sub_account_id' => $subAccount->id,
-                    'cost' => $data['cost'] + $allData[$key2 - 1]['cost'],
-                    'cost_usd' => $data['cost_usd'] + $allData[$key2 - 1]['cost_usd'],
+                    'cost' => round($data['cost'] + $allData[$key2 - 1]['cost'],2),
+                    'cost_usd' => round($data['cost_usd'] + $allData[$key2 - 1]['cost_usd'],2),
                 ];
                 array_pop($formattedData);
                 $formattedData[] = $newData;
@@ -255,8 +258,8 @@ class GoogleAdsService
                     'hour' => $data['hour'],
                     'master_account_id' => $masterAccount->id,
                     'sub_account_id' => $subAccount->id,
-                    'cost' => $data['cost'],
-                    'cost_usd' => $data['cost_usd'],
+                    'cost' => round($data['cost'],2),
+                    'cost_usd' => round($data['cost_usd'],2),
                 ];
                 $formattedData[] = $newData;
             }
@@ -298,7 +301,7 @@ class GoogleAdsService
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
-            return $response['rates']['ARS'];
+            return round($response['rates']['ARS'],2);
         }
     }
 
