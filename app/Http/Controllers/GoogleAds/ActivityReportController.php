@@ -129,8 +129,8 @@ class ActivityReportController extends Controller
     public function getMonthlyForecastDatatableData($start_date, $end_date,$masterAccounts, $subAccounts)
     {
         try {
-            $startDate = date('Y-m-01', strtotime($start_date));
-            $endDate = date('Y-m-t', strtotime($end_date));
+            $startDate = date('Y-m-d', strtotime($start_date));
+            $endDate = date('Y-m-d', strtotime($end_date));
             $masterAccountData = [];
             $subAccountData = [];
             $totalData = [];
