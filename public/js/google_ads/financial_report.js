@@ -322,6 +322,19 @@ class FinancialReport extends GoogleAdsManager {
       const table = self.state.financialTable;
       table.clear();
 
+
+      const summation = {
+        totalSpentInARS: 0,
+        totalSpentInUSD: 0,
+        totalRevenue: 0,
+        totalGoogleMediaCost: 0,
+        totalPlusMShare: 0,
+        totalCost: 0,
+        totalNetIncome: 0,
+        totalNetIncomePercent: 0,
+      };
+
+
       for (let item of data) {
         table.row.add([
           item?.date ?? "",
@@ -339,8 +352,40 @@ class FinancialReport extends GoogleAdsManager {
           Number(item?.net_income ?? 0).toFixed(2),
           Number(item?.net_income_percent ?? 0).toFixed(2),
         ]);
+
+        summation.totalSpentInARS += Number(item?.spent_in_ars ?? 0);
+        summation.totalSpentInUSD += Number(item?.spent_in_usd ?? 0);
+        summation.totalRevenue += Number(item?.revenue ?? 0);
+        summation.totalGoogleMediaCost += Number(item?.google_media_cost ?? 0);
+        summation.totalPlusMShare += Number(item?.plus_m_share ?? 0);
+        summation.totalCost += Number(item?.total_cost ?? 0);
+        summation.totalNetIncome += Number(item?.net_income ?? 0);
+        summation.totalNetIncomePercent += Number(item?.net_income_percent ?? 0);
       }
+      
       table.draw();
+
+      $('#financialTable tfoot').remove();
+      $('#financialTable').append(`
+        <tfoot class="data-table-footer-row">
+          <tr>
+            <th>Sub Total</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>${summation.totalSpentInARS.toFixed(2)}</th>
+            <th>${summation.totalSpentInUSD.toFixed(2)}</th>
+            <th></th>
+            <th>${summation.totalRevenue.toFixed(2)}%</th>
+            <th>${summation.totalGoogleMediaCost.toFixed(2)}</th>
+            <th>${summation.totalPlusMShare.toFixed(2)}</th>
+            <th>${summation.totalCost.toFixed(2)}</th>
+            <th>${summation.totalNetIncome.toFixed(2)}</th>
+            <th>${summation.totalNetIncomePercent.toFixed(2)}</th>
+          </tr>
+        </tfoot>
+      `);
     }
   }
 
