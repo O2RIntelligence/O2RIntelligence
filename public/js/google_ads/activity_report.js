@@ -90,7 +90,8 @@ class ActivityReport extends GoogleAdsManager {
           "searching": true,
           "ordering": true,
           "info": true,
-          "autoWidth": false
+          "autoWidth": false,
+          "pageLength": 50,
         })
     });
   }
@@ -148,6 +149,13 @@ class ActivityReport extends GoogleAdsManager {
       const table = self.state.reportTable;
       table.clear();
 
+      const summation = {
+        totalCost: 0,
+        totalAccountBudget: 0,
+        totalBudgetUsagePercent: 0,
+        totalMonthlyRunRate: 0,
+      };
+
       for (let item of data) { 
         table.row.add([
           item?.date ?? "",
@@ -157,8 +165,28 @@ class ActivityReport extends GoogleAdsManager {
           `${Number(item?.budget_usage_percent ?? 0).toFixed(2)}%`,
           `$${Number(item?.monthly_run_rate ?? 0).toFixed(2)}`
         ]);
+
+        summation.totalCost += Number(item?.cost ?? 0);
+        summation.totalAccountBudget += Number(item?.account_budget ?? 0);
+        summation.totalBudgetUsagePercent += Number(item?.budget_usage_percent ?? 0);
+        summation.totalMonthlyRunRate += Number(item?.monthly_run_rate ?? 0);
       }
+
       table.draw();
+
+      $('#reportTable tfoot').remove();
+      $('#reportTable').append(`
+        <tfoot class="data-table-footer-row">
+          <tr>
+            <th>Total</th>
+            <th></th>
+            <th>$${summation.totalCost.toFixed(3)}</th>
+            <th>$${summation.totalAccountBudget.toFixed(3)}</th>
+            <th>${summation.totalBudgetUsagePercent.toFixed(3)}%</th>
+            <th>${summation.totalMonthlyRunRate.toFixed(2)}</th>
+          </tr>
+        </tfoot>
+      `);
 
       self.populateLineChartData(account_type);
       self.populateDoughnutChartData(account_type);

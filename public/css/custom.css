@@ -138,3 +138,16 @@ canvas {
         margin-top: 25vh !important;
     }
 }
+
+.data-table-footer-row th {
+    border-top: 1px solid #d6d6d6 !important;
+    border-bottom: 1px solid #d6d6d6 !important;
+}
+
+.data-table-footer-row th:first-child {
+    border-left: 1px solid #d6d6d6 !important;
+}
+
+.data-table-footer-row th:last-child {
+    border-right: 1px solid #d6d6d6 !important;
+}
