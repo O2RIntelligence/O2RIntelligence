@@ -132,8 +132,8 @@ class DashboardController extends Controller
     public function getMonthlyCostAndRunRateData($start_date, $end_date, $masterAccounts, $subAccounts)
     { //Sum of Total Cost This Month, //Spent(cost)/ thisMonth.days.count* Months Days
         try {
-            $startDate = date('Y-m-01', strtotime($start_date));
-            $endDate = date('Y-m-t', strtotime($end_date));
+            $startDate = date('Y-m-d', strtotime($start_date));
+            $endDate = date('Y-m-d', strtotime($end_date));
             $totalDaysThisMonth = date('d', strtotime($endDate));
             $currentDayCount = $start_date == $end_date ? date('d', strtotime($start_date)) : date_diff(date_create($start_date), date_create($end_date))->format("%a");
             $totalMonthlyCost = 0;
@@ -182,8 +182,8 @@ class DashboardController extends Controller
     public function getDailyCostGraphData($start_date, $end_date, $masterAccounts, $subAccounts)
     { //Graph:: Daily Total Cost vs days
         try {
-            $startDate = date('Y-m-01', strtotime($start_date));
-            $endDate = date('Y-m-t', strtotime($end_date));
+            $startDate = date('Y-m-d', strtotime($start_date));
+            $endDate = date('Y-m-d', strtotime($end_date));
             $masterAccountData = [];
             $subAccountData = [];
             $dates = [];
