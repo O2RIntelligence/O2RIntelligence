@@ -8,6 +8,7 @@ use App\Model\GoogleAds\DailyData;
 use App\Model\GoogleAds\HourlyData;
 use App\Model\GoogleAds\MasterAccount;
 use App\Model\GoogleAds\SubAccount;
+use DateTime;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -34,7 +35,7 @@ class DashboardController extends Controller
             $startDate = date('Y-m-d', strtotime($request->startDate ?? 'today'));
             $endDate = date('Y-m-d', strtotime($request->endDate ?? 'today'));
             $accountInformation = $this->getAccountInformation();
-            $dailyProjection = $this->getDailyCostRunRateData($startDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
+            $dailyProjection = $this->getDailyCostRunRateData($startDate, $endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
             $monthlyProjection = $this->getMonthlyCostAndRunRateData($startDate, $endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
             $dailyCostGraphData = $this->getDailyCostGraphData($startDate, $endDate, $accountInformation['masterAccounts'], $accountInformation['subAccounts']);
             $hourlyCostGraphData = $this->getHourlyCostGraphData($accountInformation['masterAccounts'], $accountInformation['subAccounts']);
@@ -75,10 +76,14 @@ class DashboardController extends Controller
      * @param $subAccounts
      * @return array|void
      */
-    public function getDailyCostRunRateData($date, $masterAccounts, $subAccounts)
+    public function getDailyCostRunRateData($start_date, $end_date, $masterAccounts, $subAccounts)
     { //Sum of Total Cost Today/Till Today
         try {
-            $dayCount = date('d', strtotime($date));
+//            $dayCount = date('d', strtotime($date));
+            $date1 = new DateTime($start_date);
+            $date2 = new DateTime($end_date);
+            $difference = $date1->diff($date2);
+
             $totalDailyCost = 0;
             $totalDailyRunRate = 0;
             $masterAccountData = [];
@@ -94,17 +99,18 @@ class DashboardController extends Controller
                         $subAccountData[$key2]['account_id'] = $subAccount->account_id;
                         $subAccountData[$key2]['name'] = $subAccount->name;
 
-                        if (date('Y-m-d') == $date) {
+                        $dataFromDate = DailyData::where('sub_account_id', $subAccount->id)->whereBetween('date', [$start_date, $end_date])->sum('cost');
+                        $dailyCost = $dataFromDate ;
+
+                        if (date('Y-m-d') == $start_date) {
                             $hourlyData = HourlyData::where('sub_account_id', $subAccount->id)->sum('cost');
-                            $dailyCost = $hourlyData ;// $dayCount;
                             if(intval(HourlyData::count())>0)$hourlyDataCount = HourlyData::count();
                             else $hourlyDataCount = 1;
                             $dailyRunRate = ($hourlyData / $hourlyDataCount) * 24;
                         } else {
-                            $dataFromDate = DailyData::where('sub_account_id', $subAccount->id)->where('date', $date)->sum('cost');
-                            $dailyCost = $dataFromDate ;// $dayCount;
                             $dailyRunRate = $dataFromDate;
                         }
+
                         $totalDailyCost += $dailyCost;
                         $subAccountData[$key2]['cost'] = empty($subAccountData[$key2]['cost']) ? $dailyCost : $subAccountData[$key2]['cost'] + $dailyCost;
                         $totalDailyRunRate += $dailyRunRate;
@@ -113,6 +119,9 @@ class DashboardController extends Controller
                 }
                 $masterAccountData[$key1]['cost'] = empty($masterAccountData[$key1]['cost']) ? $totalDailyCost : $masterAccountData[$key1]['cost'] + $totalDailyCost;
                 $masterAccountData[$key1]['runRate'] = empty($masterAccountData[$key1]['runRate']) ? $totalDailyRunRate : $masterAccountData[$key1]['runRate'] + $totalDailyRunRate;
+            }
+            if($difference->d > 1){
+                $totalDailyCost = $totalDailyCost/($difference->d+1);
             }
             return array('totalDailyCost' => $totalDailyCost, 'totalDailyRunRate' => $totalDailyRunRate, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
