@@ -152,10 +152,10 @@ class ActivityReport extends GoogleAdsManager {
         table.row.add([
           item?.date ?? "",
           item?.account_name ?? "",
-          item?.cost ?? "",
-          Number(item?.account_budget ?? 0).toFixed(2),
-          Number(item?.budget_usage_percent ?? 0).toFixed(2),
-          Number(item?.monthly_run_rate ?? 0).toFixed(2)
+          item?.cost ? `$${item?.cost}` : "",
+          `$${Number(item?.account_budget ?? 0).toFixed(2)}`,
+          `${Number(item?.budget_usage_percent ?? 0).toFixed(2)}%`,
+          `$${Number(item?.monthly_run_rate ?? 0).toFixed(2)}`
         ]);
       }
       table.draw();

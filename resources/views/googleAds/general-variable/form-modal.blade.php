@@ -17,7 +17,7 @@
                     <input type="number" name="blueDollar" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="" class="control-label">PLUSM Discount</label>
+                    <label for="" class="control-label">PLUSM Discount (%)</label>
                     <input type="number" name="plusmDiscount" class="form-control">
                 </div>
 

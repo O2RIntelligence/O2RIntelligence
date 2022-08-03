@@ -158,7 +158,7 @@
                                 </th> -->
                                 <th class="column-username">Official Dollar</th>
                                 <th class="column-name">Blue Dollar</th>
-                                <th class="column-roles">PLUSM Discount</th>
+                                <th class="column-roles">PLUSM Discount (%)</th>
                                 <th class="column-__actions__">Action</th>
                               </tr>
                             </thead>

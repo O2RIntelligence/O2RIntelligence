@@ -69,9 +69,9 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Account Name</th>
-                                <th>Total Cost</th>
+                                <th>Total Cost ($)</th>
                                 <th>Account Budget</th>
-                                <th>Budget Usage %</th>
+                                <th>Budget Usage (%)</th>
                                 <th>Monthly Run Rate</th>
                             </tr>
                             </thead> 
@@ -86,7 +86,7 @@
                 <div class="col-md-6">
                     <div class="box box-danger">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Donut Chart</h3>
+                            <h3 class="box-title">Total Cost</h3>
                         </div>
                         <div class="box-body text-center">
                             <div class="chart-container">
@@ -99,7 +99,7 @@
                 <div class="col-md-6">
                     <div class="box box-info">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Line Chart</h3>
+                            <h3 class="box-title">Hourly Cost</h3>
                         </div>
                         <div class="box-body">
                             <div class="chart">

@@ -73,14 +73,14 @@ input:checked + .slider:before {
     <div id="app">
         <section class="content-header">
             <h1>
-                Account Setting
+                Account Settings
                 <small> </small>
             </h1> 
             <!-- breadcrumb start -->
             <ol class="breadcrumb" style="margin-right: 30px;">
                 <li><a href="{{url('google-ads/dashboard')}}"><i class="fa fa-dashboard"></i> Home</a></li>
                 <li class="active">
-                    Account setting
+                    Account settings
                 </li>
             </ol> 
             <!-- breadcrumb end --> 
@@ -126,7 +126,7 @@ input:checked + .slider:before {
                                 <th class="column-username">Account Name</th>
                                 <th class="column-name">Account Id</th>
                                 <th class="column-roles">Developer Token</th>
-                                <th class="column-created_at">Discount</th>
+                                <th class="column-created_at">Discount (%)</th>
                                 <th class="column-updated_at">Revenue Conversion Rate</th>
                                 <th class="column-api_password">Active Status</th>
                                 <th class="column-__actions__">Action</th>
