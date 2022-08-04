@@ -72,4 +72,13 @@ class DailyDataController extends Controller
         return $this->getDailyDataFromService($request->startDate??null, $request->endDate??null);
     }
 
+    public function getMonthlyData(){
+        $today = date("Y-m-d");
+        $lastDayOfThisMonth = date("Y-m-t");
+        if($today==$lastDayOfThisMonth){
+            if($this->getDailyDataFromService(date("Y-m-01"),date("Y-m-t"))) return "Date: ". $today."--IS THE LAST DAY OF MONTH(".$lastDayOfThisMonth."),-- Monthly data Updated Successfully";
+            else return "Could not update Monthly data";
+        }else return "Date: ". $today." not last day of month(".$lastDayOfThisMonth."), Monthly Data was not updated";
+    }
+
 }

@@ -46,5 +46,10 @@ class DailyDataUpdate extends Command
             $this->info('Exchange Rate Updated Successfully');
         }else $this->info('Exchange Rate Update Failed');
 
+        $monthlyDataUpdate = (new \App\Http\Controllers\GoogleAds\DailyDataController)->getMonthlyData();
+        $this->info($monthlyDataUpdate);
+
+
+
     }
 }
