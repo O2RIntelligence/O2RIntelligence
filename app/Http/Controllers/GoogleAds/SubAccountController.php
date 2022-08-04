@@ -16,15 +16,21 @@ use Google\Ads\GoogleAds\Lib\V10\GoogleAdsClient;
 use Google\Ads\GoogleAds\V10\Resources\Customer;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\ValidationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class SubAccountController extends Controller
 {
-    public function getGoogleAdsService(){
+    public function getGoogleAdsService()
+    {
         return new GoogleAdsService();
     }
-    public function getGoogleAdsAuthService(){
+
+    public function getGoogleAdsAuthService()
+    {
         return new AuthService();
     }
 
@@ -36,7 +42,7 @@ class SubAccountController extends Controller
     public function showAll()
     {
         try {
-            if($subAccounts = SubAccountResource::collection(SubAccount::all())) {
+            if ($subAccounts = SubAccountResource::collection(SubAccount::all())) {
                 return response()->json(['success' => true, 'data' => $subAccounts]);
             }
         } catch (Exception $exception) {
@@ -47,19 +53,26 @@ class SubAccountController extends Controller
     /**
      * Gets all the sub-accounts of all the master accounts
      *
-     * @return JsonResponse
+     * @return array
      */
-    public function getSubAccountsFromGoogleAds(): JsonResponse
+    public function getSubAccountsFromGoogleAds()
     {
         try {
-            $masterAccounts =  MasterAccountResource::collection(MasterAccount::where('is_online', true)->get());
+            $masterAccounts = MasterAccountResource::collection(MasterAccount::where('is_online', true)->where('is_active', true)->get());
             $subAccounts = [];
+            $deletedAccounts = [];
             foreach ($masterAccounts as $key => $masterAccount) {
                 $googleAdsClient = $this->getGoogleAdsAuthService()->getGoogleAdsService($masterAccount);
-                $subAccounts[] = $this->getGoogleAdsService()->getAccountTree($masterAccount,$googleAdsClient);
+                $subAccounts[] = $this->getGoogleAdsService()->getAccountTree($masterAccount, $googleAdsClient);
                 $subAccounts = array_merge(...$subAccounts);
-                foreach ($subAccounts as $subAccount){
-                    if(!$subAccount['manager'] && $subAccount['level'] > 0) {
+                foreach ($subAccounts as $key => $subAccount) {
+                    $subAccountEnabled = $this->getGoogleAdsService()->getSubAccountDetails($googleAdsClient, $subAccount);
+                    if (!$subAccountEnabled) {
+                        $deletedAccounts[] = $subAccount['id'];
+                        SubAccount::where('account_id', $subAccount['id'])->delete();
+                        unset($subAccounts[$key]);
+                    }
+                    if (!$subAccount['manager'] && $subAccount['level'] > 0 && $subAccountEnabled) {
                         $data['master_account_id'] = $masterAccount->id;
                         $data['name'] = $subAccount['descriptiveName'];
                         $data['account_id'] = $subAccount['id'];
@@ -72,9 +85,9 @@ class SubAccountController extends Controller
                 }
             }
 
-            return response()->json(['success'=>true]);
+            return ['success' => true, 'actions_taken' => $deletedAccounts];
         } catch (ApiException|ValidationException|Exception $exception) {
-            dd($exception);
+            return ['success' => false];
         }
 
     }
@@ -84,11 +97,12 @@ class SubAccountController extends Controller
      * Store a newly created resource in storage.
      *
      * @param $data
-     * @return JsonResponse
+     * @return false
      */
     private function store($data)
     {
         try {
+            if (SubAccount::where('account_id', $data['account_id'])->get()->first()) return false;
             $subAccount = SubAccount::create([
                 'master_account_id' => $data['master_account_id'],
                 'name' => $data['name'],
@@ -102,9 +116,6 @@ class SubAccountController extends Controller
             dd($exception);
         }
     }
-
-
-
 
 
 }

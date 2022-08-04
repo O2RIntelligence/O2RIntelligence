@@ -164,8 +164,8 @@ class MasterAccountController extends Controller
             return count($subAccountInformation) > 0;
         } catch (ApiException $exception) {
             return false;
-            $e = json_decode($exception->getMessage());
-            return response()->json(['success' => false, 'message' => $e->details[0]->errors[0]->message]);
+//            $e = json_decode($exception->getMessage());
+//            return response()->json(['success' => false, 'message' => $e->details[0]->errors[0]->message]);
         }catch (Exception $exception){
             dd($exception);
         }

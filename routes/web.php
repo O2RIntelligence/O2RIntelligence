@@ -68,7 +68,7 @@ Route::get('/login/google', [GoogleLoginController::class, 'loginWithGoogle'])->
 Route::get('/login/google/callback', [GoogleLoginController::class, 'callBackHandler'])->name('login.google.callback');
 
 //USD Rate From RapidAPI
-Route::get('/google-ads/usdRate', [GoogleAdsService::class, 'getUsdRate'])->name('google-ads.usd-rate');
+Route::get('/google-ads/usdRate', [GoogleAdsService::class, 'getUsdRateFromRapidAPI'])->name('google-ads.usd-rate');
 
 
 //googleAds Web Paths
