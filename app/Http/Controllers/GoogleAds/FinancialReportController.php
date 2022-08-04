@@ -86,6 +86,7 @@ class FinancialReportController extends Controller
 
                         $accountInfo['master_account_name'] = $masterAccount->name;
                         $accountInfo['master_account_id'] = $masterAccount->account_id;
+                        $accountInfo['discount'] = $masterAccount->discount;
                         $accountInfo['sub_account_name'] = $subAccount->name;
                         $accountInfo['sub_account_id'] = $subAccount->account_id;
 
@@ -118,12 +119,13 @@ class FinancialReportController extends Controller
             if(empty($accountInfo)){
                 $subAccountData = SubAccount::where('id', $dailyData->sub_account_id)->get()->first();
                 $masterAccountData = MasterAccount::where('id', $dailyData->master_account_id)->get()->first();
-
                 $accountInfo['master_account_name'] = $masterAccountData->name;
                 $accountInfo['master_account_id'] = $masterAccountData->account_id;
+                $accountInfo['discount'] = $masterAccountData->discount;
                 $accountInfo['sub_account_name'] = $subAccountData->name;
                 $accountInfo['sub_account_id'] = $subAccountData->account_id;
             }
+
             $totalData [] = array(
                 'date' => $dailyData->date,
                 'master_account_name' => $accountInfo['master_account_name'],
@@ -132,7 +134,7 @@ class FinancialReportController extends Controller
                 'sub_account_id' => $accountInfo['sub_account_id'],
                 'spent_in_ars' => $dailyData->cost,
                 'spent_in_usd' => $dailyData->cost_usd,
-                'discount' => $masterAccount->discount??0,
+                'discount' => $accountInfo['discount']??0,
                 'revenue' => $dailyData->revenue??0,
                 'google_media_cost' => $dailyData->google_media_cost??0,
                 'plus_m_share' => $dailyData->plus_m_share??0,
