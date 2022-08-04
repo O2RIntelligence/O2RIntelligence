@@ -144,6 +144,7 @@ class FinancialReport extends GoogleAdsManager {
       'buttons': [
         'csv', 'excel'
       ],
+      "pageLength": 100,
       initComplete() {
         let api = this.api();
 
@@ -459,7 +460,7 @@ class FinancialReport extends GoogleAdsManager {
             <th>$${summation.totalSpentInARS.toFixed(2)}</th>
             <th>$${summation.totalSpentInUSD.toFixed(2)}</th>
             <th></th>
-            <th>$${summation.totalRevenue.toFixed(2)}%</th>
+            <th>$${summation.totalRevenue.toFixed(2)}</th>
             <th>$${summation.totalGoogleMediaCost.toFixed(2)}</th>
             <th>$${summation.totalPlusMShare.toFixed(2)}</th>
             <th>$${summation.totalCost.toFixed(2)}</th>
