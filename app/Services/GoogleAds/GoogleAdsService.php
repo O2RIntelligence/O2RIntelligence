@@ -2,23 +2,22 @@
 
 namespace App\Services\GoogleAds;
 
-use App\Http\Controllers\GoogleAds\HourlyDataController;
 use App\Model\GoogleAds\DailyData;
+use App\Model\GoogleAds\ExchangeRate;
 use App\Model\GoogleAds\HourlyData;
 use Exception;
 use Google\Ads\GoogleAds\Lib\V10\GoogleAdsClient;
 use Google\Ads\GoogleAds\Lib\V10\GoogleAdsServerStreamDecorator;
 use Google\Ads\GoogleAds\V10\Resources\Customer;
-use Google\Ads\GoogleAds\Lib\V10\ServiceClientFactoryTrait;
 use Google\Ads\GoogleAds\V10\Resources\CustomerClient;
 use Google\Ads\GoogleAds\V10\Services\CustomerServiceClient;
 use Google\Ads\GoogleAds\V10\Services\GoogleAdsRow;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\ValidationException;
-use GPBMetadata\Google\Api\Auth;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Response;
+use stdClass;
 
 class GoogleAdsService
 {
@@ -77,7 +76,7 @@ class GoogleAdsService
     {
         $customerId = $subAccount->account_id;
         $discount = intval($masterAccount->discount)/100;
-        $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate();
+        $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate($dateRange['endDate']);
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
         $official_dollar = intval($generalVariable->official_dollar);
         $plusMDiscount = intval($generalVariable->plus_m_discount)/100;
@@ -270,10 +269,21 @@ class GoogleAdsService
     }
 
 
+    public function getUsdRate($endDate){
+        $conversionRate = ExchangeRate::where('date',$endDate)->get()->first();
+        if(!$conversionRate) {
+            $conversionRate = ExchangeRate::where('date',date("Y-m-t",strtotime($endDate."-1 day")))->get()->first();
+            if(!$conversionRate){
+                $conversionRate = new stdClass();
+                $conversionRate->usdToArs = config("googleAds.fallback_conversion_rate");
+            }
+        }
+        return $conversionRate->usdToArs;
+    }
     /**
-     * @return mixed|void
+     * @return float|void
      */
-    public function getUsdRate()
+    public function getUsdRateFromRapidAPI()
     {
         $curl = curl_init();
 
@@ -301,7 +311,11 @@ class GoogleAdsService
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
-            return round($response['rates']['ARS'],2);
+            ExchangeRate::updateOrCreate([
+                'date'=>date("Y-m-d"),
+                'usdToArs'=>round($response['rates']['ARS'],2),
+            ]);
+            return true;
         }
     }
 

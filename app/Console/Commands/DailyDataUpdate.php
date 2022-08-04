@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\GoogleAds\GoogleAdsService;
 use Illuminate\Console\Command;
 
 class DailyDataUpdate extends Command
@@ -40,5 +41,10 @@ class DailyDataUpdate extends Command
         if ((new \App\Http\Controllers\GoogleAds\DailyDataController)->getDailyDataFromService()) {
             $this->info('Daily Data Updated Successfully');
         }else $this->info('Daily Data Update Failed');
+
+        if ((new GoogleAdsService)->getUsdRateFromRapidAPI()) {
+            $this->info('Exchange Rate Updated Successfully');
+        }else $this->info('Exchange Rate Update Failed');
+
     }
 }
