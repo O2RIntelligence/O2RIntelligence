@@ -270,6 +270,88 @@ class FinancialReport extends GoogleAdsManager {
       }
     );
 
+    table.on('search.dt', function () {
+      const columns = table.columns().header().toArray().map(x => x?.innerText);
+
+      let tableFilteredData = [];
+
+      function updateSummationValue(index, value) {
+        
+      }
+
+      let totalFilteredRows = 0;
+
+      table.rows({ search: 'applied' }).data().each(function (value, index) {
+          const rowValues = value;
+          if (rowValues && rowValues.length > 0) {
+
+            tableFilteredData.push({
+              date: rowValues[0],
+              master_account_name: rowValues[1],
+              master_account_id: rowValues[2],
+              sub_account_name: rowValues[3],
+              sub_account_id: rowValues[4],
+              spent_in_ars: rowValues[5],
+              spent_in_usd: rowValues[6],
+              discount: rowValues[7],
+              revenue: rowValues[8],
+              google_media_cost: rowValues[9],
+              plus_m_share: rowValues[10],
+              total_cost: rowValues[11],
+              net_income: rowValues[12],
+              net_income_percent: rowValues[13],
+            });
+          }
+
+          totalFilteredRows++;
+      });
+      
+
+      const summation = {
+        totalSpentInARS: 0,
+        totalSpentInUSD: 0,
+        totalRevenue: 0,
+        totalGoogleMediaCost: 0,
+        totalPlusMShare: 0,
+        totalCost: 0,
+        totalNetIncome: 0,
+        totalNetIncomePercent: 0,
+      };
+
+      for (let item of tableFilteredData) {
+        summation.totalSpentInARS += Number(item?.spent_in_ars ?? 0);
+        summation.totalSpentInUSD += Number(item?.spent_in_usd ?? 0);
+        summation.totalRevenue += Number(item?.revenue ?? 0);
+        summation.totalGoogleMediaCost += Number(item?.google_media_cost ?? 0);
+        summation.totalPlusMShare += Number(item?.plus_m_share ?? 0);
+        summation.totalCost += Number(item?.total_cost ?? 0);
+        summation.totalNetIncome += Number(item?.net_income ?? 0);
+        summation.totalNetIncomePercent += Number(item?.net_income_percent ?? 0);
+      }
+
+      let summationHtml = `
+        <tr class="info summation">
+          <th>Filtered Total</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>${summation.totalSpentInARS.toFixed(2)}</th>
+          <th>${summation.totalSpentInUSD.toFixed(2)}</th>
+          <th></th>
+          <th>${summation.totalRevenue.toFixed(2)}%</th>
+          <th>${summation.totalGoogleMediaCost.toFixed(2)}</th>
+          <th>${summation.totalPlusMShare.toFixed(2)}</th>
+          <th>${summation.totalCost.toFixed(2)}</th>
+          <th>${summation.totalNetIncome.toFixed(2)}</th>
+          <th>${summation.totalNetIncomePercent.toFixed(2)}</th>
+        </tr>
+      `;
+
+      $('#financialTable tfoot tr.summation').remove();
+      $(summationHtml).insertBefore($('#financialTable tfoot tr:first-child'));
+  });
+
     self.setState({
       financialTable: table,
     });
