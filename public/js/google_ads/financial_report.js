@@ -336,15 +336,15 @@ class FinancialReport extends GoogleAdsManager {
           <th></th>
           <th></th>
           <th></th>
-          <th>${summation.totalSpentInARS.toFixed(2)}</th>
-          <th>${summation.totalSpentInUSD.toFixed(2)}</th>
+          <th>$${summation.totalSpentInARS.toFixed(2)}</th>
+          <th>$${summation.totalSpentInUSD.toFixed(2)}</th>
           <th></th>
-          <th>${summation.totalRevenue.toFixed(2)}%</th>
-          <th>${summation.totalGoogleMediaCost.toFixed(2)}</th>
-          <th>${summation.totalPlusMShare.toFixed(2)}</th>
-          <th>${summation.totalCost.toFixed(2)}</th>
-          <th>${summation.totalNetIncome.toFixed(2)}</th>
-          <th>${summation.totalNetIncomePercent.toFixed(2)}</th>
+          <th>$${summation.totalRevenue.toFixed(2)}</th>
+          <th>$${summation.totalGoogleMediaCost.toFixed(2)}</th>
+          <th>$${summation.totalPlusMShare.toFixed(2)}</th>
+          <th>$${summation.totalCost.toFixed(2)}</th>
+          <th>$${summation.totalNetIncome.toFixed(2)}</th>
+          <th>${summation.totalNetIncomePercent.toFixed(2)}%</th>
         </tr>
       `;
 
@@ -456,15 +456,15 @@ class FinancialReport extends GoogleAdsManager {
             <th></th>
             <th></th>
             <th></th>
-            <th>${summation.totalSpentInARS.toFixed(2)}</th>
-            <th>${summation.totalSpentInUSD.toFixed(2)}</th>
+            <th>$${summation.totalSpentInARS.toFixed(2)}</th>
+            <th>$${summation.totalSpentInUSD.toFixed(2)}</th>
             <th></th>
-            <th>${summation.totalRevenue.toFixed(2)}%</th>
-            <th>${summation.totalGoogleMediaCost.toFixed(2)}</th>
-            <th>${summation.totalPlusMShare.toFixed(2)}</th>
-            <th>${summation.totalCost.toFixed(2)}</th>
-            <th>${summation.totalNetIncome.toFixed(2)}</th>
-            <th>${summation.totalNetIncomePercent.toFixed(2)}</th>
+            <th>$${summation.totalRevenue.toFixed(2)}%</th>
+            <th>$${summation.totalGoogleMediaCost.toFixed(2)}</th>
+            <th>$${summation.totalPlusMShare.toFixed(2)}</th>
+            <th>$${summation.totalCost.toFixed(2)}</th>
+            <th>$${summation.totalNetIncome.toFixed(2)}</th>
+            <th>${summation.totalNetIncomePercent.toFixed(2)}%</th>
           </tr>
         </tfoot>
       `);
