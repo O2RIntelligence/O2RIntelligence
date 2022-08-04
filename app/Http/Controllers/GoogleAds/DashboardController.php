@@ -21,7 +21,8 @@ class DashboardController extends Controller
     /** Returns Google Ads Dashboard View
      * @return Application|Factory|View
      */
-    public function index(){
+    public function index()
+    {
         return view('googleAds.dashboard');
     }
 
@@ -60,7 +61,7 @@ class DashboardController extends Controller
     public function getAccountInformation()
     {
         try {
-            $masterAccounts = MasterAccount::select('id','name','account_id','discount','revenue_conversion_rate')->where('is_active', true)->where('is_online', true)->get();
+            $masterAccounts = MasterAccount::select('id', 'name', 'account_id', 'discount', 'revenue_conversion_rate')->where('is_active', true)->where('is_online', true)->get();
             $subAccounts = SubAccountResource::collection(SubAccount::where('is_active', true)->where('is_online', true)->get());
             return array('masterAccounts' => $masterAccounts, 'subAccounts' => $subAccounts);
         } catch (Exception $exception) {
@@ -82,7 +83,7 @@ class DashboardController extends Controller
 //            $dayCount = date('d', strtotime($date));
             $date1 = new DateTime($start_date);
             $date2 = new DateTime($end_date);
-            $difference = $date1->diff($date2);
+            $difference = $date2->diff($date1);
 
             $totalDailyCost = 0;
             $totalDailyRunRate = 0;
@@ -100,11 +101,11 @@ class DashboardController extends Controller
                         $subAccountData[$key2]['name'] = $subAccount->name;
 
                         $dataFromDate = DailyData::where('sub_account_id', $subAccount->id)->whereBetween('date', [$start_date, $end_date])->sum('cost');
-                        $dailyCost = $dataFromDate ;
+                        $dailyCost = $dataFromDate;
 
                         if (date('Y-m-d') == $start_date) {
                             $hourlyData = HourlyData::where('sub_account_id', $subAccount->id)->sum('cost');
-                            if(intval(HourlyData::count())>0)$hourlyDataCount = HourlyData::count();
+                            if (intval(HourlyData::count()) > 0) $hourlyDataCount = HourlyData::count();
                             else $hourlyDataCount = 1;
                             $dailyRunRate = ($hourlyData / $hourlyDataCount) * 24;
                         } else {
@@ -120,9 +121,9 @@ class DashboardController extends Controller
                 $masterAccountData[$key1]['cost'] = empty($masterAccountData[$key1]['cost']) ? $totalDailyCost : $masterAccountData[$key1]['cost'] + $totalDailyCost;
                 $masterAccountData[$key1]['runRate'] = empty($masterAccountData[$key1]['runRate']) ? $totalDailyRunRate : $masterAccountData[$key1]['runRate'] + $totalDailyRunRate;
             }
-            if($difference->d > 1){
-                $totalDailyCost = $totalDailyCost/($difference->d+1);
-                $totalDailyRunRate = $totalDailyRunRate/($difference->d+1);
+            if ($difference->days > 1) {
+                $totalDailyCost = $totalDailyCost / ($difference->days + 1);
+                $totalDailyRunRate = $totalDailyRunRate / ($difference->days + 1);
             }
             return array('totalDailyCost' => $totalDailyCost, 'totalDailyRunRate' => $totalDailyRunRate, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
@@ -142,8 +143,8 @@ class DashboardController extends Controller
     public function getMonthlyCostAndRunRateData($start_date, $end_date, $masterAccounts, $subAccounts)
     { //Sum of Total Cost This Month, //Spent(cost)/ thisMonth.days.count* Months Days
         try {
-            $startDate = date('Y-m-d', strtotime($start_date));
-            $endDate = date('Y-m-d', strtotime($end_date));
+            $startDate = date('Y-m-01', strtotime($start_date));
+            $endDate = date('Y-m-t', strtotime($end_date));
             $totalDaysThisMonth = date('d', strtotime($endDate));
             $currentDayCount = $start_date == $end_date ? date('d', strtotime($start_date)) : date_diff(date_create($start_date), date_create($end_date))->format("%a");
             $totalMonthlyCost = 0;
@@ -163,7 +164,7 @@ class DashboardController extends Controller
 
                         $monthlyCost = DailyData::where('sub_account_id', $subAccount->id)->whereBetween('date', [$startDate, $endDate])->sum('cost');
                         $totalMonthlyCost += $monthlyCost;
-                        $monthlyRunRate = ($monthlyCost / $currentDayCount) * $totalDaysThisMonth;
+                        $monthlyRunRate = ($monthlyCost / ($currentDayCount+1)) * $totalDaysThisMonth;
                         $totalMonthlyRunRate += $monthlyRunRate;
 
                         $subAccountData[$key2]['monthlyCost'] = empty($subAccountData[$key2]['monthlyCost']) ? $monthlyCost : $subAccountData[$key2]['monthlyCost'] + $monthlyCost;
@@ -173,6 +174,15 @@ class DashboardController extends Controller
                 $masterAccountData[$key1]['monthlyCost'] = empty($masterAccountData[$key1]['monthlyCost']) ? $totalMonthlyCost : $masterAccountData[$key1]['monthlyCost'] + $totalMonthlyCost;
                 $masterAccountData[$key1]['monthlyRunRate'] = empty($masterAccountData[$key1]['monthlyRunRate']) ? $totalMonthlyRunRate : $masterAccountData[$key1]['monthlyRunRate'] + $totalMonthlyRunRate;
 
+            }
+
+            $startMonth = date('m', strtotime($start_date));
+            $endMonth = date('m', strtotime($end_date));
+            $monthDiff = intval($endMonth) - intval($startMonth);
+            $isPastMonth = (intval(date('m')) - intval($startMonth) > 0);
+            if ($isPastMonth) {
+                $totalMonthlyCost = $totalMonthlyCost / ($monthDiff + 1);
+                $totalMonthlyRunRate = $totalMonthlyCost;
             }
             return array('totalMonthlyCost' => $totalMonthlyCost, 'totalMonthlyRunRate' => $totalMonthlyRunRate, 'masterAccountData' => $masterAccountData, 'subAccountData' => $subAccountData);
         } catch (Exception $exception) {
