@@ -168,9 +168,12 @@ class ActivityReport extends GoogleAdsManager {
 
         summation.totalCost += Number(item?.cost ?? 0);
         summation.totalAccountBudget += Number(item?.account_budget ?? 0);
-        summation.totalBudgetUsagePercent += Number(item?.budget_usage_percent ?? 0);
         summation.totalMonthlyRunRate += Number(item?.monthly_run_rate ?? 0);
       }
+
+      // (Account Budget total/Total cost Total)*100
+      summation.totalBudgetUsagePercent = (summation.totalAccountBudget / summation.totalCost) * 100;
+      summation.totalMonthlyRunRate = summation.totalMonthlyRunRate / data.length;
 
       table.draw();
 
