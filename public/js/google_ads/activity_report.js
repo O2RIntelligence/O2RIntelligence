@@ -198,7 +198,7 @@ class ActivityReport extends GoogleAdsManager {
             <th>$${summation.totalCost.toFixed(3)}</th>
             <th>$${summation.totalAccountBudget.toFixed(3)}</th>
             <th>${summation.totalBudgetUsagePercent.toFixed(3)}%</th>
-            <th>${summation.totalMonthlyRunRate.toFixed(2)}</th>
+            <th>$${summation.totalMonthlyRunRate.toFixed(2)}</th>
           </tr>
         </tfoot>
       `);
