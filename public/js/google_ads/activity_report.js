@@ -172,8 +172,20 @@ class ActivityReport extends GoogleAdsManager {
       }
 
       // (Account Budget total/Total cost Total)*100
-      summation.totalBudgetUsagePercent = (summation.totalAccountBudget / summation.totalCost) * 100;
-      summation.totalMonthlyRunRate = summation.totalMonthlyRunRate / data.length;
+      if(summation.totalCost !== 0){
+        summation.totalBudgetUsagePercent = (summation.totalCost / summation.totalAccountBudget ) * 100;
+      }else{
+        summation.totalBudgetUsagePercent = 0
+      }
+
+      if(summation.totalMonthlyRunRate !== 0){
+        summation.totalMonthlyRunRate = summation.totalMonthlyRunRate / data.length;
+      }else{
+        summation.totalMonthlyRunRate = 0
+      }
+      
+  
+      
 
       table.draw();
 
