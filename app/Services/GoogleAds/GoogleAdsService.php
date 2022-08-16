@@ -27,14 +27,6 @@ class GoogleAdsService
     private $hierarchy = [];
 
     /**
-     * @return AuthService
-     */
-    public function getGoogleAdsClient()
-    {
-        return new AuthService();
-    }
-
-    /**
      * getAccountInformation.
      *
      * @param int $customerId the customer ID
@@ -63,6 +55,14 @@ class GoogleAdsService
     }
 
     /**
+     * @return AuthService
+     */
+    public function getGoogleAdsClient()
+    {
+        return new AuthService();
+    }
+
+    /**
      * Gets Daily Data of all sub accounts
      *
      * @param GoogleAdsClient $googleAdsClient the Google Ads API client
@@ -81,6 +81,7 @@ class GoogleAdsService
         $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate($dateRange['endDate']);
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
         $official_dollar = intval($generalVariable->official_dollar);
+        $blue_dollar = intval($generalVariable->blue_dollar);
         $plusMDiscount = intval($generalVariable->plus_m_discount) / 100;
         // Creates a query that retrieves all keyword statistics.
         $query = "SELECT metrics.cost_micros, segments.date,campaign_budget.amount_micros FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" . $dateRange['endDate'] . "' AND customer.id = " . $customerId . " ORDER BY segments.date";//AND metrics.cost_micros > 0";
@@ -105,11 +106,13 @@ class GoogleAdsService
             if (intval($generalVariable->blue_dollar) > 0) {
                 $googleMediaCost = $googleMediaCost / $generalVariable->blue_dollar;
             }
-//            $plusMShare = [((Google Media Cost-(Google Media Cost*PLUSM Discount))/Official Dollar)] - [(Google Media Cost *1.21) / Blue Dollar]
+//          eq1 =$plusMShare = [((Google Media Cost-(Google Media Cost*PLUSM Discount))/Official Dollar)] - [(Google Media Cost *1.21) / Blue Dollar]
+//          eq3 =[(Spent in ARS - Spent in ARS*PlusM Discount)/Blue Dollar-Google Media Cost]/2.
             $plusMShare = $googleMediaCost - ($googleMediaCost * $plusMDiscount);
-//            if ($plusMDiscount > 0) $plusMShare = $plusMShare - ($googleMediaCost * $plusMDiscount);
             if ($official_dollar > 0) $plusMShare = $plusMShare / $official_dollar;
-            $plusMShare = $plusMShare - (($googleMediaCost * config('googleAds.plus_m_share_equation_constant')) / $generalVariable->blue_dollar);
+            $plusMShare = $cost - ($cost * $plusMDiscount);
+            if ($blue_dollar > 0) $plusMShare = plusMShare / $blue_dollar;
+            $plusMShare = $plusMShare / 2;
             $revenue = $costInUsd - ($costInUsd * $discount); //Spent in USD - (Spent in USD X Discount)
 
 
@@ -122,7 +125,7 @@ class GoogleAdsService
 //                $prevMonth = $currentMonth;
 //            }
             $total_cost = $googleMediaCost + $plusMShare;
-            $costThisMonth = $cost;//todo:for multiple month add all cost<=>reset cost
+            $costThisMonth = $cost;
             $account_budget = $results[$key]['campaignBudget']['amountMicros'] / config('googleAds.micro_cost');
             $netIncome = $revenue - $total_cost;
             $netIncomePercent = (($revenue - $total_cost) / $costInUsd) * 100;
@@ -177,6 +180,19 @@ class GoogleAdsService
         return $formattedData;
     }
 
+    public function getUsdRate($endDate)
+    {
+        $conversionRate = ExchangeRate::where('date', $endDate)->get()->first();
+        if (!$conversionRate) {
+            $conversionRate = ExchangeRate::where('date', date("Y-m-t", strtotime($endDate . "-1 day")))->get()->first();
+            if (!$conversionRate) {
+                $conversionRate = new stdClass();
+                $conversionRate->usdToArs = config("googleAds.fallback_conversion_rate");
+            }
+        }
+        return $conversionRate->usdToArs;
+    }
+
     /**Stores Daily Data to Database
      * @throws Exception
      */
@@ -188,20 +204,6 @@ class GoogleAdsService
             if (!$dailyData) throw new Exception('Could not create daily data');
         }
     }
-
-    /**Stores Hourly Data to Database
-     * @throws Exception
-     */
-    public function storeHourlyData($hourlyData)
-    {
-        HourlyData::where('date', '!=', date('Y-m-d'))->delete();
-        foreach ($hourlyData as $singleData) {
-            HourlyData::where('hour', $singleData['hour'])->where('sub_account_id', $singleData['sub_account_id'])->delete();
-            $hourlyData = HourlyData::create($singleData);
-            if (!$hourlyData) throw new Exception('Could not create hourly data');
-        }
-    }
-
 
     /** Gets Hourly Data of all sub accounts
      * @throws ApiException
@@ -270,18 +272,17 @@ class GoogleAdsService
         return $formattedData;
     }
 
-
-    public function getUsdRate($endDate)
+    /**Stores Hourly Data to Database
+     * @throws Exception
+     */
+    public function storeHourlyData($hourlyData)
     {
-        $conversionRate = ExchangeRate::where('date', $endDate)->get()->first();
-        if (!$conversionRate) {
-            $conversionRate = ExchangeRate::where('date', date("Y-m-t", strtotime($endDate . "-1 day")))->get()->first();
-            if (!$conversionRate) {
-                $conversionRate = new stdClass();
-                $conversionRate->usdToArs = config("googleAds.fallback_conversion_rate");
-            }
+        HourlyData::where('date', '!=', date('Y-m-d'))->delete();
+        foreach ($hourlyData as $singleData) {
+            HourlyData::where('hour', $singleData['hour'])->where('sub_account_id', $singleData['sub_account_id'])->delete();
+            $hourlyData = HourlyData::create($singleData);
+            if (!$hourlyData) throw new Exception('Could not create hourly data');
         }
-        return $conversionRate->usdToArs;
     }
 
     /**
@@ -381,6 +382,33 @@ class GoogleAdsService
     }
 
     /**
+     * Retrieves a list of accessible customers with the provided set up credentials.
+     *
+     * @param GoogleAdsClient $googleAdsClient the Google Ads API client
+     * @return int[] the list of customer IDs
+     * @throws ApiException
+     * @throws ValidationException
+     */
+    private function getAccessibleCustomers(GoogleAdsClient $googleAdsClient): array
+    {
+        $accessibleCustomerIds = [];
+        // Issues a request for listing all customers accessible by this authenticated Google account.
+        $customerServiceClient = $googleAdsClient->getCustomerServiceClient();
+        $accessibleCustomers = $customerServiceClient->listAccessibleCustomers();
+
+        print 'No manager customer ID is specified. The example will print the hierarchies of'
+            . ' all accessible customer IDs:' . PHP_EOL;
+        foreach ($accessibleCustomers->getResourceNames() as $customerResourceName) {
+            $customer = CustomerServiceClient::parseName($customerResourceName)['customer_id'];
+            print $customer . PHP_EOL;
+            $accessibleCustomerIds[] = intval($customer);
+        }
+        print PHP_EOL;
+
+        return $accessibleCustomerIds;
+    }
+
+    /**
      * Creates a map between a customer client and each of its managers' mappings.
      *
      * @param int|null $loginCustomerId the login customer ID used to create the GoogleAdsClient
@@ -462,33 +490,6 @@ class GoogleAdsService
 
         return is_null($rootCustomerClient) ? null
             : [$rootCustomerClient->getId() => $customerIdsToChildAccounts];
-    }
-
-    /**
-     * Retrieves a list of accessible customers with the provided set up credentials.
-     *
-     * @param GoogleAdsClient $googleAdsClient the Google Ads API client
-     * @return int[] the list of customer IDs
-     * @throws ApiException
-     * @throws ValidationException
-     */
-    private function getAccessibleCustomers(GoogleAdsClient $googleAdsClient): array
-    {
-        $accessibleCustomerIds = [];
-        // Issues a request for listing all customers accessible by this authenticated Google account.
-        $customerServiceClient = $googleAdsClient->getCustomerServiceClient();
-        $accessibleCustomers = $customerServiceClient->listAccessibleCustomers();
-
-        print 'No manager customer ID is specified. The example will print the hierarchies of'
-            . ' all accessible customer IDs:' . PHP_EOL;
-        foreach ($accessibleCustomers->getResourceNames() as $customerResourceName) {
-            $customer = CustomerServiceClient::parseName($customerResourceName)['customer_id'];
-            print $customer . PHP_EOL;
-            $accessibleCustomerIds[] = intval($customer);
-        }
-        print PHP_EOL;
-
-        return $accessibleCustomerIds;
     }
 
     /**
