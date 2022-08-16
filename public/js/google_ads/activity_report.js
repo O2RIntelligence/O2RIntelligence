@@ -168,9 +168,24 @@ class ActivityReport extends GoogleAdsManager {
 
         summation.totalCost += Number(item?.cost ?? 0);
         summation.totalAccountBudget += Number(item?.account_budget ?? 0);
-        summation.totalBudgetUsagePercent += Number(item?.budget_usage_percent ?? 0);
         summation.totalMonthlyRunRate += Number(item?.monthly_run_rate ?? 0);
       }
+
+      // (Account Budget total/Total cost Total)*100
+      if(summation.totalCost !== 0){
+        summation.totalBudgetUsagePercent = (summation.totalCost / summation.totalAccountBudget ) * 100;
+      }else{
+        summation.totalBudgetUsagePercent = 0
+      }
+
+      if(summation.totalMonthlyRunRate !== 0){
+        summation.totalMonthlyRunRate = summation.totalMonthlyRunRate / data.length;
+      }else{
+        summation.totalMonthlyRunRate = 0
+      }
+      
+  
+      
 
       table.draw();
 
@@ -183,7 +198,7 @@ class ActivityReport extends GoogleAdsManager {
             <th>$${summation.totalCost.toFixed(3)}</th>
             <th>$${summation.totalAccountBudget.toFixed(3)}</th>
             <th>${summation.totalBudgetUsagePercent.toFixed(3)}%</th>
-            <th>${summation.totalMonthlyRunRate.toFixed(2)}</th>
+            <th>$${summation.totalMonthlyRunRate.toFixed(2)}</th>
           </tr>
         </tfoot>
       `);

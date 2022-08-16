@@ -8,10 +8,10 @@
                             <input name="account_type" type="radio" value="general"> General
                         </label>
                         <label class="btn btn-info" data-action="account_type" data-name="master_accounts">
-                            <input name="account_type" type="radio" value="master_accounts"> Master Account
+                            <input name="account_type" type="radio" value="master_accounts"> Master Accounts
                         </label>
                         <label class="btn btn-info" data-action="account_type" data-name="sub_accounts">
-                            <input name="account_type" type="radio" value="sub_accounts"> Sub Account
+                            <input name="account_type" type="radio" value="sub_accounts"> Sub Accounts
                         </label>
                     </div>
                 </div>
