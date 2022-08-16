@@ -111,7 +111,7 @@ class GoogleAdsService
             $plusMShare = $googleMediaCost - ($googleMediaCost * $plusMDiscount);
             if ($official_dollar > 0) $plusMShare = $plusMShare / $official_dollar;
             $plusMShare = $cost - ($cost * $plusMDiscount);
-            if ($blue_dollar > 0) $plusMShare = plusMShare / $blue_dollar;
+            if ($blue_dollar > 0) $plusMShare = $plusMShare / $blue_dollar;
             $plusMShare = $plusMShare / 2;
             $revenue = $costInUsd - ($costInUsd * $discount); //Spent in USD - (Spent in USD X Discount)
 
