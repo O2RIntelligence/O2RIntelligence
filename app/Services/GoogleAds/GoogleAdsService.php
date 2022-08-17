@@ -102,7 +102,8 @@ class GoogleAdsService
             $cost = $results[$key]['metrics']['costMicros'] / config('googleAds.micro_cost');
             $date = $results[$key]['segments']['date'];
             $costInUsd = $cost / $usdToArs;
-            $googleMediaCost = ($cost + ($cost * config('googleAds.google_media_cost_constant'))); //[SPENT in ARS+(SPENT in ARS x 0.21)]/Blue Dollar
+//            $googleMediaCost = ($cost + ($cost * config('googleAds.google_media_cost_constant'))); //[SPENT in ARS+(SPENT in ARS x 0.21)]/Blue Dollar
+            $googleMediaCost = (($cost * config('googleAds.google_media_cost_constant'))/$blue_dollar); //= (Spent in ARS*1.21)/Blue Dollar.
             if (intval($generalVariable->blue_dollar) > 0) {
                 $googleMediaCost = $googleMediaCost / $generalVariable->blue_dollar;
             }

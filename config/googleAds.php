@@ -9,7 +9,8 @@ return[
     //constants
   "micro_cost"=> 1000000,
   "rapid_api_key"=> '6a8ca8f094msh01391916ebee8c9p1d0a16jsndb16ed1be613',
-  "google_media_cost_constant"=> 0.21,
+//  "google_media_cost_constant"=> 0.21,
+  "google_media_cost_constant"=> 1.21,
   "plus_m_share_equation_constant"=> 1.21,
   "fallback_conversion_rate"=> 100,
 
