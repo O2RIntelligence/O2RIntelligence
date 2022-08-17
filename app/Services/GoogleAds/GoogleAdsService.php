@@ -107,15 +107,12 @@ class GoogleAdsService
             if (intval($generalVariable->blue_dollar) > 0) {
                 $googleMediaCost = $googleMediaCost / $generalVariable->blue_dollar;
             }
-//          eq1 =$plusMShare = [((Google Media Cost-(Google Media Cost*PLUSM Discount))/Official Dollar)] - [(Google Media Cost *1.21) / Blue Dollar]
-//          eq3 =[(Spent in ARS - Spent in ARS*PlusM Discount)/Blue Dollar-Google Media Cost]/2.
-            $plusMShare = $googleMediaCost - ($googleMediaCost * $plusMDiscount);
-            if ($official_dollar > 0) $plusMShare = $plusMShare / $official_dollar;
+//           plusMShare Latest Equation(4): [(Spent in ARS - Spent in ARS*PlusM Discount)/OFFICIAL Dollar-Google Media Cost]/2
             $plusMShare = $cost - ($cost * $plusMDiscount);
-            if ($blue_dollar > 0) $plusMShare = $plusMShare / $blue_dollar;
-            $plusMShare = $plusMShare / 2;
-            $revenue = $costInUsd - ($costInUsd * $discount); //Spent in USD - (Spent in USD X Discount)
+            if ($official_dollar > 0) $plusMShare = $plusMShare / $official_dollar;
+            $plusMShare = ($plusMShare - $googleMediaCost)/2;
 
+            $revenue = $costInUsd - ($costInUsd * $discount); //Spent in USD - (Spent in USD X Discount)
 
             $currentMonth = intval(date('m', strtotime($date)));
             $currentMonthCurrentDay = intval(date('d', strtotime($date)));
