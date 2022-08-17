@@ -10,15 +10,15 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="" class="control-label">Official Dollar</label>
-                    <input type="number" name="officialDollar" class="form-control">
+                    <input type="number" step="0.01" name="officialDollar" class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="" class="control-label">Blue Dollar</label>
-                    <input type="number" name="blueDollar" class="form-control">
+                    <input type="number" step="0.01" name="blueDollar" class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="" class="control-label">PLUSM Discount (%)</label>
-                    <input type="number" name="plusmDiscount" class="form-control">
+                    <input type="number" step="0.01" name="plusmDiscount" class="form-control">
                 </div>
 
                 <div class="mt-3 text-right">
