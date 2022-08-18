@@ -172,7 +172,7 @@ class ActivityReport extends GoogleAdsManager {
       }
 
       // (Account Budget total/Total cost Total)*100
-      if(summation.totalCost !== 0){
+      if(summation.totalCost !== 0 && summation.totalAccountBudget !== 0){
         summation.totalBudgetUsagePercent = (summation.totalCost / summation.totalAccountBudget ) * 100;
       }else{
         summation.totalBudgetUsagePercent = 0
