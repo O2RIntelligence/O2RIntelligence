@@ -443,8 +443,16 @@ class FinancialReport extends GoogleAdsManager {
         summation.totalPlusMShare += Number(item?.plus_m_share ?? 0);
         summation.totalCost += Number(item?.total_cost ?? 0);
         summation.totalNetIncome += Number(item?.net_income ?? 0);
-        summation.totalNetIncomePercent += Number(item?.net_income_percent ?? 0);
+      //  summation.totalNetIncomePercent += Number(item?.net_income_percent ?? 0);
       }
+
+
+      if(summation.totalNetIncome !== 0 && summation.totalSpentInUSD !== 0){ 
+        summation.totalNetIncomePercent = (summation.totalNetIncome / summation.totalSpentInUSD) * 100;
+      }else{
+        summation.totalNetIncomePercent = 0
+      }
+
       
       table.draw();
 
