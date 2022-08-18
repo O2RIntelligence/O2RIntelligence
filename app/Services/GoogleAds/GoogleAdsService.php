@@ -77,12 +77,12 @@ class GoogleAdsService
     public function getDailyData(GoogleAdsClient $googleAdsClient, $masterAccount, $subAccount, $dateRange, $generalVariable)
     {
         $customerId = $subAccount->account_id;
-        $discount = intval($masterAccount->discount) / 100;
-        $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate($dateRange['endDate']);
+        $discount = floatval($masterAccount->discount) / 100;
+        $usdToArs = floatval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate($dateRange['endDate']);
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
-        $official_dollar = intval($generalVariable->official_dollar);
-        $blue_dollar = intval($generalVariable->blue_dollar);
-        $plusMDiscount = intval($generalVariable->plus_m_discount) / 100;
+        $official_dollar = floatval($generalVariable->official_dollar);
+        $blue_dollar = floatval($generalVariable->blue_dollar);
+        $plusMDiscount = floatval($generalVariable->plus_m_discount) / 100;
         // Creates a query that retrieves all keyword statistics.
         $query = "SELECT metrics.cost_micros, segments.date,campaign_budget.amount_micros FROM campaign WHERE segments.date BETWEEN '" . $dateRange['startDate'] . "' AND '" . $dateRange['endDate'] . "' AND customer.id = " . $customerId . " ORDER BY segments.date";//AND metrics.cost_micros > 0";
         // Issues a search stream request.
@@ -104,7 +104,7 @@ class GoogleAdsService
             $costInUsd = $cost / $usdToArs;
 //            $googleMediaCost = ($cost + ($cost * config('googleAds.google_media_cost_constant'))); //[SPENT in ARS+(SPENT in ARS x 0.21)]/Blue Dollar
             $googleMediaCost = ($cost * config('googleAds.google_media_cost_constant')); //= (Spent in ARS*1.21)/Blue Dollar.
-            if (intval($generalVariable->blue_dollar) > 0) {
+            if (floatval($generalVariable->blue_dollar) > 0) {
                 $googleMediaCost = $googleMediaCost / $generalVariable->blue_dollar;
             }
 //           plusMShare Latest Equation(4): [(Spent in ARS - Spent in ARS*PlusM Discount)/OFFICIAL Dollar-Google Media Cost]/2
@@ -211,7 +211,7 @@ class GoogleAdsService
     {
         //$dateRange=date('Y-m-d',strtotime("Yesterday"));
         $customerId = $subAccount->account_id;
-        $usdToArs = intval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate();
+        $usdToArs = floatval($masterAccount->revenue_conversion_rate) > 0 ? $masterAccount->revenue_conversion_rate : $this->getUsdRate();
         $googleAdsServiceClient = $googleAdsClient->getGoogleAdsServiceClient();
 
         // Creates a query that retrieves all keyword statistics.
