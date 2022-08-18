@@ -45,6 +45,9 @@ class DailyDataController extends Controller
     {
         try {
             $dateRange['startDate'] = date('Y-m-d',strtotime($startDate??'yesterday'));
+            if(strtotime('now')>strtotime("12:00 a.m.") && strtotime('now')<strtotime("01:00 a.m.")){
+                $dateRange['startDate'] = date('Y-01-01');
+            }
             $dateRange['endDate'] = date('Y-m-d',strtotime($endDate??'today'));
             $dailyData = [];
             $masterAccounts =  MasterAccountResource::collection(MasterAccount::all());
