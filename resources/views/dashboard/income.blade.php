@@ -45,6 +45,7 @@
                             <th>Revenue</th>
                             <th>Media Cost</th>
                             <th>Operation Fee</th>
+                            <th>Scoring Fee</th>
                             <th>Gross Profit</th>
                             <th class="non-partner">Partner Fee</th>
                             <th class="non-partner">Profit Margin</th>
@@ -59,6 +60,7 @@
                             <th>
                             {{__('Totals')}}
                             </th>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
