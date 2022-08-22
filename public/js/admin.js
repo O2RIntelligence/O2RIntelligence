@@ -554,8 +554,14 @@
                             }
                             if (index == 0) return;
                             var sum = index == 6 || index == 8 ? api.column(index).data().sum() / Object.keys(seats).length : api.column(index).data().sum();
-                            var sign = index == 6 || index == 8 ? "%" : "$";
-                            $(api.column(index).footer()).html(sign + window["formatMoney"](sum, 2))
+                            if( index == 6 || index == 8)
+                            {
+                                var sign = "%";
+                                $(api.column(index).footer()).html(window["formatMoney"](sum, 2) + sign)
+                            }else{
+                                var sign = "$";
+                                $(api.column(index).footer()).html(sign + window["formatMoney"](sum, 2))
+                            }
                         });
                     }
                 });
