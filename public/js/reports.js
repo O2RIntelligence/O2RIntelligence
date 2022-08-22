@@ -451,7 +451,7 @@ var ReportDatatable;
             var firstDraw = true;
             ReportDatatable = $('table#report').DataTable({
                 dom: 'Bfrtip',
-                buttons: [info summation
+                buttons: ['info', 'summation',
                     'pageLength', 'colvis', 'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
                 orderCellsTop: true,
