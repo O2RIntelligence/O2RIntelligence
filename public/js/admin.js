@@ -1,5 +1,5 @@
-(function($) {
-    $.get("../../api/get-ms-channel-ids", function(data, status){
+(function ($) {
+    $.get("../../api/get-ms-channel-ids", function (data, status) {
         window['mt_channel_id'] = data.value.split(',');
     });
     var chartTitles = {
@@ -27,6 +27,7 @@
         '#6c779f',
         "#2ecc71",
     ];
+
     function start_loader() {
         $(".loader").show();
     }
@@ -34,7 +35,8 @@
     function hide_loader() {
         $(".loader").hide();
     }
-    $(function() {
+
+    $(function () {
         if (!window["seats"]) return 0;
         // init seat APIs
         for (const seatId of Object.keys(window["seats"])) {
@@ -42,12 +44,13 @@
             window["seats"][seatId].excluded_channels = window["seats"][seatId].excluded_channels.filter(m => m != '');
         }
         var seats = window["seats"];
+
         // getMonthlyRunrateForMediaSources();
         function get_selected_seats() {
-            /*if (window["user_role"] == 'admin')*/ return $("select[name=seats]").val();
+            /*if (window["user_role"] == 'admin')*/
+            return $("select[name=seats]").val();
             // else return [window["user_id"]];
         }
-
 
 
         // setting global variables
@@ -64,7 +67,7 @@
             window["impressionChart"] = null;
         }
 
-        window["formatMoney"] = function(number, decPlaces) {
+        window["formatMoney"] = function (number, decPlaces) {
             try {
                 decPlaces = number.toString().indexOf(".") == -1 ? 0 : decPlaces;
                 return number.toLocaleString(
@@ -73,14 +76,14 @@
                     {minimumFractionDigits: decPlaces}
                 );
                 // return number.toFixed(decPlaces).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 001","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 001", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        window["calculate_media"] = function() {
+        window["calculate_media"] = function () {
             try {
                 switch (window["media_type"]) {
                     case 'general':
@@ -102,9 +105,9 @@
                         break;
                 }
                 appendMediaSource();
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 002","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 002", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -127,7 +130,7 @@
                         return window["media_type"] == type;
                     });
                 }
-                const records = _(tableRows).groupBy(function(record) {
+                const records = _(tableRows).groupBy(function (record) {
                     return record.environment.id + "_" + record.date.id;
                 })
                     .map((objs, key) => ({
@@ -144,9 +147,9 @@
 
                 $("#overall-performance-container-table tbody").html('');
                 appendOverallPerformanceTable(records);
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 003","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 003", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -166,7 +169,7 @@
                     tableRows = tableRows.filter(r => r.environment.id == environment);
                 }
 
-                tableRows = _(tableRows).groupBy(function(record) {
+                tableRows = _(tableRows).groupBy(function (record) {
                     return record.environment.id;
                 }).value();
 
@@ -176,7 +179,7 @@
                 for (const environment of Object.keys(tableRows)) {
                     const record = tableRows[environment];
 
-                    const values = _(record).groupBy(function(record) {
+                    const values = _(record).groupBy(function (record) {
                         return record.date.id;
                     }).map((objs, key) => ({
                         'x': key,
@@ -195,9 +198,9 @@
 
                 // calculate data for overall_performance_chart
                 appendOverallPerformanceChart(OverallPerformanceChart);
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 004","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 004", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -209,17 +212,17 @@
                 // element functions
                 $(".select2").select2();
 
-                $('.input-daterange input').each(function() {
+                $('.input-daterange input').each(function () {
                     $(this).datetimepicker({
                         format: 'YYYY-MM-DD'
                     });
                 });
 
-                $(".show-daterange").on("click", function() {
+                $(".show-daterange").on("click", function () {
                     $(".custom-daterange").toggle();
                 });
 
-                $(".change-period").on("click", function() {
+                $(".change-period").on("click", function () {
                     $(".time-periods button").removeClass("active");
                     $(this).addClass("active");
                     var period = $(this).data('period');
@@ -231,19 +234,20 @@
                     }
                 });
 
-                $(".filter-dates").on("click", function() {
+                $(".filter-dates").on("click", function () {
                     runReportFunction();
                 });
-                $(".refresh-seats").on('click', function() {
+                $(".refresh-seats").on('click', function () {
                     runReportFunction();
 
                 });
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 005","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 005", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
+
         function runReportFunction() {
             try {
                 if (typeof current_page != 'undefined') {
@@ -265,14 +269,14 @@
                             break;
                     }
                 }
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 006","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 006", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        window["calculate_dates"] = function(period = null) {
+        window["calculate_dates"] = function (period = null) {
             try {
                 if (!period)
                     period = $("input[name=date_period]").val();
@@ -298,9 +302,9 @@
                     default:
                         break;
                 }
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 008","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 008", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -309,18 +313,18 @@
         $("input[value=today]").trigger("click");
         $("button[data-period=today]").trigger("click");
 
-        $(document).on('change', ".media_type", function() {
+        $(document).on('change', ".media_type", function () {
             try {
                 window["media_type"] = $(this).val();
                 window["calculate_media"]();
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 009","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 009", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         });
 
-        $(document).on('change', ".overall-view-type", function() {
+        $(document).on('change', ".overall-view-type", function () {
             try {
                 if ($(this).val() == 'table') {
                     $("#overall-performance-graph").addClass('hiddenChart');
@@ -329,14 +333,12 @@
                     $("#overall-performance-container-table_wrapper").hide();
                     $("#overall-performance-graph").removeClass('hiddenChart');
                 }
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 010","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 010", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         });
-
-
 
 
         /**
@@ -401,10 +403,10 @@
                     try {
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (e) {
-                        console.log("Error: "+e);
-                        swal("Server Error Code: 011","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + e);
+                        swal("Server Error Code: 011", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
 
                         RNP_1_Data.revenue.push(0);
                         RNP_1_Data.net_profit.push(0);
@@ -414,17 +416,17 @@
 
                     // get impressions & data
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
-                        console.log("Error: "+e);
-                        swal("Server Error Code: 012","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + e);
+                        swal("Server Error Code: 012", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
 
                         RNP_1_Data.revenue.push(0);
                         RNP_1_Data.net_profit.push(0);
                         RNP_1_Data.gross_profit.push(0);
                     });
 
-                    if(!response) continue;
+                    if (!response) continue;
 
                     // excluded channels data
                     if (seats[seatId].excluded_channels.length) {
@@ -432,7 +434,7 @@
                     }
 
                     // group by environment
-                    let RecordsEnvGrouped = _(response.data).groupBy(function(record) {
+                    let RecordsEnvGrouped = _(response.data).groupBy(function (record) {
                         return record.environment.id;
                     })
                         .map((objs, key) => ({
@@ -446,7 +448,7 @@
                         .value();
 
                     // marketplace fee for environment
-                    let CR_EnvGrouped = _(campaignRequest.data).groupBy(function(record) {
+                    let CR_EnvGrouped = _(campaignRequest.data).groupBy(function (record) {
                         return record.environment.id;
                     })
                         .map((objs, key) => ({
@@ -511,7 +513,7 @@
                 appendVerticalChart();
 
                 // master income overview groupping
-                let MI_DateGrouped = _(DateMappedRecords).groupBy(function(record) {
+                let MI_DateGrouped = _(DateMappedRecords).groupBy(function (record) {
                     return record.date;
                 })
                     .map((objs, key) => ({
@@ -540,13 +542,13 @@
                 // append vertical container table and allow sorting
                 $('#vertical-container-table').DataTable({
                     paging: false,
-                    drawCallback: function() {
+                    drawCallback: function () {
                         var api = this.api();
                         var modelId = "vertical-container-table";
                         if ($("#datatables-" + modelId).length == 0) {
                             appendTableModal(modelId);
                         }
-                        api.columns().eq(0).each(function(index) {
+                        api.columns().eq(0).each(function (index) {
                             if ($("#datatables-" + modelId + "_" + index).length == 0) {
                                 appendTableModalOption(modelId, api.column(index).header().textContent, index);
                             }
@@ -559,20 +561,20 @@
                 });
 
                 hide_loader();
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 013","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 013", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        $(document).on('change', ".switch-table-view", function() {
+        $(document).on('change', ".switch-table-view", function () {
             try {
                 var column = $("#" + $(this).data('model')).DataTable().column($(this).data('index'));
                 column.visible(!column.visible());
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 014","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 014", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         });
@@ -582,9 +584,9 @@
                 var modal = $("#datatables-controls").clone();
                 modal.attr('id', "datatables-" + modalId);
                 $(".modal-container").append(modal);
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 015","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 015", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -596,9 +598,9 @@
                         $("<input>").attr('type', 'checkbox').attr('class', 'switch-table-view').data('model', modalId).data('index', index).attr('checked', 'checked')
                     ).append(title)
                 );
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 016","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 016", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -658,14 +660,14 @@
 
                 $('#media-income-container-table').DataTable({
                     paging: false,
-                    drawCallback: function() {
+                    drawCallback: function () {
                         var api = this.api();
                         var modelId = "media-income-container-table";
 
                         if ($("#datatables-" + modelId).length == 0) {
                             appendTableModal(modelId);
                         }
-                        api.columns().eq(0).each(function(index) {
+                        api.columns().eq(0).each(function (index) {
                             if ($("#datatables-" + modelId + "_" + index).length == 0) {
                                 appendTableModalOption(modelId, api.column(index).header().textContent, index);
                             }
@@ -680,14 +682,14 @@
                         });
                     }
                 });
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 017","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 017", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        window["mapRecord"] = function(seat, record, CR_Group = false) {
+        window["mapRecord"] = function (seat, record, CR_Group = false) {
             try {
                 if (record.impressions_good == 0) {
                     record.advertising_fee = 0;
@@ -713,7 +715,13 @@
                 if (CR_Group && !record.marketplace_fee)
                     record.marketplace_fee = (record.environment in CR_Group) ? CR_Group[record.environment].fee : 0;
 
-                record.scoring_fee = (record.scanned_requests / 1000) * window["rates"].scoring_fee;
+                //scoring fee calculations
+                let addTelligentId = window['pixalateImpressions'];
+                let pixalateImpressionObject = addTelligentId.docs.find(o => o.kv5 === seat.adtelligent_account_id.toString());
+                let pixalateImpression = pixalateImpressionObject.impressions;
+
+                // record.scoring_fee = (record.scanned_requests / 1000) * window["rates"].scoring_fee;
+                record.scoring_fee = (pixalateImpression / 1000) * window["rates"].scoring_fee;
                 let impression_rate = record.impressions_good / 1000;
                 record.advertising_fee = impression_rate * window["rates"].advertising_fee;
                 record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
@@ -735,9 +743,9 @@
                 delete record.environment;
                 return record;
 
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 018","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 018", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -753,18 +761,18 @@
                 var ctx = document.getElementById("RNP_1").getContext('2d');
                 if (RNP_1)
                     RNP_1.destroy();
-                var dataset =[{
+                var dataset = [{
                     label: 'Revenue',
                     data: RNP_1_Data.revenue,
                     backgroundColor: revenue_background,
-                }] ;
-                if (window['user_role']=='seat') {
+                }];
+                if (window['user_role'] == 'seat') {
                     dataset.push({
                         label: 'Gross Profit',
                         data: RNP_1_Data.gross_profit,
                         backgroundColor: gross_profit_background,
                     });
-                } else{
+                } else {
                     dataset.push({
                         label: 'Net Income',
                         data: RNP_1_Data.net_profit,
@@ -784,7 +792,7 @@
                         responsive: true,
                         tooltips: {
                             callbacks: {
-                                label: function(tooltipItem, data) {
+                                label: function (tooltipItem, data) {
                                     return window["formatMoney"](tooltipItem.xLabel, 2);
                                 }
                             }
@@ -793,7 +801,7 @@
                             xAxes: [{
                                 ticks: {
                                     // Include a dollar sign in the ticks
-                                    callback: function(value, index, values) {
+                                    callback: function (value, index, values) {
                                         return '$' + window["formatMoney"](value, 2);
                                     }
                                 }
@@ -803,9 +811,9 @@
                 });
 
                 $(".isResizable").resizable();
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 019","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 019", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
 
@@ -834,18 +842,18 @@
                             .text("$" + window["formatMoney"](record.partner_fee, 2))
                         )
                         .append($('<td class="non-partner">')
-                            .text(record.net_profit == 0 || record.revenue_total == 0 ||isNaN(record.net_profit / record.revenue_total)? 0 : (((record.net_profit / record.revenue_total) * 100).toFixed(2)) + "%")
+                            .text(record.net_profit == 0 || record.revenue_total == 0 || isNaN(record.net_profit / record.revenue_total) ? 0 : (((record.net_profit / record.revenue_total) * 100).toFixed(2)) + "%")
                         )
                         .append($('<td class="non-partner">')
                             .text("$" + window["formatMoney"](record.net_income, 2))
                         )
                         .append($('<td class="non-partner">')
-                            .text(isNaN(record.net_income / record.revenue_total)?0:window["formatMoney"](record.net_income / record.revenue_total * 100, 2) + "%")
+                            .text(isNaN(record.net_income / record.revenue_total) ? 0 : window["formatMoney"](record.net_income / record.revenue_total * 100, 2) + "%")
                         )
                     );
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 020","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 020", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -879,12 +887,12 @@
                             .text("$" + window["formatMoney"](record.net_profit, 2))
                         )
                         .append($('<td>')
-                            .text(record.net_profit == 0 || record.revenue_total == 0|| isNaN(record.net_profit / record.revenue_total)? 0 : window["formatMoney"](((record.net_profit / record.revenue_total) * 100), 2) + "%")
+                            .text(record.net_profit == 0 || record.revenue_total == 0 || isNaN(record.net_profit / record.revenue_total) ? 0 : window["formatMoney"](((record.net_profit / record.revenue_total) * 100), 2) + "%")
                         )
                     );
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 021","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 021", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -978,9 +986,9 @@
                 var suppliersListMore = [];
                 var AdvertiserListMore = [];
                 window["DoughnutCharts"] = {
-                    Seat: { data: [], labels: [] },
-                    Env: { data: [], labels: [] },
-                    Integration: { data: [], labels: [] }
+                    Seat: {data: [], labels: []},
+                    Env: {data: [], labels: []},
+                    Integration: {data: [], labels: []}
                 };
 
                 for (let index = 0; index < selected_seats.length; index++) {
@@ -992,10 +1000,10 @@
                     try {
                         campaignRequest = await seats[seatId].api.request(campaignParams);
                     } catch (error) {
-                        console.log("Error: "+error);
-                        swal("Server Error Code: 022","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + error);
+                        swal("Server Error Code: 022", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        if (error == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
                         chartRevenueHour.push({
                             label: seat.name,
                             data: 0,
@@ -1009,12 +1017,12 @@
                     }
                     // get impressions & data
                     let response = await seats[seatId].api.request(dateParams).catch(e => {
-                        console.log("Error: "+e);
-                        swal("Server Error Code: 023","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + e);
+                        swal("Server Error Code: 023", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
                     });
-                    if (!response){
+                    if (!response) {
                         chartRevenueHour.push({
                             label: seat.name,
                             data: 0,
@@ -1037,17 +1045,17 @@
                     window["DoughnutCharts"]["Seat"].labels.push(seat.name);
 
                     // group records by environment
-                    let RecordsEnvNameGrouped = _(response.data).groupBy(function(record) {
+                    let RecordsEnvNameGrouped = _(response.data).groupBy(function (record) {
                         return record.environment.name;
                     });
 
                     // group records by integration type
-                    let RecordsIntGrouped = _(response.data).groupBy(function(record) {
+                    let RecordsIntGrouped = _(response.data).groupBy(function (record) {
                         return record.campaign_integration_type.name;
                     });
 
                     // group records by hour
-                    let RecordsHourGrouped = _(response.data).groupBy(function(record) {
+                    let RecordsHourGrouped = _(response.data).groupBy(function (record) {
                         return record.hour.id;
                     });
 
@@ -1081,7 +1089,7 @@
                     })
 
                     // group by environment
-                    let RecordsEnvGrouped = _(response.data).groupBy(function(record) {
+                    let RecordsEnvGrouped = _(response.data).groupBy(function (record) {
                         return record.environment.id;
                     })
                         .map((objs, key) => ({
@@ -1100,7 +1108,7 @@
                         .value(), seat);
 
                     // marketplace fee for environment
-                    let CR_EnvGrouped = _(campaignRequest.data).groupBy(function(record) {
+                    let CR_EnvGrouped = _(campaignRequest.data).groupBy(function (record) {
                         return record.environment.id;
                     })
                         .map((objs, key) => ({
@@ -1141,10 +1149,10 @@
                     try {
                         sourceRequest = await seats[seatId].api.request(sourceParams);
                     } catch (error) {
-                        console.log("Error: "+error);
-                        swal("Server Error Code: 024","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + error);
+                        swal("Server Error Code: 024", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (error == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        if (error == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
                         continue;
                     }
 
@@ -1154,7 +1162,7 @@
                     appendTopSuppliers(TakenSuppliers, seat.name);
                     if (selected_seats.length > 1 && sourceRequest.data.length > TakenSuppliersLimit) {
                         var toprest10suppliers = sourceRequest.data.slice(TakenSuppliersLimit + 1, (sourceRequest.data.length < TakenSuppliersLimit + 11 ? sourceRequest.data.length : TakenSuppliersLimit + 11));
-                        toprest10suppliers = toprest10suppliers.map(m => ({...m, seat: seat.name }));
+                        toprest10suppliers = toprest10suppliers.map(m => ({...m, seat: seat.name}));
                         suppliersListMore.push(toprest10suppliers);
                     }
 
@@ -1165,10 +1173,10 @@
                     try {
                         advertiserRequest = await seats[seatId].api.request(advertiserParams);
                     } catch (e) {
-                        console.log("Error: "+e);
-                        swal("Server Error Code: 025","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + e);
+                        swal("Server Error Code: 025", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
                         continue;
                     }
                     var TakenAdvertiserLimit = (selected_seats.length > 1) ? 3 : (advertiserRequest.data.length < 10 ? advertiserRequest.data.length : 10);
@@ -1176,7 +1184,7 @@
                     appendTopAdvertiser(TakenAdvertiser, seat.name);
                     if (selected_seats.length > 1 && advertiserRequest.data.length > TakenAdvertiserLimit) {
                         var toprest10Advertiser = advertiserRequest.data.slice(TakenAdvertiserLimit + 1, (advertiserRequest.data.length < TakenAdvertiserLimit + 11 ? advertiserRequest.data.length : TakenAdvertiserLimit + 11));
-                        toprest10Advertiser = toprest10Advertiser.map(m => ({...m, seat: seat.name }));
+                        toprest10Advertiser = toprest10Advertiser.map(m => ({...m, seat: seat.name}));
                         AdvertiserListMore.push(toprest10Advertiser);
                     }
 
@@ -1189,14 +1197,14 @@
                 // append vertical container table and allow sorting
                 $('#vertical-container-table').DataTable({
                     paging: false,
-                    drawCallback: function() {
+                    drawCallback: function () {
                         var api = this.api();
                         var modelId = "vertical-container-table";
 
                         if ($("#datatables-" + modelId).length == 0) {
                             appendTableModal(modelId);
                         }
-                        api.columns().eq(0).each(function(index) {
+                        api.columns().eq(0).each(function (index) {
                             if ($("#datatables-" + modelId + "_" + index).length == 0) {
                                 appendTableModalOption(modelId, api.column(index).header().textContent, index);
                             }
@@ -1215,13 +1223,13 @@
                     "order": [
                         [2, "desc"]
                     ],
-                    drawCallback: function() {
+                    drawCallback: function () {
                         var api = this.api();
                         var modelId = "source-type";
                         if ($("#datatables-" + modelId).length == 0) {
                             appendTableModal(modelId);
                         }
-                        api.columns().eq(0).each(function(index) {
+                        api.columns().eq(0).each(function (index) {
                             if ($("#datatables-" + modelId + "_" + index).length == 0) {
                                 appendTableModalOption(modelId, api.column(index).header().textContent, index);
                             }
@@ -1236,13 +1244,13 @@
                     "order": [
                         [2, "desc"]
                     ],
-                    drawCallback: function() {
+                    drawCallback: function () {
                         var api = this.api();
                         var modelId = "advertiser-type";
                         if ($("#datatables-" + modelId).length == 0) {
                             appendTableModal(modelId);
                         }
-                        api.columns().eq(0).each(function(index) {
+                        api.columns().eq(0).each(function (index) {
                             if ($("#datatables-" + modelId + "_" + index).length == 0) {
                                 appendTableModalOption(modelId, api.column(index).header().textContent, index);
                             }
@@ -1253,7 +1261,7 @@
                 // show impression chart
                 appendImpressionChart(chartRevenueHour);
                 // get environment chart data ready
-                var environmentChart = _(chartRevenueEnv).groupBy(function(record) {
+                var environmentChart = _(chartRevenueEnv).groupBy(function (record) {
                     return record.environment;
                 }).map((objs, key) => ({
                     'environment': key,
@@ -1265,7 +1273,7 @@
                     window["DoughnutCharts"]["Env"].labels.push(m.environment);
                 });
                 // get environment chart data ready
-                var integrationChart = _(chartRevenueIntegration).groupBy(function(record) {
+                var integrationChart = _(chartRevenueIntegration).groupBy(function (record) {
                     return record.integration;
                 }).map((objs, key) => ({
                     'integration': key,
@@ -1281,9 +1289,9 @@
                 for (key of Object.keys(window["DoughnutCharts"])) appendDonughtChart(key);
 
                 hide_loader();
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 026","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 026", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -1328,19 +1336,19 @@
 
                 var selected_seats = get_selected_seats();
                 window["DoughnutCharts"] = {
-                    MT_Seat: { data: [], labels: [] },
-                    MT_Env: { data: [], labels: [] },
-                    MT_Int: { data: [], labels: [] },
-                    MS_Seat: { data: [], labels: [] },
-                    MS_Env: { data: [], labels: [] },
-                    MS_Int: { data: [], labels: [] },
+                    MT_Seat: {data: [], labels: []},
+                    MT_Env: {data: [], labels: []},
+                    MT_Int: {data: [], labels: []},
+                    MS_Seat: {data: [], labels: []},
+                    MS_Env: {data: [], labels: []},
+                    MS_Int: {data: [], labels: []},
                 };
 
                 if (window["media_type"] == 'general') {
-                    window["DoughnutCharts"]['G_Source'] = { data: [], labels: [] };
-                    window["DoughnutCharts"]['G_CTV'] = { data: [], labels: [] };
-                    window["DoughnutCharts"]['G_inApp'] = { data: [], labels: [] };
-                    window["DoughnutCharts"]['G_Int'] = { data: [], labels: [] };
+                    window["DoughnutCharts"]['G_Source'] = {data: [], labels: []};
+                    window["DoughnutCharts"]['G_CTV'] = {data: [], labels: []};
+                    window["DoughnutCharts"]['G_inApp'] = {data: [], labels: []};
+                    window["DoughnutCharts"]['G_Int'] = {data: [], labels: []};
                 }
 
                 let DateMappedRecordsOverall = [];
@@ -1353,10 +1361,10 @@
 
                     // get impressions & data
                     let ReportRequest = await seats[seatId].api.request(dateParams).catch(e => {
-                        console.log("Error: "+e);
-                        swal("Server Error Code: 027","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + e);
+                        swal("Server Error Code: 027", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
                     });
 
                     if (!ReportRequest) continue;
@@ -1367,29 +1375,28 @@
 
                     ReportRequest.data = ReportRequest.data.filter(m => m.environment.id != 'other');
 
-                    let CR_SrcGrouped = _(ReportRequest.data).groupBy(function(record) {
+                    let CR_SrcGrouped = _(ReportRequest.data).groupBy(function (record) {
                         return window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT';
                     })
                         .value();
 
                     for (const channel of Object.keys(CR_SrcGrouped)) {
                         var totalSeatRevenue = _(CR_SrcGrouped[channel]).sumBy((o) => parseFloat(o.revenue_total)).toFixed(2);
-                        window["DoughnutCharts"][channel + "_Seat"].data.push({ value: totalSeatRevenue });
+                        window["DoughnutCharts"][channel + "_Seat"].data.push({value: totalSeatRevenue});
                         window["DoughnutCharts"][channel + "_Seat"].labels.push(seat.name);
 
                         processChartEntity({
-                            [channel]: { revenue_total: totalSeatRevenue }
+                            [channel]: {revenue_total: totalSeatRevenue}
                         }, 'G_Source', 'channel');
 
 
-
                         // group records by environment
-                        let RecordsEnvNameGrouped = _(CR_SrcGrouped[channel]).groupBy(function(record) {
+                        let RecordsEnvNameGrouped = _(CR_SrcGrouped[channel]).groupBy(function (record) {
                             return record.environment.name;
                         });
 
                         // group records by integration type
-                        let RecordsIntGrouped = _(CR_SrcGrouped[channel]).groupBy(function(record) {
+                        let RecordsIntGrouped = _(CR_SrcGrouped[channel]).groupBy(function (record) {
                             return record.campaign_integration_type.name;
                         });
 
@@ -1403,13 +1410,13 @@
 
                         if ("CTV" in ChannelRevenueEnv) {
                             processChartEntity({
-                                [channel]: { revenue_total: ChannelRevenueEnv["CTV"].revenue_total }
+                                [channel]: {revenue_total: ChannelRevenueEnv["CTV"].revenue_total}
                             }, 'G_CTV', 'channel');
                         }
 
                         if ("Mobile App" in ChannelRevenueEnv) {
                             processChartEntity({
-                                [channel]: { revenue_total: ChannelRevenueEnv["Mobile App"].revenue_total }
+                                [channel]: {revenue_total: ChannelRevenueEnv["Mobile App"].revenue_total}
                             }, 'G_inApp', 'channel');
                         }
 
@@ -1428,7 +1435,7 @@
                     }
 
                     // map data for source compare report
-                    let RecordsDateEnvChannelGroupped = _(ReportRequest.data).groupBy(function(record) {
+                    let RecordsDateEnvChannelGroupped = _(ReportRequest.data).groupBy(function (record) {
                         return record.date.id;
                     }).value();
 
@@ -1442,7 +1449,7 @@
                     // map data for overall performance report
                     window["media_source_data"] = [...ReportRequest.data, ...window["media_source_data"]];
 
-                    let RecordsDateEnvMapped = _(ReportRequest.data).groupBy(function(record) {
+                    let RecordsDateEnvMapped = _(ReportRequest.data).groupBy(function (record) {
                         return record.environment.id + "_" + record.date.id;
                     })
                         .map((objs, key) => ({
@@ -1456,7 +1463,7 @@
                     DateMappedRecordsOverall = [...DateMappedRecordsOverall, ...RecordsDateEnvMapped];
                 }
                 // overall performance groupping
-                DateMappedRecordsOverall = _(DateMappedRecordsOverall).groupBy(function(record) {
+                DateMappedRecordsOverall = _(DateMappedRecordsOverall).groupBy(function (record) {
                     return record.environment + "_" + record.date;
                 })
                     .map((objs, key) => ({
@@ -1471,7 +1478,7 @@
                 appendOverallPerformanceTable(DateMappedRecordsOverall);
                 // compare performance table
                 for (const dateKey of Object.keys(DateMappedRecordsCompare)) {
-                    DateMappedRecordsCompare[dateKey] = _(DateMappedRecordsCompare[dateKey]).groupBy(function(record) {
+                    DateMappedRecordsCompare[dateKey] = _(DateMappedRecordsCompare[dateKey]).groupBy(function (record) {
                         return (window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT') + '_' + record.environment.id;
                     })
                         .map((objs, key) => ({
@@ -1492,32 +1499,32 @@
                 }
 
                 hide_loader();
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 028","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 028", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        $(".filter-sourceCompare").on('change', function() {
+        $(".filter-sourceCompare").on('change', function () {
             try {
                 selected_compare_env = $(this).val();
                 $("#compare-performance-container-table").find('tbody').html("");
                 appendComparePerformanceTable();
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 029","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 029", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         });
 
         function appendComparePerformanceTable() {
             try {
-                let totalImpressionsMt=0
-                let totalRevenueMt=0
+                let totalImpressionsMt = 0
+                let totalRevenueMt = 0
                 let totalAdRequestsMt = 0
-                let totalImpressionsMs=0
-                let totalRevenueMs=0
+                let totalImpressionsMs = 0
+                let totalRevenueMs = 0
                 let totalAdRequestsMs = 0
                 for (const key of Object.keys(window["compare_performance_records"])) {
                     const record = window["compare_performance_records"][key];
@@ -1528,7 +1535,7 @@
                         ms = record.find(m => m.environment == selected_compare_env && m.channel == 'MS');
                         mt = record.find(m => m.environment == selected_compare_env && m.channel == 'MT');
                     } else {
-                        let channels = _(record).groupBy(function(m) {
+                        let channels = _(record).groupBy(function (m) {
                             return m.channel;
                         })
                             .map((objs, key) => ({
@@ -1577,11 +1584,11 @@
                             )
                             .append($('<td>')
                                 .attr('class', 'success')
-                                .text(isNaN(mt.revenue_total / (mt.ad_requests / 1000000))?0:window["formatMoney"](mt.revenue_total / (mt.ad_requests / 1000000), 2) + "$")
+                                .text(isNaN(mt.revenue_total / (mt.ad_requests / 1000000)) ? 0 : window["formatMoney"](mt.revenue_total / (mt.ad_requests / 1000000), 2) + "$")
                             )
                             .append($('<td>')
                                 .attr('class', '')
-                                .text(isNaN(mt.impressions_good /mt.ad_requests)?0:window["formatMoney"]((mt.impressions_good /mt.ad_requests)*100) + "%")
+                                .text(isNaN(mt.impressions_good / mt.ad_requests) ? 0 : window["formatMoney"]((mt.impressions_good / mt.ad_requests) * 100) + "%")
                             )
                             .append($('<td>')
                                 .text(window["formatMoney"](ms.ad_requests, 0))
@@ -1594,16 +1601,16 @@
                             )
                             .append($('<td>')
                                 .attr('class', 'success')
-                                .text(isNaN(ms.revenue_total / (ms.ad_requests / 1000000))?0:window["formatMoney"](ms.revenue_total / (ms.ad_requests / 1000000), 2) + "$")
+                                .text(isNaN(ms.revenue_total / (ms.ad_requests / 1000000)) ? 0 : window["formatMoney"](ms.revenue_total / (ms.ad_requests / 1000000), 2) + "$")
                             )
                             .append($('<td>')
                                 .attr('class', '')
-                                .text(isNaN(ms.impressions_good /ms.ad_requests)?0:window["formatMoney"]((ms.impressions_good /ms.ad_requests)*100) + "%")
+                                .text(isNaN(ms.impressions_good / ms.ad_requests) ? 0 : window["formatMoney"]((ms.impressions_good / ms.ad_requests) * 100) + "%")
                             )
                         );
 
                 }
-                getDailyRunrateForMediaSources(totalRevenueMs,totalRevenueMt);
+                getDailyRunrateForMediaSources(totalRevenueMs, totalRevenueMt);
                 $("#compare-performance-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<th>')
@@ -1620,10 +1627,10 @@
                             .text(window["formatMoney"](totalRevenueMt))
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(isNaN(totalRevenueMt / (totalAdRequestsMt / 1000000))?0:window["formatMoney"](totalRevenueMt / (totalAdRequestsMt / 1000000), 2) + "$")
+                            .text(isNaN(totalRevenueMt / (totalAdRequestsMt / 1000000)) ? 0 : window["formatMoney"](totalRevenueMt / (totalAdRequestsMt / 1000000), 2) + "$")
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(window["formatMoney"]((totalImpressionsMt /totalAdRequestsMt)*100) + "%")
+                            .text(window["formatMoney"]((totalImpressionsMt / totalAdRequestsMt) * 100) + "%")
                         ).append($('<td>')
                             .attr('class', 'info')
                             .text(window["formatMoney"](totalAdRequestsMs))
@@ -1635,12 +1642,11 @@
                             .text(window["formatMoney"](totalRevenueMs))
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(isNaN(totalRevenueMs / (totalAdRequestsMs / 1000000))?0:window["formatMoney"](totalRevenueMs / (totalAdRequestsMs / 1000000), 2) + "$")
+                            .text(isNaN(totalRevenueMs / (totalAdRequestsMs / 1000000)) ? 0 : window["formatMoney"](totalRevenueMs / (totalAdRequestsMs / 1000000), 2) + "$")
                         ).append($('<td>')
                             .attr('class', 'info')
-                            .text(isNaN(totalImpressionsMs /totalAdRequestsMs)?0:window["formatMoney"]((totalImpressionsMs /totalAdRequestsMs)*100) + "%")
+                            .text(isNaN(totalImpressionsMs / totalAdRequestsMs) ? 0 : window["formatMoney"]((totalImpressionsMs / totalAdRequestsMs) * 100) + "%")
                         )
-
                     );
                 $("#compare-performance-container-table").find('tbody')
                     .append($('<tr style="border: 2px solid red;">')
@@ -1652,45 +1658,45 @@
                             .text("Total Ad Requests")
                         ).append($('<td>')
                             .attr('class', 'warning')
-                            .text(window["formatMoney"](totalAdRequestsMt+totalAdRequestsMs))
+                            .text(window["formatMoney"](totalAdRequestsMt + totalAdRequestsMs))
                         ).append($('<th>')
                             .attr('class', 'warning')
                             .text("Total Impressions")
                         ).append($('<td>')
                             .attr('class', 'warning')
-                            .text(window["formatMoney"](totalImpressionsMt+totalImpressionsMs))
+                            .text(window["formatMoney"](totalImpressionsMt + totalImpressionsMs))
                         ).append($('<th>')
                             .attr('class', 'warning')
                             .text("Total Revenue")
                         ).append($('<td>')
                             .attr('class', 'warning')
-                            .text(window["formatMoney"](totalRevenueMt+totalRevenueMs))
+                            .text(window["formatMoney"](totalRevenueMt + totalRevenueMs))
                         ).append($('<th>')
                             .attr('class', 'warning')
                             .text("Total $/AD Req in Mil")
                         ).append($('<td>')
                             .attr('class', 'warning')
-                            .text(isNaN(totalRevenueMt / (totalAdRequestsMt / 1000000))||isNaN(totalRevenueMs / (totalAdRequestsMs / 1000000))?0:window["formatMoney"]((totalRevenueMt / (totalAdRequestsMt / 1000000)+(totalRevenueMs / (totalAdRequestsMs / 1000000))), 2) + "$")
+                            .text(isNaN(totalRevenueMt / (totalAdRequestsMt / 1000000)) || isNaN(totalRevenueMs / (totalAdRequestsMs / 1000000)) ? 0 : window["formatMoney"]((totalRevenueMt / (totalAdRequestsMt / 1000000) + (totalRevenueMs / (totalAdRequestsMs / 1000000))), 2) + "$")
                         ).append($('<th>')
                             .attr('class', 'warning')
                             .text("Total Fill Rate(%)")
                         ).append($('<td>')
                             .attr('class', 'warning')
-                            .text(isNaN(totalImpressionsMs /totalAdRequestsMs)||isNaN(totalImpressionsMt /totalAdRequestsMt)?0:window["formatMoney"](((totalImpressionsMs /totalAdRequestsMs)+(totalImpressionsMt /totalAdRequestsMt))*100) + "%")
+                            .text(isNaN(totalImpressionsMs / totalAdRequestsMs) || isNaN(totalImpressionsMt / totalAdRequestsMt) ? 0 : window["formatMoney"](((totalImpressionsMs / totalAdRequestsMs) + (totalImpressionsMt / totalAdRequestsMt)) * 100) + "%")
                         )
                     );
 
                 appendDailyChartByHour();
                 appendMonthlyChartByday();
 
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 030","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 030", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        async function getDailyRunrateForMediaSources(msRevenue,mtRevenue){
+        async function getDailyRunrateForMediaSources(msRevenue, mtRevenue) {
             try {
                 var today = new Date($("input[name=start_date]").val());
                 var hourParams = {
@@ -1703,40 +1709,40 @@
                     'tz': 'GMT',
                 };
                 let seat;
-                for(let i=1;i<=3;i++){
-                    if(window["seats"][i]!==undefined) {
+                for (let i = 1; i <= 3; i++) {
+                    if (window["seats"][i] !== undefined) {
                         seat = window["seats"][i];
                         break;
                     }
                 }
                 let api = new adtelligent(seat);
-                let hourResponse = await api.request(hourParams,"dictionary/hour" ).catch(e => {
-                    console.log("Error: "+e);
-                    swal("Server Error Code: 031","Error Occurred in Adtelligent Server","error");
+                let hourResponse = await api.request(hourParams, "dictionary/hour").catch(e => {
+                    console.log("Error: " + e);
+                    swal("Server Error Code: 031", "Error Occurred in Adtelligent Server", "error");
                     // hide_loader();
-                    if (e == 401) swal('Request Error' + 'Could not send Hour Request','error');//top.location.reload();
+                    if (e == 401) swal('Request Error' + 'Could not send Hour Request', 'error');//top.location.reload();
                 });
                 // console.log(hourResponse)
                 let hour = hourResponse.data.length;
                 // console.log("MS-daily: "+msRevenue+" MT-daily:"+mtRevenue+" HourCount: "+hour);
-                if(isNaN(msRevenue)) msRevenue = 0;
-                if(isNaN(mtRevenue)) mtRevenue = 0;
-                if(isNaN(hour)||hour===0||hour===undefined) hour = 1;
-                $('#ms_daily_run_rate').html(((msRevenue/hour)*24).toFixed(3)+" $");
-                $('#mt_daily_run_rate').html(((mtRevenue/hour)*24).toFixed(3)+" $");
+                if (isNaN(msRevenue)) msRevenue = 0;
+                if (isNaN(mtRevenue)) mtRevenue = 0;
+                if (isNaN(hour) || hour === 0 || hour === undefined) hour = 1;
+                $('#ms_daily_run_rate').html(((msRevenue / hour) * 24).toFixed(3) + " $");
+                $('#mt_daily_run_rate').html(((mtRevenue / hour) * 24).toFixed(3) + " $");
 
             } catch (e) {
-                console.log("Error: "+e);
+                console.log("Error: " + e);
                 swal(e.name, e.message, "error");
             }
         }
 
-        async function getMonthlyRunrateForMediaSources(){
+        async function getMonthlyRunrateForMediaSources() {
             try {
 
                 var today = new Date($("input[name=end_date]").val());
                 var todaysDate = today.getDate();
-                var lastDay = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
+                var lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
                 var start_date = (new Date(today.getFullYear(), today.getMonth(), 1)).toLocaleDateString("en-CA");
                 var end_date = today.toLocaleDateString("en-CA");//(new Date(today.getFullYear(), today.getMonth()+1, 0)).toLocaleDateString("en-CA");
                 var dateParams = {
@@ -1764,10 +1770,10 @@
 
                     // get impressions & data
                     let ReportRequest = await seats[seatId].api.request(dateParams).catch(e => {
-                        console.log("Error: "+e);
-                        swal("Server Error Code: 032","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + e);
+                        swal("Server Error Code: 032", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (e == 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
+                        if (e == 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
                     });
                     if (!ReportRequest) continue;
                     // excluded channels data
@@ -1777,7 +1783,7 @@
 
                     ReportRequest.data = ReportRequest.data.filter(m => m.environment.id != 'other');
 
-                    let CR_SrcGrouped = _(ReportRequest.data).groupBy(function(record) {
+                    let CR_SrcGrouped = _(ReportRequest.data).groupBy(function (record) {
                         return window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT';
                     }).value();
 
@@ -1785,12 +1791,12 @@
                         var totalSeatRevenue = _(CR_SrcGrouped[channel]).sumBy((o) => parseFloat(o.revenue_total)).toFixed(2);
 
                         // group records by environment
-                        let RecordsEnvNameGrouped = _(CR_SrcGrouped[channel]).groupBy(function(record) {
+                        let RecordsEnvNameGrouped = _(CR_SrcGrouped[channel]).groupBy(function (record) {
                             return record.environment.name;
                         });
 
                         // group records by integration type
-                        let RecordsIntGrouped = _(CR_SrcGrouped[channel]).groupBy(function(record) {
+                        let RecordsIntGrouped = _(CR_SrcGrouped[channel]).groupBy(function (record) {
                             return record.campaign_integration_type.name;
                         });
 
@@ -1806,7 +1812,7 @@
                     }
 
                     // map data for source compare report
-                    let RecordsDateEnvChannelGroupped = _(ReportRequest.data).groupBy(function(record) {
+                    let RecordsDateEnvChannelGroupped = _(ReportRequest.data).groupBy(function (record) {
                         return record.date.id;
                     }).value();
 
@@ -1820,7 +1826,7 @@
                     // map data for overall performance report
                     window["media_source_data"] = [...ReportRequest.data, ...window["media_source_data"]];
 
-                    let RecordsDateEnvMapped = _(ReportRequest.data).groupBy(function(record) {
+                    let RecordsDateEnvMapped = _(ReportRequest.data).groupBy(function (record) {
                         return record.environment.id + "_" + record.date.id;
                     })
                         .map((objs, key) => ({
@@ -1834,7 +1840,7 @@
                     DateMappedRecordsOverall = [...DateMappedRecordsOverall, ...RecordsDateEnvMapped];
                 }
                 // overall performance groupping
-                DateMappedRecordsOverall = _(DateMappedRecordsOverall).groupBy(function(record) {
+                DateMappedRecordsOverall = _(DateMappedRecordsOverall).groupBy(function (record) {
                     return record.environment + "_" + record.date;
                 })
                     .map((objs, key) => ({
@@ -1848,7 +1854,7 @@
 
                 // compare performance table
                 for (const dateKey of Object.keys(RevenueDataFromeDateMappedRecordsCompare)) {
-                    RevenueDataFromeDateMappedRecordsCompare[dateKey] = _(RevenueDataFromeDateMappedRecordsCompare[dateKey]).groupBy(function(record) {
+                    RevenueDataFromeDateMappedRecordsCompare[dateKey] = _(RevenueDataFromeDateMappedRecordsCompare[dateKey]).groupBy(function (record) {
                         return (window["mt_channel_id"].includes(record.channel.id.toString()) ? 'MS' : 'MT') + '_' + record.environment.id;
                     })
                         .map((objs, key) => ({
@@ -1861,8 +1867,8 @@
                         })).value();
                 }
                 window["revenue_data_from_performance_records"] = RevenueDataFromeDateMappedRecordsCompare;
-                let totalRevenueMt=0
-                let totalRevenueMs=0
+                let totalRevenueMt = 0
+                let totalRevenueMs = 0
                 for (const key of Object.keys(window["revenue_data_from_performance_records"])) {
                     const record = window["revenue_data_from_performance_records"][key];
 
@@ -1902,32 +1908,32 @@
 
                 }
                 // console.log("MS-monthly--: "+totalRevenueMs+" MT-monthly--:"+totalRevenueMt);
-                if(isNaN(totalRevenueMs)) totalRevenueMs = 0;
-                if(isNaN(totalRevenueMt)) totalRevenueMt = 0;
-                $('#ms_monthly_run_rate').html(((totalRevenueMs/todaysDate)*lastDay).toFixed(3)+" $");
-                $('#mt_monthly_run_rate').html(((totalRevenueMt/todaysDate)*lastDay).toFixed(3)+" $");
+                if (isNaN(totalRevenueMs)) totalRevenueMs = 0;
+                if (isNaN(totalRevenueMt)) totalRevenueMt = 0;
+                $('#ms_monthly_run_rate').html(((totalRevenueMs / todaysDate) * lastDay).toFixed(3) + " $");
+                $('#mt_monthly_run_rate').html(((totalRevenueMt / todaysDate) * lastDay).toFixed(3) + " $");
                 delete window["revenue_data_from_performance_records"];
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 033","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 033", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        function getMsChannelIds(){
+        function getMsChannelIds() {
             return window['mt_channel_id'];
         }
 
-        async function appendDailyChartByHour(){
+        async function appendDailyChartByHour() {
             try {
                 $('#appendDailyChartByHourLoader').show();
-                $('#isResizableHour').css('opacity',0);
+                $('#isResizableHour').css('opacity', 0);
 
-                var msChannelIds=getMsChannelIds();
+                var msChannelIds = getMsChannelIds();
 
                 var start_date = $("input[name=start_date]").val();
                 var timeline = $("input[name=date_period]").val();
-                var hour = timeline==='today'?[...Array.from(Array(new Date().getUTCHours()).keys())]:[...Array.from(Array(24).keys())];
+                var hour = timeline === 'today' ? [...Array.from(Array(new Date().getUTCHours()).keys())] : [...Array.from(Array(24).keys())];
                 // console.log(hour);
                 var end_date = $("input[name=end_date]").val();
                 var chanelRequestBody = {
@@ -1935,7 +1941,7 @@
                     "date_from": start_date,
                     "date_to": end_date,
                     "fields": 'ad_requests,ad_opportunities,impressions_good,scoring_pixalate_s2s_sas_request,revenue_channel,ecpm_channel,revenue_total,ecpm,fill_rate_ad_opportunities,fill_rate_ad_requests,hour,channel',
-                    "hour": hour ,
+                    "hour": hour,
                     "limit": 1000000,
                     "page": 1,
                     "strategy": 'last-collection',
@@ -1968,16 +1974,16 @@
                     try {
                         channelDataByHour = await seat.api.request(chanelRequestBody);
 
-                        $(channelDataByHour.data).each(function(key,singleData){
+                        $(channelDataByHour.data).each(function (key, singleData) {
                             // console.log(singleData.channel.id);
 
-                            if(channelIdExists(msChannelIds,singleData.channel.id)){
-                                msAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
-                                msImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+                            if (channelIdExists(msChannelIds, singleData.channel.id)) {
+                                msAdRequestByHour[singleData.hour.id] += singleData.ad_requests;
+                                msImpressionsByHour[singleData.hour.id] += singleData.impressions_good;
 
-                            }else{
-                                mtAdRequestByHour[singleData.hour.id]+=singleData.ad_requests;
-                                mtImpressionsByHour[singleData.hour.id]+=singleData.impressions_good;
+                            } else {
+                                mtAdRequestByHour[singleData.hour.id] += singleData.ad_requests;
+                                mtImpressionsByHour[singleData.hour.id] += singleData.impressions_good;
 
                             }
 
@@ -1987,29 +1993,29 @@
                         // console.log({{json_encode($array_without_keys)}});
 
                     } catch (e) {
-                        console.log("Error: "+e);
+                        console.log("Error: " + e);
                         // hide_loader();
-                        if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//top.location.reload();
-                        else swal("Server Error Code: 034","Error Occurred in Adtelligent Server","error");
+                        if (e === 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//top.location.reload();
+                        else swal("Server Error Code: 034", "Error Occurred in Adtelligent Server", "error");
                     }
                 }
 
 
                 // console.log(msAdRequestByHour);
 
-                $(hour).each(function (key,singleHour) {
-                    msFillRateByHour[key] = ((msImpressionsByHour[key]/msAdRequestByHour[key])*100).toFixed(3);
-                    mtFillRateByHour[key] = ((mtImpressionsByHour[key]/mtAdRequestByHour[key])*100).toFixed(3);
-                    combinedAdRequestByHour[key] = combinedAdRequestByHour[key]+msAdRequestByHour[key]+mtAdRequestByHour[key];
-                    combinedImpressionsByHour[key] = combinedImpressionsByHour[key]+msImpressionsByHour[key]+mtImpressionsByHour[key];
+                $(hour).each(function (key, singleHour) {
+                    msFillRateByHour[key] = ((msImpressionsByHour[key] / msAdRequestByHour[key]) * 100).toFixed(3);
+                    mtFillRateByHour[key] = ((mtImpressionsByHour[key] / mtAdRequestByHour[key]) * 100).toFixed(3);
+                    combinedAdRequestByHour[key] = combinedAdRequestByHour[key] + msAdRequestByHour[key] + mtAdRequestByHour[key];
+                    combinedImpressionsByHour[key] = combinedImpressionsByHour[key] + msImpressionsByHour[key] + mtImpressionsByHour[key];
 
 
                 });
                 // console.log("MS::H: "+msFillRateByHour+" MT::H:"+mtFillRateByHour);
 
 
-                $(hour).each(function (key,singleHour) {
-                    combinedFillRateByHour[key] = ((combinedImpressionsByHour[key]/combinedAdRequestByHour[key])*100).toFixed(3);
+                $(hour).each(function (key, singleHour) {
+                    combinedFillRateByHour[key] = ((combinedImpressionsByHour[key] / combinedAdRequestByHour[key]) * 100).toFixed(3);
                 });
 
                 var hourlyLabels = Array.from(Array(24).keys());
@@ -2042,48 +2048,49 @@
 
                 };
 
-                if($('#mt_daily_chart_by_hour').attr("class") !== undefined){
-                    resetGraph('mt_daily_chart_by_hour','mt_daily_chart_by_hour_container','<canvas id="mt_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>')
+                if ($('#mt_daily_chart_by_hour').attr("class") !== undefined) {
+                    resetGraph('mt_daily_chart_by_hour', 'mt_daily_chart_by_hour_container', '<canvas id="mt_daily_chart_by_hour" style="max-width:100%;min-height:200px;"></canvas>')
                 }
-                new Chart('mt_daily_chart_by_hour',config_hourly);
+                new Chart('mt_daily_chart_by_hour', config_hourly);
                 $('#appendDailyChartByHourLoader').hide()
-                $('#isResizableHour').css('opacity',1);
+                $('#isResizableHour').css('opacity', 1);
 
 
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 035","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 035", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        function  resetGraph(canvasId,containerId,canvasElement){
-            $('#'+canvasId).remove();
-            $('#'+containerId).html(canvasElement)
+        function resetGraph(canvasId, containerId, canvasElement) {
+            $('#' + canvasId).remove();
+            $('#' + containerId).html(canvasElement)
         }
+
         function channelIdExists(channelList, channelId) {
             var channelIndex = channelList.findIndex(c => Number(c) === Number(channelId));
             return channelIndex > -1;
         }
 
-        async function appendMonthlyChartByday(){
+        async function appendMonthlyChartByday() {
             try {
                 $('#appendMonthlyChartBydayLoader').show();
-                $('#isResizableDay').css('opacity',0);
-                var msChannelIds=getMsChannelIds();
-                var firstday = function(y,m){
-                    return  new Date(y, m , 1).getDate();
+                $('#isResizableDay').css('opacity', 0);
+                var msChannelIds = getMsChannelIds();
+                var firstday = function (y, m) {
+                    return new Date(y, m, 1).getDate();
                 }
-                var lastday = function(y,m){
-                    return  new Date(y, m +1, 0).getDate();
+                var lastday = function (y, m) {
+                    return new Date(y, m + 1, 0).getDate();
                 }
                 var start_date = $("input[name=start_date]").val();
                 console.log("SAT_P", start_date);
                 var date = new Date(start_date);
                 var dateCount = lastday(date.getFullYear(), date.getMonth());
-                var dateCountArray = [...Array.from(Array(dateCount).keys())] ;
+                var dateCountArray = [...Array.from(Array(dateCount).keys())];
                 var end_date = $("input[name=end_date]").val();
-                if(start_date === end_date){
+                if (start_date === end_date) {
                     // start_date = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString();
                     start_date = (date.getMonth() + 1).toString() + '/' + 1 + '/' + date.getFullYear().toString();
                     end_date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -2129,18 +2136,18 @@
                     try {
                         channelDataByDay = await seats[seatId].api.request(chanelRequestBody);
 
-                        $(channelDataByDay.data).each(function(key,singleData){
+                        $(channelDataByDay.data).each(function (key, singleData) {
                             var date = new Date(singleData.date.id);
-                            date = date.getDate()-1;
-                            if(channelIdExists(msChannelIds,singleData.channel.id)){
-                                msAdRequestByDay[date]+=singleData.ad_requests;
-                                msImpressionsByDay[date]+=singleData.impressions_good;
-                                msRevenueByDay[date]+=singleData.revenue_total;
+                            date = date.getDate() - 1;
+                            if (channelIdExists(msChannelIds, singleData.channel.id)) {
+                                msAdRequestByDay[date] += singleData.ad_requests;
+                                msImpressionsByDay[date] += singleData.impressions_good;
+                                msRevenueByDay[date] += singleData.revenue_total;
 
-                            }else{
-                                mtAdRequestByDay[date]+=singleData.ad_requests;
-                                mtImpressionsByDay[date]+=singleData.impressions_good;
-                                mtRevenueByDay[date]+=singleData.revenue_total;
+                            } else {
+                                mtAdRequestByDay[date] += singleData.ad_requests;
+                                mtImpressionsByDay[date] += singleData.impressions_good;
+                                mtRevenueByDay[date] += singleData.revenue_total;
                             }
 
                         });
@@ -2150,30 +2157,30 @@
                         // console.log({{json_encode($array_without_keys)}});
 
                     } catch (e) {
-                        console.log("Error: "+e);
-                        swal("Server Error Code: 036","Error Occurred in Adtelligent Server","error");
+                        console.log("Error: " + e);
+                        swal("Server Error Code: 036", "Error Occurred in Adtelligent Server", "error");
                         // hide_loader();
-                        if (e === 401) swal('Unauthenticated',seat['name'] + ' API not authenticated','error');//console.log("got 401");//top.location.reload();
+                        if (e === 401) swal('Unauthenticated', seat['name'] + ' API not authenticated', 'error');//console.log("got 401");//top.location.reload();
 
                     }
                 }
 
 
-                $(dateCountArray).each(function (key,singleDay) {
-                    msFillRateByDay[key] = ((msImpressionsByDay[key]/msAdRequestByDay[key])*100).toFixed(3);
-                    mtFillRateByDay[key] = ((mtImpressionsByDay[key]/mtAdRequestByDay[key])*100).toFixed(3);
-                    combinedAdRequestByDay[key] = combinedAdRequestByDay[key]+msAdRequestByDay[key]+mtAdRequestByDay[key];
-                    combinedImpressionsByDay[key] = combinedImpressionsByDay[key]+msImpressionsByDay[key]+mtImpressionsByDay[key];
+                $(dateCountArray).each(function (key, singleDay) {
+                    msFillRateByDay[key] = ((msImpressionsByDay[key] / msAdRequestByDay[key]) * 100).toFixed(3);
+                    mtFillRateByDay[key] = ((mtImpressionsByDay[key] / mtAdRequestByDay[key]) * 100).toFixed(3);
+                    combinedAdRequestByDay[key] = combinedAdRequestByDay[key] + msAdRequestByDay[key] + mtAdRequestByDay[key];
+                    combinedImpressionsByDay[key] = combinedImpressionsByDay[key] + msImpressionsByDay[key] + mtImpressionsByDay[key];
 
-                    totalMsRevenueByDay+=msRevenueByDay[key];
-                    totalMtRevenueByDay+=mtRevenueByDay[key];
+                    totalMsRevenueByDay += msRevenueByDay[key];
+                    totalMtRevenueByDay += mtRevenueByDay[key];
 
                 });
 
                 // console.log("MS::D: "+msFillRateByDay+" MT::D:"+mtFillRateByDay);
 
-                $(dateCountArray).each(function (key,singleDay) {
-                    combinedFillRateByDay[key] = ((combinedImpressionsByDay[key]/combinedAdRequestByDay[key])*100).toFixed(3);
+                $(dateCountArray).each(function (key, singleDay) {
+                    combinedFillRateByDay[key] = ((combinedImpressionsByDay[key] / combinedAdRequestByDay[key]) * 100).toFixed(3);
                 });
 
                 const labels = getAllDatesOfCurrnetMonth();
@@ -2206,21 +2213,21 @@
                     data: data,
                     options: {}
                 };
-                if($('#mt_monthly_chart_by_day').attr("class") !== undefined){
-                    resetGraph('mt_monthly_chart_by_day','mt_monthly_chart_by_day_container','<canvas id="mt_monthly_chart_by_day" style="max-width:100%;min-height:200px;"></canvas>')
+                if ($('#mt_monthly_chart_by_day').attr("class") !== undefined) {
+                    resetGraph('mt_monthly_chart_by_day', 'mt_monthly_chart_by_day_container', '<canvas id="mt_monthly_chart_by_day" style="max-width:100%;min-height:200px;"></canvas>')
                 }
-                new Chart('mt_monthly_chart_by_day',config);
+                new Chart('mt_monthly_chart_by_day', config);
                 $('#appendMonthlyChartBydayLoader').hide();
-                $('#isResizableDay').css('opacity',1);
+                $('#isResizableDay').css('opacity', 1);
 
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 037","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 037", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
 
-        function getAllDatesOfCurrnetMonth(){
+        function getAllDatesOfCurrnetMonth() {
             try {
                 var selectedDate = $("input[name=start_date]").val();
                 var date = new Date(selectedDate);
@@ -2228,14 +2235,14 @@
                 date.setDate(1);
                 var all_days = [];
                 while (date.getMonth() === month) {
-                    var d = date.getFullYear() + '-' + (date.getMonth()+1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
+                    var d = date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0');
                     all_days.push(d);
                     date.setDate(date.getDate() + 1);
                 }
                 return all_days;
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 038","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 038", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -2263,23 +2270,22 @@
                                 .text("$" + window["formatMoney"](record.revenue_total, 2))
                             )
                             .append($('<td>')
-                                .text(isNaN(record.revenue_total / (record.impressions_good / 1000))?0:window["formatMoney"](record.revenue_total / (record.impressions_good / 1000), 2))
+                                .text(isNaN(record.revenue_total / (record.impressions_good / 1000)) ? 0 : window["formatMoney"](record.revenue_total / (record.impressions_good / 1000), 2))
                             )
                             .append($('<td>')
                                 .attr('class', 'success')
-                                .text(isNaN(record.revenue_total / (record.ad_requests / 1000000))?0:window["formatMoney"](record.revenue_total / (record.ad_requests / 1000000), 2) + "$")
+                                .text(isNaN(record.revenue_total / (record.ad_requests / 1000000)) ? 0 : window["formatMoney"](record.revenue_total / (record.ad_requests / 1000000), 2) + "$")
                             )
-
                         );
                 }
                 var table = $('#overall-performance-container-table').DataTable({
                     orderCellsTop: true,
-                    initComplete: function() {
+                    initComplete: function () {
                         var api = this.api();
 
                         // On every keypress in this input
                         $(".filter-overall")
-                            .on('change', function(e) {
+                            .on('change', function (e) {
                                 // e.stopPropagation();
 
                                 var colIdx = 1;
@@ -2302,9 +2308,9 @@
                     },
                 });
 
-            }catch (e) {
-                console.log("Error: "+e);
-                swal("Server Error Code: 039","Error Occurred in Adtelligent Server","error");
+            } catch (e) {
+                console.log("Error: " + e);
+                swal("Server Error Code: 039", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
             }
         }
@@ -2321,16 +2327,16 @@
                 if (chartIndex != -1)
                     window["DoughnutCharts"][chartId].data[chartIndex].value += List[key].revenue_total;
                 else {
-                    let toPush = { value: List[key].revenue_total };
+                    let toPush = {value: List[key].revenue_total};
                     toPush[keyname] = key;
                     window["DoughnutCharts"][chartId].data.push(toPush);
                     window["DoughnutCharts"][chartId].labels.push(key);
                 }
             }
             // console.log(window["DoughnutCharts"][chartId].data);
-        }catch (e) {
-            console.log("Error: "+e);
-            swal("Server Error Code: 040","Error Occurred in Adtelligent Server","error");
+        } catch (e) {
+            console.log("Error: " + e);
+            swal("Server Error Code: 040", "Error Occurred in Adtelligent Server", "error");
             hide_loader();
         }
     }
@@ -2338,8 +2344,8 @@
 
     function appendEnvTable(EnvData, seat) {
         try {
-            if ("ctv" in EnvData == false) EnvData["ctv"] = { revenue_total: 0.0 };
-            if ("mobile_app" in EnvData == false) EnvData["mobile_app"] = { revenue_total: 0.0 };
+            if ("ctv" in EnvData == false) EnvData["ctv"] = {revenue_total: 0.0};
+            if ("mobile_app" in EnvData == false) EnvData["mobile_app"] = {revenue_total: 0.0};
             var total = _(EnvData).values().sumBy('revenue_total').toFixed(2);
             var table = $("table#environment-type");
             table.find('tbody')
@@ -2351,18 +2357,18 @@
                         .text("$" + (window["formatMoney"](EnvData["ctv"].revenue_total, 2)))
                     )
                     .append($('<td>')
-                        .text(isNaN(EnvData["ctv"].revenue_total / total)?0:"%" + (window["formatMoney"](EnvData["ctv"].revenue_total / total * 100, 2)))
+                        .text(isNaN(EnvData["ctv"].revenue_total / total) ? 0 : "%" + (window["formatMoney"](EnvData["ctv"].revenue_total / total * 100, 2)))
                     )
                     .append($('<td>')
                         .text("$" + (window["formatMoney"](EnvData["mobile_app"].revenue_total, 2)))
                     )
                     .append($('<td>')
-                        .text(isNaN(EnvData["mobile_app"].revenue_total / total)?0:"%" + (window["formatMoney"](EnvData["mobile_app"].revenue_total / total * 100, 2)))
+                        .text(isNaN(EnvData["mobile_app"].revenue_total / total) ? 0 : "%" + (window["formatMoney"](EnvData["mobile_app"].revenue_total / total * 100, 2)))
                     )
                 );
-        }catch (e) {
-            console.log("Error: "+e);
-            swal("Server Error Code: 041","Error Occurred in Adtelligent Server","error");
+        } catch (e) {
+            console.log("Error: " + e);
+            swal("Server Error Code: 041", "Error Occurred in Adtelligent Server", "error");
             hide_loader();
         }
     }
@@ -2390,12 +2396,11 @@
                         .append($('<td>')
                             .text("%" + record.fill_rate_ad_opportunities)
                         )
-
                     );
             }
-        }catch (e) {
-            console.log("Error: "+e);
-            swal("Server Error Code: 042","Error Occurred in Adtelligent Server","error");
+        } catch (e) {
+            console.log("Error: " + e);
+            swal("Server Error Code: 042", "Error Occurred in Adtelligent Server", "error");
             hide_loader();
         }
     }
@@ -2423,12 +2428,11 @@
                         .append($('<td>')
                             .text("%" + record.fill_rate_ad_opportunities)
                         )
-
                     );
             }
-        }catch (e) {
-            console.log("Error: "+e);
-            swal("Server Error Code: 043","Error Occurred in Adtelligent Server","error");
+        } catch (e) {
+            console.log("Error: " + e);
+            swal("Server Error Code: 043", "Error Occurred in Adtelligent Server", "error");
             hide_loader();
         }
     }
@@ -2449,7 +2453,7 @@
                     maintainAspectRatio: false,
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 return tooltipItem.yLabel.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                             }
                         }
@@ -2487,9 +2491,9 @@
             });
 
             $(".isResizable").resizable();
-        }catch (e) {
-            console.log("Error: "+e);
-            swal("Server Error Code: 044","Error Occurred in Adtelligent Server","error");
+        } catch (e) {
+            console.log("Error: " + e);
+            swal("Server Error Code: 044", "Error Occurred in Adtelligent Server", "error");
             hide_loader();
         }
     }
@@ -2502,7 +2506,7 @@
             window["impressionChart"] = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Array.from({ length: 25 }, (v, k) => k),
+                    labels: Array.from({length: 25}, (v, k) => k),
                     datasets
                 },
                 options: {
@@ -2510,7 +2514,7 @@
                     maintainAspectRatio: false,
                     tooltips: {
                         callbacks: {
-                            label: function(tooltipItem, data) {
+                            label: function (tooltipItem, data) {
                                 return tooltipItem.yLabel.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
                             }
                         }
@@ -2526,9 +2530,9 @@
             });
 
             $(".isResizable").resizable();
-        }catch (e) {
-            console.log("Error: "+e);
-            swal("Server Error Code: 045","Error Occurred in Adtelligent Server","error");
+        } catch (e) {
+            console.log("Error: " + e);
+            swal("Server Error Code: 045", "Error Occurred in Adtelligent Server", "error");
             hide_loader();
         }
     }
@@ -2577,28 +2581,28 @@
                     }
                 }
             });
-        }catch (e) {
-            console.log("Error: "+e);
-            swal("Server Error Code: 046","Error Occurred in Adtelligent Server","error");
+        } catch (e) {
+            console.log("Error: " + e);
+            swal("Server Error Code: 046", "Error Occurred in Adtelligent Server", "error");
             hide_loader();
         }
     }
 
-    window['filterEcludedChannels'] = async(seatId, parameters, res) => {
+    window['filterEcludedChannels'] = async (seatId, parameters, res) => {
         let excludedChannels;
         try {
-            let seatExChannelsParams = {...parameters };
+            let seatExChannelsParams = {...parameters};
             seatExChannelsParams.fields += ',channel';
             seatExChannelsParams.report += ',channel';
             seatExChannelsParams.channel = seats[seatId].excluded_channels.join(',');
 
             excludedChannels = await seats[seatId].api.request(seatExChannelsParams).catch(e => {
-                console.log("Error: "+e);
+                console.log("Error: " + e);
                 // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
                 // hide_loader();
-                if (e === 401) swal('Unauthenticated','API not authenticated','error');//top.location.reload();
+                if (e === 401) swal('Unauthenticated', 'API not authenticated', 'error');//top.location.reload();
             });
-            if(!excludedChannels) return 0;
+            if (!excludedChannels) return 0;
             for (const [index, record] of excludedChannels.data.entries()) {
 
                 const dataIdx = res.data.findIndex(m => {
@@ -2622,16 +2626,16 @@
             }
 
             return res;
-        }catch (e) {
+        } catch (e) {
             // console.log("Error: "+e+"=>"+excludedChannels.errors.message);
-            console.log("Error: "+e);
-            swal("Server Error Code: 047","Error Occurred in Adtelligent Server","error");
-            if (e === 401) swal('Unauthenticated',' API not authenticated','error');//top.location.reload();
+            console.log("Error: " + e);
+            swal("Server Error Code: 047", "Error Occurred in Adtelligent Server", "error");
+            if (e === 401) swal('Unauthenticated', ' API not authenticated', 'error');//top.location.reload();
             // hide_loader();
         }
     }
 
 
-    window["momentTime"] = () => moment(new Date().toLocaleString('en-US', { timeZone: 'Atlantic/Faroe' })).utcOffset(0, true);
+    window["momentTime"] = () => moment(new Date().toLocaleString('en-US', {timeZone: 'Atlantic/Faroe'})).utcOffset(0, true);
 
 })(jQuery);

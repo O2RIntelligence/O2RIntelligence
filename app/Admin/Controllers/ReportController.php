@@ -42,7 +42,7 @@ class ReportController extends Controller
         );
         $seats = [];
         if($user->isRole('administrator') || ($user->isRole('reporter') && !$report))
-            $seats = Administrator::where('api_token', '!=' , '')->select(['id', 'name', 'excluded_channels', 'api_token', 'partner_fee'])->get()->keyBy("id")->toArray();
+            $seats = Administrator::where('api_token', '!=' , '')->select(['id', 'name', 'adtelligent_account_id','excluded_channels', 'api_token', 'partner_fee'])->get()->keyBy("id")->toArray();
         elseif ($user->isRole('seat'))
             $seats = $user->seats->keyBy("id")->toArray();
         $content->view('dashboard/' . $view, compact('user', 'seats'));
