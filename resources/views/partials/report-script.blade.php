@@ -267,7 +267,7 @@
         $.ajax({
             url: pixalateUrl,
             type: 'GET',
-            dataType: 'json', // added data type
+            // dataType: 'json', // added data type
             success: function (res) {
                 window['pixalateImpressions'] = res;
             },

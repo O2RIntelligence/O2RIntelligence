@@ -17,7 +17,8 @@
                 <div class="row">
                     <div class="col-md-4">
                         <b style="line-height:35px;">
-                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#datatables-vertical-container-table">
+                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                    data-target="#datatables-vertical-container-table">
                                 <i class="fa fa-list"></i>
                             </button>
                             {{ __('Income Channel Overview') }}
@@ -32,7 +33,8 @@
                             </select>
                         </div>
                         <div class="col-md-1">
-                            <button class="refresh-seats btn-black btn btn-sm btn-block" style="margin-top: 2px;">{{__('Refresh')}}</button>
+                            <button class="refresh-seats btn-black btn btn-sm btn-block"
+                                    style="margin-top: 2px;">{{__('Refresh')}}</button>
                         </div>
                     @endif
                 </div>
@@ -40,34 +42,36 @@
             <div class="box-body table-responsive no-padding">
                 <table id="vertical-container-table" class="table table-hover grid-table">
                     <thead>
-                        <tr>
-                            <th>Seat</th>
-                            <th>Revenue</th>
-                            <th>Media Cost</th>
-                            <th>Operation Fee</th>
-                            <th>Gross Profit</th>
-                            <th class="non-partner">Partner Fee</th>
-                            <th class="non-partner">Profit Margin</th>
-                            <th class="non-partner">Net Income</th>
-                            <th class="non-partner">Net Inc (%)</th>
-                        </tr>
+                    <tr>
+                        <th>Seat</th>
+                        <th>Revenue</th>
+                        <th>Media Cost</th>
+                        <th>Operation Fee</th>
+                        <th>Scoring Fee</th>
+                        <th>Gross Profit</th>
+                        <th class="non-partner">Partner Fee</th>
+                        <th class="non-partner">Profit Margin</th>
+                        <th class="non-partner">Net Income</th>
+                        <th class="non-partner">Net Inc (%)</th>
+                    </tr>
                     </thead>
                     <tbody>
                     </tbody>
                     <tfoot>
-                        <tr class="info">
-                            <th>
+                    <tr class="info">
+                        <th>
                             {{__('Totals')}}
-                            </th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="non-partner"></td>
-                            <td class="non-partner"></td>
-                            <td class="non-partner"></td>
-                            <td class="non-partner"></td>
-                        </tr>
+                        </th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="non-partner"></td>
+                        <td class="non-partner"></td>
+                        <td class="non-partner"></td>
+                        <td class="non-partner"></td>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -90,7 +94,8 @@
         <div class="box grid-box">
             <div class="box-header with-border text-center">
 
-                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#datatables-media-income-container-table">
+                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                        data-target="#datatables-media-income-container-table">
                     <i class="fa fa-list"></i>
                 </button>
 
@@ -99,41 +104,41 @@
             <div class="box-body table-responsive">
                 <table id="media-income-container-table" class="table table-hover grid-table">
                     <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Impressions</th>
-                            <th>Scanned Impressions</th>
-                            <th>Ad Requests</th>
-                            <th>Gross Revenue</th>
-                            <th>Net Revenue</th>
-                            <th>Media Cost</th>
-                            <th>Marketplace fee</th>
-                            <th>Ad Serving Fee</th>
-                            <th>Scanning Fee</th>
-                            <th>Gross Profit</th>
-                            <th class="non-partner">Net Income</th>
-                            <th class="non-partner"></th>
-                        </tr>
+                    <tr>
+                        <th>Date</th>
+                        <th>Impressions</th>
+                        <th>Scanned Impressions</th>
+                        <th>Ad Requests</th>
+                        <th>Gross Revenue</th>
+                        <th>Net Revenue</th>
+                        <th>Media Cost</th>
+                        <th>Marketplace fee</th>
+                        <th>Ad Serving Fee</th>
+                        <th>Scanning Fee</th>
+                        <th>Gross Profit</th>
+                        <th class="non-partner">Net Income</th>
+                        <th class="non-partner"></th>
+                    </tr>
                     </thead>
                     <tbody>
                     </tbody>
                     <tfoot>
-                        <tr class="info">
-                            <th>
+                    <tr class="info">
+                        <th>
                             {{__('Totals')}}
-                            </th>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="non-partner"></td>
-                            <td></td>
-                        </tr>
+                        </th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="non-partner"></td>
+                        <td></td>
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -145,6 +150,6 @@
 
 @include('partials/report-script')
 <script>
-        var current_page = "income";
+    var current_page = "income";
 
 </script>

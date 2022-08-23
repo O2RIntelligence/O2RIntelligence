@@ -557,7 +557,7 @@
                             }
                             if (index == 0) return;
                             var sum = index == 6 || index == 8 ? api.column(index).data().sum() / Object.keys(seats).length : api.column(index).data().sum();
-                            if (index == 6 || index == 8) {
+                            if (index == 7 || index == 9) {
                                 var sign = "%";
                                 $(api.column(index).footer()).html(window["formatMoney"](sum, 2) + sign)
                             } else {
@@ -857,6 +857,9 @@
                             .text("$" + window["formatMoney"](record.operation_fee, 2))
                         )
                         .append($('<td>')
+                            .text("$" + window["formatMoney"](record.scoring_fee, 2))
+                        )
+                        .append($('<td>')
                             .text("$" + window["formatMoney"](record.gross_profit, 2))
                         )
                         .append($('<td class="non-partner">')
@@ -897,6 +900,9 @@
                         )
                         .append($('<td>')
                             .text("$" + window["formatMoney"](record.operation_fee, 2))
+                        )
+                        .append($('<td>')
+                            .text("$" + window["formatMoney"](record.scoring_fee, 2))
                         )
                         .append($('<td>')
                             .text("$" + window["formatMoney"](record.gross_profit, 2))
