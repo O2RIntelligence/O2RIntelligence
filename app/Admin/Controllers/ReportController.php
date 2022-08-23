@@ -84,4 +84,8 @@ class ReportController extends Controller
         }
     }
 
+    public function getServingFee(){
+        return response()->json(AdminConfig::select('value')->where('name','serving_fee')->get('value')->first());
+    }
+
 }

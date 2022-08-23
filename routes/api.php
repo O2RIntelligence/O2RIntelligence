@@ -21,6 +21,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/get-ms-channel-ids',[ReportController::class,'getMsChannelIds'])->name('get.ms-channel-ids');
+Route::get('/get-serving-fee',[ReportController::class,'getServingFee'])->name('get.ms-channel-ids');
 Route::get('/get-users',[ReportController::class,'getUsers'])->name('get.users');
 
 //Activity Report operations

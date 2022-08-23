@@ -482,7 +482,6 @@
                         "scanned_requests": 0,
                         "scoring_fee": 0,
                     };
-
                     AppendVerticalContainerIncomeRow(VC_RowData, seat.name);
 
                     // push data for first chart
@@ -758,8 +757,9 @@
 
         function getPixalateImpression(seat) {
             try {
+                // console.log(seat.adtelligent_account_id)
                 let addTelligentId = window['pixalateImpressions'];
-                if(!addTelligentId) return 0;
+                if (!addTelligentId) return 0;
                 let pixalateImpressionObject = addTelligentId.docs.find(o => o.kv5 === seat.adtelligent_account_id.toString());
                 return pixalateImpressionObject.impressions;
             } catch (e) {
@@ -882,8 +882,16 @@
             }
         }
 
-        function AppendVerticalContainerRow(record, seat_name) {
+        function AppendVerticalContainerRow(record, seat_name, seat_adtelligent_id) {
             try {
+                let account = {
+                    adtelligent_account_id: parseInt(seat_adtelligent_id),
+                }
+                let pixalateImpressions = getPixalateImpression(account);
+                // [Impression served/1000* [Serving Fee]]+[Impressions scanned/1000 * [Scoring Fee]]
+                // impression served- as usual to pull from Adtelligent API
+                // Impressions Scanned to be pulled from pixalate:
+                let operation_fee = (((record.impressions_good / 1000) * window['serving_fee']) + ((pixalateImpressions / 1000) * record.scoring_fee));
                 $("#vertical-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<td>')
@@ -899,7 +907,7 @@
                             .text("$" + window["formatMoney"](record.media_cost, 2))
                         )
                         .append($('<td>')
-                            .text("$" + window["formatMoney"](record.operation_fee, 2))
+                            .text("$" + window["formatMoney"](operation_fee, 2))
                         )
                         .append($('<td>')
                             .text("$" + window["formatMoney"](record.scoring_fee, 2))
@@ -1168,7 +1176,7 @@
                         "scoring_fee": 0,
                     };
 
-                    AppendVerticalContainerRow(VC_RowData, seat.name);
+                    AppendVerticalContainerRow(VC_RowData, seat.name, seat.adtelligent_account_id);
 
                     // group by channel << aka source >>
 
@@ -1235,11 +1243,22 @@
                             if ($("#datatables-" + modelId + "_" + index).length == 0) {
                                 appendTableModalOption(modelId, api.column(index).header().textContent, index);
                             }
-                            if (index == 0) return;
-                            var sum = index == 8 ? api.column(index).data().sum() / Object.keys(seats).length : api.column(index).data().sum();
-                            var sign = index == 8 ? "%" : "$";
-                            sign = index === 1 ? '' : sign;
-                            $(api.column(index).footer()).html(sign + window["formatMoney"](sum, 2));
+                            if (index === 0) return;
+                            var sum = index === 9 ? api.column(index).data().sum() / Object.keys(seats).length : api.column(index).data().sum();
+                            if (index === 9) {
+                                var sign = "%";
+                                $(api.column(index).footer()).html(window["formatMoney"](sum, 2) + sign)
+                            } else if (index === 1) {
+                                sign = '';
+                                $(api.column(index).footer()).html(sign + window["formatMoney"](sum, 2));
+                            } else {
+                                sign = "$";
+                                $(api.column(index).footer()).html(sign + window["formatMoney"](sum, 2))
+                            }
+                            if (index === 4) {
+                                $(api.column(index)).html('zzz');
+                            }
+
                         });
                     }
                 });
@@ -2526,7 +2545,7 @@
     }
 
     function appendImpressionChart(datasets) {
-        console.log(datasets);
+        // console.log(datasets);
         try {
             if (window["impressionChart"]) window["impressionChart"].destroy();
             var ctx = document.getElementById("impression_chart").getContext('2d');

@@ -256,6 +256,9 @@
     $.get("../../api/get-ms-channel-ids", function (data, status) {
         window['mt_channel_id'] = data.value.split(',');
     });
+    $.get("../../api/get-serving-fee", function (data, status) {
+        window['serving_fee'] = data.value;
+    });
 
     let startDate = $("input[name=start_date]").val();
     let endDate = $("input[name=end_date]").val();
@@ -265,7 +268,7 @@
         let year = '{{date('Y')}}';
         // let pixalateUrl = "https://dashboard.api.pixalate.com/services/" + year + "/Report/getDetails?&username=6b8549755a929a2ccfb622a3d63801f5&password=87a483160fc51023e0438d1e81db2cb6&timeZone=0&start=0&limit=100&q=kv5,impressions,sivtImpressions,sivtImpsRate,givtImpressions,givtImpsRate WHERE day>='" + startDate + "' AND day<='" + endDate + "' GROUP BY kv5 ORDER BY impressions DESC";
         let pixalateUrl = '{{route('pixalate.get')}}'+'?startDate='+startDate+'&endDate='+endDate;
-        console.log(pixalateUrl);
+        // console.log(pixalateUrl);
 
         // window.open(pixalateUrl);
 
@@ -275,11 +278,11 @@
             method: 'GET',
             success: function (res) {
                 window['pixalateImpressions'] = JSON.parse(res);
-                console.log(window['pixalateImpressions']);
+                // console.log(window['pixalateImpressions']);
             },
             error: function (request, status, error) {
                 let result = request.responseText.match(/<title>(.*)<\/title>/);
-                console.log(result[1]);
+                // console.log(result[1]);
                 window['pixalateError'] = result[1];
                 swal('Pixalate Server Error', result[1], 'error');
             }

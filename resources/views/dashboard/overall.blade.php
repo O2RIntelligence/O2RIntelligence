@@ -98,6 +98,7 @@
                                 <th>Revenue</th>
                                 <th>Media Cost</th>
                                 <th>Operation Fee</th>
+                                <th>Scoring Fee</th>
                                 <th>Gross Profit</th>
                                 <th>Partner Fee</th>
                                 <th>Net Profit</th>
@@ -111,6 +112,7 @@
                                 <th>
                                 {{__('Totals')}}
                                 </th>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
