@@ -265,26 +265,31 @@
         let year = '{{date('Y')}}';
         let pixalateUrl = "https://dashboard.api.pixalate.com/services/" + year + "/Report/getDetails?&username=6b8549755a929a2ccfb622a3d63801f5&password=87a483160fc51023e0438d1e81db2cb6&timeZone=0&start=0&limit=100&q=kv5,impressions,sivtImpressions,sivtImpsRate,givtImpressions,givtImpsRate WHERE day>='" + startDate + "' AND day<='" + endDate + "' GROUP BY kv5 ORDER BY impressions DESC";
         console.log(pixalateUrl);
-        // $.ajax({
-        //     url: pixalateUrl,
-        //     type: 'GET',
-        //     method: 'GET',
-        //     dataType: 'json',
-        //     contentType: 'json',
-        //     success: function (res) {
-        //         window['pixalateImpressions'] = res;
-        //     },
-        //     error: function (request, status, error) {
-        //         let result = request.responseText.match(/<title>(.*)<\/title>/);
-        //         console.log(result[1]);
-        //         window['pixalateError'] = result[1];
-        //         swal('Pixalate Server Error', result[1], 'error');
-        //     }
-        // });
-        fetch(pixalateUrl)
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(err => console.error(err));
+        // window.open(pixalateUrl);
+        $.ajax({
+            url: pixalateUrl,
+            type: 'GET',
+            method: 'GET',
+            // dataType: 'json',
+            // contentType: 'json',
+            // xhrFields: {
+            //     withCredentials: true
+            // },
+            // crossDomain: true,
+            success: function (res) {
+                window['pixalateImpressions'] = res;
+            },
+            error: function (request, status, error) {
+                let result = request.responseText.match(/<title>(.*)<\/title>/);
+                console.log(result[1]);
+                window['pixalateError'] = result[1];
+                swal('Pixalate Server Error', result[1], 'error');
+            }
+        });
+        // fetch(pixalateUrl)
+        //     .then(response => response.json())
+        //     .then(data => console.log(data))
+        //     .catch(err => console.error(err));
     }
 
     window["user_id"] = {{ $user->id }};
