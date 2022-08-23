@@ -80,7 +80,7 @@ class ReportController extends Controller
             $response = $client->request('GET',$url);
             return ($response->getBody());
         }catch(Exception $e){
-            dd($e);
+            return response($e->getMessage(),400);
         }
     }
 
