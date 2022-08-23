@@ -285,11 +285,13 @@
                         var date = moment().utcOffset(0, true).format('YYYY-MM-DD');
                         $("input[name=start_date]").val(date);
                         $("input[name=end_date]").val(date);
+                        getPixalateData(date, date);
                         break;
                     case 'yesterday':
                         var date = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
                         $("input[name=start_date]").val(date);
                         $("input[name=end_date]").val(date);
+                        getPixalateData(date, date);
                         break;
                     case 'last7':
                         $("input[name=start_date]").val(moment().utcOffset(0, true).subtract(7, "days").format('YYYY-MM-DD'));
@@ -298,6 +300,7 @@
                     case 'last30':
                         $("input[name=start_date]").val(moment().utcOffset(0, true).startOf('month').format('YYYY-MM-DD'));
                         $("input[name=end_date]").val(moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD'));
+                        getPixalateData(moment().utcOffset(0, true).startOf('month').format('YYYY-MM-DD'), moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD'));
                         break;
                     default:
                         break;
@@ -721,7 +724,7 @@
                     record.marketplace_fee = (record.environment in CR_Group) ? CR_Group[record.environment].fee : 0;
 
                 //scoring fee calculations
-                let pixalateImpression = getPixalateImpression(seat)??0;
+                let pixalateImpression = getPixalateImpression(seat);
 
                 // record.scoring_fee = (record.scanned_requests / 1000) * window["rates"].scoring_fee;
                 record.scoring_fee = (pixalateImpression / 1000) * window["rates"].scoring_fee;
@@ -756,6 +759,7 @@
         function getPixalateImpression(seat) {
             try {
                 let addTelligentId = window['pixalateImpressions'];
+                if(!addTelligentId) return 0;
                 let pixalateImpressionObject = addTelligentId.docs.find(o => o.kv5 === seat.adtelligent_account_id.toString());
                 return pixalateImpressionObject.impressions;
             } catch (e) {
@@ -763,7 +767,6 @@
                 swal('Pixalate Server Error', window['pixalateError'], 'error');
                 hide_loader();
                 throw new Error(window['pixalateError']);
-                window.stop()
 
             }
         }
