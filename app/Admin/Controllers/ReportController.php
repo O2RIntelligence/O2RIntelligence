@@ -9,6 +9,8 @@ use Encore\Admin\Controllers\Dashboard;
 use Encore\Admin\Layout\Column;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Layout\Row;
+use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Auth;
@@ -66,6 +68,20 @@ class ReportController extends Controller
         if (Hash::check('mys3cretPassword',$request->api_token))
         return response()->json(Administrator::query()->whereNotNull('api_token')->pluck('api_token'));
         else return response()->json();
+    }
+
+    public  function getPixalateData(Request $request){
+        try{
+            $client = new Client();
+            $startDate = $request->startDate;
+            $endDate = $request->endDate;
+            $year = date("Y",strtotime($startDate));
+            $url  = "https://dashboard.api.pixalate.com/services/" . $year . "/Report/getDetails?&username=6b8549755a929a2ccfb622a3d63801f5&password=87a483160fc51023e0438d1e81db2cb6&timeZone=0&start=0&limit=100&q=kv5,impressions,sivtImpressions,sivtImpsRate,givtImpressions,givtImpsRate WHERE day>='". $startDate ."' AND day<='" . $endDate ."' GROUP BY kv5 ORDER BY impressions DESC";
+            $response = $client->request('GET',$url);
+            return ($response->getBody());
+        }catch(Exception $e){
+            dd($e);
+        }
     }
 
 }

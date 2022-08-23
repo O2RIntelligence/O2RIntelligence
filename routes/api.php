@@ -31,4 +31,9 @@ Route::get('/google-ads/activity-report', [ActivityReportController::class, 'ind
 Route::post('/google-ads/financial-report/data', [FinancialReportController::class, 'getAllFinancialReportData'])->name('google-ads.financial-report.data');
 Route::get('/google-ads/financial-report', [FinancialReportController::class, 'index'])->name('google-ads.financial-report.index');
 
+//pixalate data
+Route::get('/pixalate', [ReportController::class, 'getPixalateData'])->name('pixalate.get');
+
+
+
 
