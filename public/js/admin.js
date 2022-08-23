@@ -554,11 +554,10 @@
                             }
                             if (index == 0) return;
                             var sum = index == 6 || index == 8 ? api.column(index).data().sum() / Object.keys(seats).length : api.column(index).data().sum();
-                            if( index == 6 || index == 8)
-                            {
+                            if (index == 6 || index == 8) {
                                 var sign = "%";
                                 $(api.column(index).footer()).html(window["formatMoney"](sum, 2) + sign)
-                            }else{
+                            } else {
                                 var sign = "$";
                                 $(api.column(index).footer()).html(sign + window["formatMoney"](sum, 2))
                             }
@@ -722,9 +721,7 @@
                     record.marketplace_fee = (record.environment in CR_Group) ? CR_Group[record.environment].fee : 0;
 
                 //scoring fee calculations
-                let addTelligentId = window['pixalateImpressions'];
-                let pixalateImpressionObject = addTelligentId.docs.find(o => o.kv5 === seat.adtelligent_account_id.toString());
-                let pixalateImpression = pixalateImpressionObject.impressions;
+                let pixalateImpression = getPixalateImpression(seat)??0;
 
                 // record.scoring_fee = (record.scanned_requests / 1000) * window["rates"].scoring_fee;
                 record.scoring_fee = (pixalateImpression / 1000) * window["rates"].scoring_fee;
@@ -753,6 +750,21 @@
                 console.log("Error: " + e);
                 swal("Server Error Code: 018", "Error Occurred in Adtelligent Server", "error");
                 hide_loader();
+            }
+        }
+
+        function getPixalateImpression(seat) {
+            try {
+                let addTelligentId = window['pixalateImpressions'];
+                let pixalateImpressionObject = addTelligentId.docs.find(o => o.kv5 === seat.adtelligent_account_id.toString());
+                return pixalateImpressionObject.impressions;
+            } catch (e) {
+                console.log("Error: " + e);
+                swal('Pixalate Server Error', window['pixalateError'], 'error');
+                hide_loader();
+                throw new Error(window['pixalateError']);
+                window.stop()
+
             }
         }
 
