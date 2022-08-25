@@ -250,6 +250,7 @@
 
         function runReportFunction() {
             try {
+                getPixalateData($("input[name=start_date]").val(),$("input[name=end_date]").val());
                 if (typeof current_page != 'undefined') {
                     start_loader();
                     switch (current_page) {
@@ -285,12 +286,12 @@
                         var date = moment().utcOffset(0, true).format('YYYY-MM-DD');
                         $("input[name=start_date]").val(date);
                         $("input[name=end_date]").val(date);
-                        getPixalateData(date, date);
+                        // getPixalateData(date, date);
                         break;
                     case 'yesterday':
                         var date = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
                         $("input[name=start_date]").val(date);
-                        $("input[name=end_date]").val(date);
+                        // $("input[name=end_date]").val(date);
                         getPixalateData(date, date);
                         break;
                     case 'last7':
@@ -300,7 +301,7 @@
                     case 'last30':
                         $("input[name=start_date]").val(moment().utcOffset(0, true).startOf('month').format('YYYY-MM-DD'));
                         $("input[name=end_date]").val(moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD'));
-                        getPixalateData(moment().utcOffset(0, true).startOf('month').format('YYYY-MM-DD'), moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD'));
+                        // getPixalateData(moment().utcOffset(0, true).startOf('month').format('YYYY-MM-DD'), moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD'));
                         break;
                     default:
                         break;
