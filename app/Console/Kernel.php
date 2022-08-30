@@ -29,6 +29,9 @@ class Kernel extends ConsoleKernel
             ->everyTenMinutes();
         $schedule->command('dailyData:update')
             ->everyThirtyMinutes();
+        $schedule->command('pixalate:update')
+            ->dailyAt('16:50')
+            ->timezone('Asia/Jerusalem');
     }
 
     /**
@@ -38,7 +41,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
