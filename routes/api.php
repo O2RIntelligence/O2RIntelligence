@@ -38,7 +38,7 @@ Route::get('/google-ads/financial-report', [FinancialReportController::class, 'i
 Route::get('/pixalate', [ReportController::class, 'getPixalateData'])->name('pixalate.get');
 
 //insert raw pixalate data
-//Route::post('/raw-pixalate', [PixalateImpressionController::class, 'insertRawPixalateData'])->name('pixalate.insert.raw');
+Route::post('/raw-pixalate', [PixalateImpressionController::class, 'insertRawPixalateData'])->name('pixalate.insert.raw');
 
 
 

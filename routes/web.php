@@ -20,7 +20,6 @@ use App\Http\Controllers\GoogleAds\GoogleLoginController;
 use App\Http\Controllers\GoogleAds\HourlyDataController;
 use App\Http\Controllers\GoogleAds\MasterAccountController;
 use App\Http\Controllers\GoogleAds\SubAccountController;
-use App\Http\Controllers\PixalateImpressionController;
 use App\Services\GoogleAds\GoogleAdsService;
 use Illuminate\Support\Facades\Route;
 
@@ -79,7 +78,6 @@ Route::get('admin/google-ads/financial-report',  [FinancialReportController::cla
 Route::get('admin/google-ads/account-setting',  [MasterAccountController::class, 'index'])->name('googleAds.account-setting.index');
 Route::get('admin/google-ads/general-variable', [GeneralVariableController::class, 'index'])->name('googleAds.general-variable.index');
 
-//insert raw pixalate data
-Route::post('/raw-pixalate', [PixalateImpressionController::class, 'insertRawPixalateData'])->name('pixalate.insert.raw');
+
 
 
