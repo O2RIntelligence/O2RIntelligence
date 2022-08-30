@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('dailyData:update')
             ->everyThirtyMinutes();
         $schedule->command('pixalate:update')
-            ->dailyAt('17:22')
+            ->dailyAt('16:30')
             ->timezone('Asia/Jerusalem');
     }
 
