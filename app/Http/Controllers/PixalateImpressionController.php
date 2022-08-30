@@ -51,7 +51,7 @@ class PixalateImpressionController extends Controller
                         'seat_id' => $seatWiseData['kv5'],
                         'impressions' => $seatWiseData['impressions'],
                     ]);
-                }var_dump($data);
+                }var_dump($data['numFound']);
                 return "Data Created Successfully";
             } else {
                 return "Could not get response, error code: " . $response->getStatusCode();
