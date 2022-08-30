@@ -25,10 +25,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('hourlyData:update')
-            ->everyTenMinutes();
-        $schedule->command('dailyData:update')
-            ->everyThirtyMinutes();
+        //todo: at live server, after enabling google ads module, uncomment these lines
+//        $schedule->command('hourlyData:update')
+//            ->everyTenMinutes();
+//        $schedule->command('dailyData:update')
+//            ->everyThirtyMinutes();
         $schedule->command('pixalate:update')
             ->dailyAt('07:00')
             ->timezone('Asia/Jerusalem');
