@@ -3,6 +3,8 @@
 use App\Admin\Controllers\ReportController;
 use App\Http\Controllers\GoogleAds\ActivityReportController;
 use App\Http\Controllers\GoogleAds\FinancialReportController;
+use App\Http\Controllers\PixalateImpressionController;
+use App\Model\PixalateImpression;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +36,9 @@ Route::get('/google-ads/financial-report', [FinancialReportController::class, 'i
 
 //pixalate data
 Route::get('/pixalate', [ReportController::class, 'getPixalateData'])->name('pixalate.get');
+
+//insert raw pixalate data
+//Route::post('/raw-pixalate', [PixalateImpressionController::class, 'insertRawPixalateData'])->name('pixalate.insert.raw');
 
 
 
