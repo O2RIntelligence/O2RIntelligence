@@ -250,26 +250,28 @@
 
         function runReportFunction() {
             try {
-                getPixalateData($("input[name=start_date]").val(), $("input[name=end_date]").val());
-                if (typeof current_page != 'undefined') {
-                    start_loader();
-                    switch (current_page) {
-                        case 'overall-report':
-                            overallAjax().then(hide_loader);
-                            break;
+                getPixalateData($("input[name=start_date]").val(), $("input[name=end_date]").val(), function () {
+                    if (typeof current_page != 'undefined') {
+                        start_loader();
+                        switch (current_page) {
+                            case 'overall-report':
+                                overallAjax().then(hide_loader);
+                                break;
 
-                        case 'income':
-                            incomeAjax().then(hide_loader);
-                            break;
+                            case 'income':
+                                incomeAjax().then(hide_loader);
+                                break;
 
-                        case 'media_sources':
-                            MediaSourceAjax().then(hide_loader);
-                            break;
+                            case 'media_sources':
+                                MediaSourceAjax().then(hide_loader);
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
-                }
+                });
+
             } catch (e) {
                 console.log("Error: " + e);
                 swal("Server Error Code: 006", "Error Occurred in Adtelligent Server", "error");
@@ -402,6 +404,7 @@
                     // init seat
                     const seatId = selected_seats[index];
                     const seat = seats[seatId];
+
                     // get campaign 1120 revenue for marketplace_fee
                     let campaignRequest;
                     try {
@@ -755,19 +758,19 @@
                 hide_loader();
             }
         }
+
         function getPixalateImpression(seat) {
             try {
-                // console.log(window['pixalateImpressions'])
                 let addTelligentId = window['pixalateImpressions'];
-                if (!addTelligentId) return 0;
+                // if (!addTelligentId) return 0;
 
                 let pixalateImpressionIndex = addTelligentId.docs.findIndex(o => parseInt(o.kv5) === parseInt(seat.adtelligent_account_id));
-                console.log("Index: " + pixalateImpressionIndex, "seat: "+ seat.adtelligent_account_id);
+                // console.log("Index: " + pixalateImpressionIndex, "seat: " + seat.adtelligent_account_id);
                 if (pixalateImpressionIndex > -1) {
-                    console.log("Seat found: " + seat.adtelligent_account_id, "Impressions: " + addTelligentId.docs[pixalateImpressionIndex].impressions)
+                    // console.log("Seat found: " + seat.adtelligent_account_id, "Impressions: " + addTelligentId.docs[pixalateImpressionIndex].impressions)
                     return addTelligentId.docs[pixalateImpressionIndex].impressions;
                 } else {
-                    console.log("Seat not Found: " + seat.adtelligent_account_id);
+                    // console.log("Seat not Found: " + seat.adtelligent_account_id);
                     return null;
                 }
             } catch (e) {

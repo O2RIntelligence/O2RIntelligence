@@ -264,7 +264,7 @@
     let endDate = $("input[name=end_date]").val();
 
 
-    function getPixalateData(startDate, endDate) {
+    function getPixalateData(startDate, endDate, callback) {
         let pixalateUrl = '{{route('pixalate.get')}}' + '?startDate=' + startDate + '&endDate=' + endDate;
 
         window['pixalateImpressions'] = null;
@@ -277,6 +277,9 @@
             success: function (res) {
                 // console.log(res);
                 window['pixalateImpressions'] = res;
+                if(typeof callback === "function"){
+                    callback();
+                }
                 // console.log(window['pixalateImpressions']);
             },
             error: function (request, status, error) {
