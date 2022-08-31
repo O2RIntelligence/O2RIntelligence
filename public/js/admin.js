@@ -250,7 +250,7 @@
 
         function runReportFunction() {
             try {
-                getPixalateData($("input[name=start_date]").val(),$("input[name=end_date]").val());
+                getPixalateData($("input[name=start_date]").val(), $("input[name=end_date]").val());
                 if (typeof current_page != 'undefined') {
                     start_loader();
                     switch (current_page) {
@@ -755,17 +755,24 @@
                 hide_loader();
             }
         }
-
         function getPixalateImpression(seat) {
             try {
-                // console.log(seat.adtelligent_account_id)
+                // console.log(window['pixalateImpressions'])
                 let addTelligentId = window['pixalateImpressions'];
                 if (!addTelligentId) return 0;
-                let pixalateImpressionObject = addTelligentId.docs.find(o => o.kv5 === seat.adtelligent_account_id.toString());
-                return pixalateImpressionObject.impressions;
+
+                let pixalateImpressionIndex = addTelligentId.docs.findIndex(o => parseInt(o.kv5) === parseInt(seat.adtelligent_account_id));
+                console.log("Index: " + pixalateImpressionIndex, "seat: "+ seat.adtelligent_account_id);
+                if (pixalateImpressionIndex > -1) {
+                    console.log("Seat found: " + seat.adtelligent_account_id, "Impressions: " + addTelligentId.docs[pixalateImpressionIndex].impressions)
+                    return addTelligentId.docs[pixalateImpressionIndex].impressions;
+                } else {
+                    console.log("Seat not Found: " + seat.adtelligent_account_id);
+                    return null;
+                }
             } catch (e) {
                 console.log("Error: " + e);
-                swal('Pixalate Server Error', window['pixalateError'], 'error');
+                swal('Pixalate Server Error', window['pixalateError'] ?? 'Pixalate Error', 'error');
                 hide_loader();
                 throw new Error(window['pixalateError']);
 
@@ -888,6 +895,7 @@
                 let account = {
                     adtelligent_account_id: parseInt(seat_adtelligent_id),
                 }
+                // console.log(account);
                 let pixalateImpressions = getPixalateImpression(account);
                 // [Impression served/1000* [Serving Fee]]+[Impressions scanned/1000 * [Scoring Fee]]
                 // impression served- as usual to pull from Adtelligent API
