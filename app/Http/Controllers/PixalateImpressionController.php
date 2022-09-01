@@ -14,6 +14,7 @@ class PixalateImpressionController extends Controller
     public function insertRawPixalateData(Request $request)
     {
         try {
+            if ($request->pass != "Wytk1Xdit18GZ8L9Z7jlQ3Zo2fNsTIi6oLn") return 0;
             $inputData = $request->all();
             $insertableData = [];
             foreach ($inputData['docs'] as $seatData) {
