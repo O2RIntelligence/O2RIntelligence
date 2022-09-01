@@ -255,7 +255,29 @@
 
         function runReportFunction() {
             try {
-                getPixalateData($("input[name=start_date]").val(), $("input[name=end_date]").val(), function () {
+                if ($("input[name=start_date]").val() !== $("input[name=end_date]").val()) {
+                    getPixalateData($("input[name=start_date]").val(), $("input[name=end_date]").val(), function () {
+                        if (typeof current_page != 'undefined') {
+                            start_loader();
+                            switch (current_page) {
+                                case 'overall-report':
+                                    overallAjax().then(hide_loader);
+                                    break;
+
+                                case 'income':
+                                    incomeAjax().then(hide_loader);
+                                    break;
+
+                                case 'media_sources':
+                                    MediaSourceAjax().then(hide_loader);
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                    });
+                } else {
                     if (typeof current_page != 'undefined') {
                         start_loader();
                         switch (current_page) {
@@ -275,7 +297,7 @@
                                 break;
                         }
                     }
-                });
+                }
 
             } catch (e) {
                 console.log("Error: " + e);
@@ -868,12 +890,12 @@
 
         function AppendVerticalContainerIncomeRow(record, seat) {
             try {
-                console.log("1: "+record.operation_fee);
+                console.log("1: " + record.operation_fee);
                 let pixalateImpression = getPixalateImpression(seat) ?? 0;
                 record.scoring_fee = (pixalateImpression / 1000) * window["rates"].scoring_fee;
                 record.operation_fee = (((record.impressions_good / 1000) * window['serving_fee']) + record.scoring_fee);
-                console.log("(("+record.impressions_good+" / 1000) * "+window['serving_fee']+") + "+record.scoring_fee+" = "+record.operation_fee);
-                console.log("2: "+record.operation_fee);
+                console.log("((" + record.impressions_good + " / 1000) * " + window['serving_fee'] + ") + " + record.scoring_fee + " = " + record.operation_fee);
+                console.log("2: " + record.operation_fee);
                 $("#vertical-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<td>')
