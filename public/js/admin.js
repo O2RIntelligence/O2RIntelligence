@@ -255,10 +255,11 @@
 
         function runReportFunction() {
             try {
-                if ($("input[name=start_date]").val() !== $("input[name=end_date]").val()) {
+                start_loader()
+                if (($("input[name=start_date]").val() !== moment().utcOffset(0, true).format('YYYY-MM-DD')) && ($("input[name=end_date]").val() !== moment().utcOffset(0, true).format('YYYY-MM-DD'))) {
                     getPixalateData($("input[name=start_date]").val(), $("input[name=end_date]").val(), function () {
                         if (typeof current_page != 'undefined') {
-                            start_loader();
+                            // start_loader();
                             switch (current_page) {
                                 case 'overall-report':
                                     overallAjax().then(hide_loader);
@@ -278,8 +279,9 @@
                         }
                     });
                 } else {
+                    window['pixalateImpression'] = null;
                     if (typeof current_page != 'undefined') {
-                        start_loader();
+                        // start_loader();
                         switch (current_page) {
                             case 'overall-report':
                                 overallAjax().then(hide_loader);
