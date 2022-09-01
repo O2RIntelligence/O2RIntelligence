@@ -745,8 +745,8 @@
                 // [Impression served/1000* [Serving Fee]]+[Impressions scanned/1000 * [Scoring Fee]]
                 // impression served- as usual to pull from Adtelligent API
                 // Impressions Scanned to be pulled from pixalate:
-                // record.operation_fee = (((record.impressions_good / 1000) * window['serving_fee']) + ((pixalateImpression / 1000) * record.scoring_fee));
-                record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
+                record.operation_fee = (((record.impressions_good / 1000) * window['serving_fee']) + record.scoring_fee);
+                // record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
 
                 let media_cost_rate = record.environment === 'mobile_app' ? window["rates"].mobile_rate : window["rates"].ctv_rate;
                 // console.log("media cost rate: "+media_cost_rate+", impression: "+record.impressions_good+", Excluded Impressions: "+record.excluded_impressions+", media cost:"+((record.impressions_good/1000)*media_cost_rate));
