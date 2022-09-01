@@ -494,7 +494,7 @@
                         "scanned_requests": 0,
                         "scoring_fee": 0,
                     };
-                    AppendVerticalContainerIncomeRow(VC_RowData, seat.name);
+                    AppendVerticalContainerIncomeRow(VC_RowData, seat);
 
                     // push data for first chart
                     RNP_1_Data.revenue.push(VC_RowData.revenue_total);
@@ -866,13 +866,16 @@
 
         }
 
-        function AppendVerticalContainerIncomeRow(record, seat_name) {
+        function AppendVerticalContainerIncomeRow(record, seat) {
             try {
                 console.log("1: "+record.operation_fee);
+                let pixalateImpression = getPixalateImpression(seat) ?? 0;
+                record.scoring_fee = (pixalateImpression / 1000) * window["rates"].scoring_fee;
+                record.operation_fee = (((record.impressions_good / 1000) * window['serving_fee']) + record.scoring_fee);
                 $("#vertical-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<td>')
-                            .text(seat_name)
+                            .text(seat.name)
                         )
                         .append($('<td>')
                             .text("$" + window["formatMoney"](record.revenue_total, 2))
@@ -911,7 +914,6 @@
 
         function AppendVerticalContainerRow(record, seat_name, seat_adtelligent_id) {
             try {
-                console.log("2: "+record.operation_fee);
                 $("#vertical-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<td>')
