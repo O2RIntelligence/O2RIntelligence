@@ -735,7 +735,7 @@
                     record.marketplace_fee = (record.environment in CR_Group) ? CR_Group[record.environment].fee : 0;
 
                 //scoring fee calculations
-                let pixalateImpression = getPixalateImpression(seat);
+                let pixalateImpression = getPixalateImpression(seat) ?? 0;
 
                 // record.scoring_fee = (record.scanned_requests / 1000) * window["rates"].scoring_fee;
                 record.scoring_fee = (pixalateImpression / 1000) * window["rates"].scoring_fee;
