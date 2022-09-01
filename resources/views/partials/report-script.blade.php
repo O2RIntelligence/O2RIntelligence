@@ -275,8 +275,8 @@
             type: 'GET',
             method: 'GET',
             success: function (res) {
-                // console.log(res);
-                window['pixalateImpressions'] = res;
+                console.log(res);
+                window['pixalateImpressions'] = typeof res === 'string' ? JSON.parse(res) : res;
                 if(typeof callback === "function"){
                     callback();
                 }
