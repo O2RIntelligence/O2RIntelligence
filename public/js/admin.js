@@ -746,7 +746,7 @@
                 // impression served- as usual to pull from Adtelligent API
                 // Impressions Scanned to be pulled from pixalate:
                 record.operation_fee = (((record.impressions_good / 1000) * window['serving_fee']) + record.scoring_fee);
-                console.log("(("+record.impressions_good+" / 1000) * "+window['serving_fee']+") + "+record.scoring_fee);
+                console.log("(("+record.impressions_good+" / 1000) * "+window['serving_fee']+") + "+record.scoring_fee+" = "+record.operation_fee);
                 // record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
 
                 let media_cost_rate = record.environment === 'mobile_app' ? window["rates"].mobile_rate : window["rates"].ctv_rate;
@@ -868,6 +868,7 @@
 
         function AppendVerticalContainerIncomeRow(record, seat_name) {
             try {
+                console.log("1: "+record.operation_fee);
                 $("#vertical-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<td>')
@@ -910,6 +911,7 @@
 
         function AppendVerticalContainerRow(record, seat_name, seat_adtelligent_id) {
             try {
+                console.log("2: "+record.operation_fee);
                 $("#vertical-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<td>')
