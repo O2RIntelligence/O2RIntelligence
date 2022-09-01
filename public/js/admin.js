@@ -235,10 +235,15 @@
                 });
 
                 $(".filter-dates").on("click", function () {
+                    // getPixalateData($("input[name=start_date]").val(), $("input[name=end_date]").val(), function () {
                     runReportFunction();
+                    // });
                 });
                 $(".refresh-seats").on('click', function () {
+                    // var date = moment().utcOffset(0, true).format('YYYY-MM-DD');
+                    // getPixalateData(date, date, function () {
                     runReportFunction();
+                    // });
 
                 });
             } catch (e) {
@@ -293,12 +298,15 @@
                     case 'yesterday':
                         var date = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
                         $("input[name=start_date]").val(date);
-                        // $("input[name=end_date]").val(date);
-                        getPixalateData(date, date);
+                        $("input[name=end_date]").val(date);
+                        // getPixalateData(date, date);
                         break;
                     case 'last7':
-                        $("input[name=start_date]").val(moment().utcOffset(0, true).subtract(7, "days").format('YYYY-MM-DD'));
-                        $("input[name=end_date]").val(moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD'));
+                        var startDate = moment().utcOffset(0, true).subtract(7, "days").format('YYYY-MM-DD');
+                        var endDate = moment().utcOffset(0, true).subtract(1, "days").format('YYYY-MM-DD');
+                        $("input[name=start_date]").val(startDate);
+                        $("input[name=end_date]").val(endDate);
+                        // getPixalateData(startDate, endDate);
                         break;
                     case 'last30':
                         $("input[name=start_date]").val(moment().utcOffset(0, true).startOf('month').format('YYYY-MM-DD'));
@@ -733,7 +741,13 @@
                 record.scoring_fee = (pixalateImpression / 1000) * window["rates"].scoring_fee;
                 let impression_rate = record.impressions_good / 1000;
                 record.advertising_fee = impression_rate * window["rates"].advertising_fee;
-                record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
+
+                // [Impression served/1000* [Serving Fee]]+[Impressions scanned/1000 * [Scoring Fee]]
+                // impression served- as usual to pull from Adtelligent API
+                // Impressions Scanned to be pulled from pixalate:
+                record.operation_fee = (((record.impressions_good / 1000) * window['serving_fee']) + ((pixalateImpression / 1000) * record.scoring_fee));
+                // record.operation_fee = record.scoring_fee + record.advertising_fee + record.marketplace_fee;
+
                 let media_cost_rate = record.environment === 'mobile_app' ? window["rates"].mobile_rate : window["rates"].ctv_rate;
                 // console.log("media cost rate: "+media_cost_rate+", impression: "+record.impressions_good+", Excluded Impressions: "+record.excluded_impressions+", media cost:"+((record.impressions_good/1000)*media_cost_rate));
                 record.net_media_cost = partner_fee < 0;
@@ -762,7 +776,7 @@
         function getPixalateImpression(seat) {
             try {
                 let addTelligentId = window['pixalateImpressions'];
-                // if (!addTelligentId) return 0;
+                if (!addTelligentId) return 0;
 
                 let pixalateImpressionIndex = addTelligentId.docs.findIndex(o => parseInt(o.kv5) === parseInt(seat.adtelligent_account_id));
                 // console.log("Index: " + pixalateImpressionIndex, "seat: " + seat.adtelligent_account_id);
@@ -895,15 +909,6 @@
 
         function AppendVerticalContainerRow(record, seat_name, seat_adtelligent_id) {
             try {
-                let account = {
-                    adtelligent_account_id: parseInt(seat_adtelligent_id),
-                }
-                // console.log(account);
-                let pixalateImpressions = getPixalateImpression(account);
-                // [Impression served/1000* [Serving Fee]]+[Impressions scanned/1000 * [Scoring Fee]]
-                // impression served- as usual to pull from Adtelligent API
-                // Impressions Scanned to be pulled from pixalate:
-                let operation_fee = (((record.impressions_good / 1000) * window['serving_fee']) + ((pixalateImpressions / 1000) * record.scoring_fee));
                 $("#vertical-container-table").find('tbody')
                     .append($('<tr>')
                         .append($('<td>')
@@ -919,7 +924,7 @@
                             .text("$" + window["formatMoney"](record.media_cost, 2))
                         )
                         .append($('<td>')
-                            .text("$" + window["formatMoney"](operation_fee, 2))
+                            .text("$" + window["formatMoney"](record.operation_fee, 2))
                         )
                         .append($('<td>')
                             .text("$" + window["formatMoney"](record.scoring_fee, 2))

@@ -283,8 +283,10 @@
                 // console.log(window['pixalateImpressions']);
             },
             error: function (request, status, error) {
+                if(typeof callback === "function"){
+                    callback();
+                }
                 let result = request.responseText.match(/<title>(.*)<\/title>/);
-                // console.log(result[1]);
                 window['pixalateError'] = result[1];
                 swal('Pixalate Server Error', result[1], 'error');
             }
