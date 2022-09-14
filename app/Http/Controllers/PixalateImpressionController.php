@@ -6,6 +6,9 @@ use App\Model\PixalateImpression;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class PixalateImpressionController extends Controller
@@ -35,29 +38,59 @@ class PixalateImpressionController extends Controller
     public function getPreviousPixalateData($date)
     {
         try {
+            $pixalatedata = PixalateImpression::where(['date' => $date])->get();
+            if (count($pixalatedata) > 0) {
+                Log::channel('pixalateLog')->info('Data Already Found for Date: ' . $date . ', Api call Halted.');
+                return "Data Already Found in DB, Exiting";
+            }
+
             $client = new Client();
             $year = date("Y", strtotime($date));
             $url = "https://dashboard.api.pixalate.com/services/" . $year . "/Report/getDetails?&username=6b8549755a929a2ccfb622a3d63801f5&password=87a483160fc51023e0438d1e81db2cb6&timeZone=0&start=0&limit=100&q=kv5,impressions,sivtImpressions,sivtImpsRate,givtImpressions,givtImpsRate WHERE day>='" . $date . "' AND day<='" . $date . "' GROUP BY kv5 ORDER BY impressions DESC";
-            $response = $client->request('GET', $url, [
-                'verify' => false,
-                'headers' => [
-                    'Cookie' => 'AWSALB=jy6VNXj6DAzSrpMCCbM+wSH3Vij0xRpyUC/ZFnK/rhuon8yTDoTpXiH1OlgpisjYwPnWytk1Xdit18GZ8L9Z7jlQ3Zo2fNsTIi6oLn0jvUa140LMV0Sc3mqcYUa7; AWSALBCORS=jy6VNXj6DAzSrpMCCbM+wSH3Vij0xRpyUC/ZFnK/rhuon8yTDoTpXiH1OlgpisjYwPnWytk1Xdit18GZ8L9Z7jlQ3Zo2fNsTIi6oLn0jvUa140LMV0Sc3mqcYUa7; AWSELB=8F49C1931C6A49512C413D9F01B47A5B53D4AE3A429F5A6CD3D9073AC172B737C9CD1A3F30F8FE40CF27DC2C409185D5C48FAC6C3286A01A4270B9B79D1AF70F67AD9A2A9E; AWSELBCORS=8F49C1931C6A49512C413D9F01B47A5B53D4AE3A429F5A6CD3D9073AC172B737C9CD1A3F30F8FE40CF27DC2C409185D5C48FAC6C3286A01A4270B9B79D1AF70F67AD9A2A9E; JSESSIONID=3DCAA77FF81D7096E6DCFBA1A1770C49'
-                ]
-            ]);
+            $response = $client->request('GET', $url, ['verify' => false]);
+
             if ($response->getStatusCode() == 200) {
                 $data = json_decode($response->getBody(), true);
                 foreach ($data['docs'] as $seatWiseData) {
+                    if (empty($seatWiseData['kv5'])) continue;
                     PixalateImpression::updateOrCreate([
                         'date' => $date,
                         'seat_id' => $seatWiseData['kv5'],
                         'impressions' => $seatWiseData['impressions'],
                     ]);
-                }var_dump($data['numFound']);
+                }
+                Log::channel('pixalateLog')->info('Api called for Date: ' . $date . ', Api called for Date: ' . $date . ', API Call Successful, Data Created In DB.');
+
                 return "Data Created Successfully";
             } else {
+                Log::channel('pixalateLog')->warning('Api called for Date: ' . $date . ', API Call FAILED, API Client Got Error:' . $response->getStatusCode() . ' - ' . $response->getReasonPhrase());
+
                 return "Could not get response, error code: " . $response->getStatusCode();
             }
         } catch (Exception $e) {
+            Log::channel('pixalateLog')->error('Api called for Date: ' . $date . ', API Call FAILED, ' . $e->getMessage());
+            $this->sendmail($e->getMessage());
+            return $e->getMessage();
+        }
+    }
+
+    private function sendmail($errorMessage)
+    {
+        try {
+            $diff = round(abs(strtotime('now') - strtotime('today 4.30am')) / 60, 2);
+            if ($diff < 20) {
+                $subject = 'Pixalate Api Call Faced Exceptional Limits';
+                Mail::send([], [], function (Message $message) use ($subject, $errorMessage) {
+                    $message->to(config('admin.app.notify_email'), 'Developer');
+                    $message->subject(config('app.name') . ' ' . $subject);
+                    $message->from(config('admin.app.system_email'), config('app.name'));
+                    $message->setBody($errorMessage, 'text/html');
+                });
+                Log::channel('pixalateLog')->error('Email Sent to: ' . config('admin.app.email') . $errorMessage);
+            }
+        } catch (Exception $e) {
+            Log::channel('pixalateLog')->error('Failed to send Email ' . $e->getMessage());
+
             return $e->getMessage();
         }
     }

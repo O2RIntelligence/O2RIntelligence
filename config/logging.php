@@ -46,6 +46,12 @@ return [
             'level' => 'debug',
         ],
 
+        'pixalateLog' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/pixalate-api-log.log'),
+            'level' => 'info',
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
