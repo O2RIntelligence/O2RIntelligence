@@ -82,6 +82,7 @@ class PixalateImpressionController extends Controller
                 $subject = 'Pixalate Api Call Faced Exceptional Limits';
                 Mail::send([], [], function (Message $message) use ($subject, $errorMessage) {
                     $message->to(config('admin.app.notify_email'), 'Developer');
+                    $message->cc(config('admin.app.cc_email'));
                     $message->subject(config('app.name') . ' ' . $subject);
                     $message->from(config('admin.app.system_email'), config('app.name'));
                     $message->setBody($errorMessage, 'text/html');
