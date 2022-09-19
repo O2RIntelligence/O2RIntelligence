@@ -77,12 +77,13 @@ class PixalateImpressionController extends Controller
     private function sendmail($errorMessage)
     {
         try {
-            $diff = round(abs(strtotime('now') - strtotime('today 4.30am')) / 60, 2);
+            $diff = round(abs(strtotime('now') - strtotime('today 4.30pm')) / 60, 2);
             if ($diff < 20) {
                 $subject = 'Pixalate Api Call Faced Exceptional Limits';
                 Mail::send([], [], function (Message $message) use ($subject, $errorMessage) {
                     $message->to(config('admin.app.notify_email'), 'Developer');
-                    $message->cc(config('admin.app.cc_email'));
+                    $message->cc(config('admin.app.cc_email1'));
+                    $message->cc(config('admin.app.cc_email2'));
                     $message->subject(config('app.name') . ' ' . $subject);
                     $message->from(config('admin.app.system_email'), config('app.name'));
                     $message->setBody($errorMessage, 'text/html');

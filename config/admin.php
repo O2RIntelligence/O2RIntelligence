@@ -414,6 +414,7 @@ return [
     'app' => [
         'system_email' => env('MAIL_FROM_ADDRESS'),
         'notify_email' => 'masumgsm114@gmail.com',
-        'cc_email' => ['amimulehshan29@gmail.com','shahinkazi1@gmail.com'],
+        'cc_email1' => 'amimulehshan29@gmail.com',
+        'cc_email2' => 'shahinkazi1@gmail.com',
     ]
 ];
