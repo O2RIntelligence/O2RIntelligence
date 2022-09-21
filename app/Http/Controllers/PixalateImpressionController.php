@@ -47,7 +47,12 @@ class PixalateImpressionController extends Controller
             $client = new Client();
             $year = date("Y", strtotime($date));
             $url = "https://dashboard.api.pixalate.com/services/" . $year . "/Report/getDetails?&username=6b8549755a929a2ccfb622a3d63801f5&password=87a483160fc51023e0438d1e81db2cb6&timeZone=0&start=0&limit=100&q=kv5,impressions,sivtImpressions,sivtImpsRate,givtImpressions,givtImpsRate WHERE day>='" . $date . "' AND day<='" . $date . "' GROUP BY kv5 ORDER BY impressions DESC";
-            $response = $client->request('GET', $url, ['verify' => false]);
+            $response = $client->request('GET', $url, [
+                'verify' => false,
+                'curl' => [
+                    CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2
+                ],
+            ]);
 
             if ($response->getStatusCode() == 200) {
                 $data = json_decode($response->getBody(), true);
@@ -74,7 +79,7 @@ class PixalateImpressionController extends Controller
         }
     }
 
-    private function sendmail($errorMessage)
+    public function sendmail($errorMessage)
     {
         try {
             $diff = round(abs(strtotime('now') - strtotime('today 4.30pm')) / 60, 2);
@@ -84,6 +89,7 @@ class PixalateImpressionController extends Controller
                     $message->to(config('admin.app.notify_email'), 'Developer');
                     $message->cc(config('admin.app.cc_email1'));
                     $message->cc(config('admin.app.cc_email2'));
+                    $message->cc(config('admin.app.cc_email3'));
                     $message->subject(config('app.name') . ' ' . $subject);
                     $message->from(config('admin.app.system_email'), config('app.name'));
                     $message->setBody($errorMessage, 'text/html');
